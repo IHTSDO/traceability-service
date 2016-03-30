@@ -9,6 +9,8 @@ import org.springframework.jms.annotation.EnableJms;
 @EnableJms
 public class Application {
 
+	public static final String TRACEABILITY_STREAM = "traceability-stream";
+
 	private static ConfigurableApplicationContext context;
 
 	public static void main(String[] args) {

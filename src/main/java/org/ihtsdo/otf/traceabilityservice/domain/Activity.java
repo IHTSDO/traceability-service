@@ -27,18 +27,21 @@ public class Activity {
 	public Activity() {
 	}
 
-	public Activity(String userId, String commitComment, Branch branch, Date commitDate, ActivityType activityType) {
+	public Activity(String userId, String commitComment, Branch branch, Date commitDate) {
 		this.userId = userId;
 		this.commitComment = commitComment;
 		this.branch = branch;
 		this.commitDate = commitDate;
-		this.activityType = activityType;
 		conceptChanges = new HashSet<>();
 	}
 
 	public void addConceptChange(ConceptChange conceptChange) {
 		conceptChanges.add(conceptChange);
 		conceptChange.setActivity(this);
+	}
+
+	public void setActivityType(ActivityType activityType) {
+		this.activityType = activityType;
 	}
 
 	public Long getId() {

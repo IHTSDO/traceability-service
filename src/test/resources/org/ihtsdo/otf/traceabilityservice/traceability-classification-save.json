@@ -1,0 +1,1489 @@
+{
+    "userId": "snowowl",
+    "commitComment": "Classified ontology.",
+    "branchPath": "MAIN/CONREQEXT/CONREQEXT-442",
+    "commitTimestamp": 1457368016008,
+    "changes": {
+        "426560005": {
+            "concept": {
+                "effectiveTime": "2007-07-31T00:00:00Z",
+                "moduleId": "900000000000207008",
+                "active": true,
+                "conceptId": "426560005",
+                "fsn": "426560005",
+                "definitionStatus": "PRIMITIVE",
+                "descriptions": [
+                    {
+                        "effectiveTime": "2007-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "2661982013",
+                        "conceptId": "426560005",
+                        "type": "FSN",
+                        "lang": "en",
+                        "term": "Cervicothoracic somatic dysfunction (finding)",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "effectiveTime": "2007-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "2676051012",
+                        "conceptId": "426560005",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Cervicothoracic somatic dysfunction",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    }
+                ],
+                "relationships": [
+                    {
+                        "effectiveTime": "2007-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3179743021",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "417455002",
+                            "fsn": "417455002",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 0,
+                        "charactericharacteristicTypesticType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2007-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3183676029",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "417347005",
+                            "fsn": "417347005",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2007-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3207821021",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2007-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3207823024",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "122494005",
+                            "fsn": "122494005",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "4233369021",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "417347005",
+                            "fsn": "417347005",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "4233370022",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "417455002",
+                            "fsn": "417455002",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552672027",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "304037003",
+                            "fsn": "304037003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 2,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "3198463025",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "51185008",
+                            "fsn": "51185008",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 2,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "3207822025",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "426560005",
+                        "groupId": 2,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    }
+                ],
+                "isLeafStated": true,
+                "isLeafInferred": true
+            },
+            "changes": [
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552672027",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "3207822025",
+                    "type": "INACTIVATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "3198463025",
+                    "type": "INACTIVATE"
+                }
+            ]
+        },
+        "28280003": {
+            "concept": {
+                "effectiveTime": "2002-01-31T00:00:00Z",
+                "moduleId": "900000000000207008",
+                "active": true,
+                "conceptId": "28280003",
+                "fsn": "28280003",
+                "definitionStatus": "PRIMITIVE",
+                "descriptions": [
+                    {
+                        "effectiveTime": "2002-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "47335010",
+                        "conceptId": "28280003",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Nonallopathic lesion of costochondral region",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "effectiveTime": "2002-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "758941012",
+                        "conceptId": "28280003",
+                        "type": "FSN",
+                        "lang": "en",
+                        "term": "Nonallopathic lesion of costochondral region (finding)",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    }
+                ],
+                "relationships": [
+                    {
+                        "effectiveTime": "2004-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "194027023",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2004-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": false,
+                            "conceptId": "2427005",
+                            "fsn": "2427005",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2004-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "2545496021",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "203703008",
+                            "fsn": "203703008",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2006-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "2841584024",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "118952005",
+                            "fsn": "118952005",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2006-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "2865069024",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "27756000",
+                            "fsn": "27756000",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2006-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "742805022",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "60413009",
+                            "fsn": "60413009",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3999938022",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "203703008",
+                            "fsn": "203703008",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "4359395022",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "27756000",
+                            "fsn": "27756000",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2015-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2730745022",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "4740516025",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "moduleId": "900000000000207008",
+                            "active": false,
+                            "conceptId": "203696003",
+                            "fsn": "203696003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552671023",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2004-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "298705000",
+                            "fsn": "298705000",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "28280003",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    }
+                ],
+                "isLeafStated": true,
+                "isLeafInferred": true
+            },
+            "changes": [
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552671023",
+                    "type": "CREATE"
+                }
+            ]
+        },
+        "715889001": {
+            "concept": {
+                "moduleId": "900000000000207008",
+                "active": true,
+                "conceptId": "715889001",
+                "fsn": "715889001",
+                "definitionStatus": "PRIMITIVE",
+                "descriptions": [
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "3304050013",
+                        "conceptId": "715889001",
+                        "type": "FSN",
+                        "lang": "en",
+                        "term": "Assessment of Comprehension and Expression 6-11 score (observable entity)",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "3304051012",
+                        "conceptId": "715889001",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Assessment of Comprehension and Expression 6-11 score",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "3304052017",
+                        "conceptId": "715889001",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "ACE6-11 (Assessment of Comprehension and Expression 6-11) score",
+                        "caseSignificance": "ENTIRE_TERM_CASE_SENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "ACCEPTABLE",
+                            "900000000000509007": "ACCEPTABLE"
+                        }
+                    }
+                ],
+                "relationships": [
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6546552022",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "363915008",
+                            "fsn": "363915008",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "715889001",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552663024",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "363915008",
+                            "fsn": "363915008",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "715889001",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    }
+                ],
+                "isLeafStated": true,
+                "isLeafInferred": true
+            },
+            "changes": [
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552663024",
+                    "type": "CREATE"
+                }
+            ]
+        },
+        "417242001": {
+            "concept": {
+                "effectiveTime": "2005-07-31T00:00:00Z",
+                "moduleId": "900000000000207008",
+                "active": true,
+                "conceptId": "417242001",
+                "fsn": "417242001",
+                "definitionStatus": "FULLY_DEFINED",
+                "descriptions": [
+                    {
+                        "effectiveTime": "2005-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "2545929019",
+                        "conceptId": "417242001",
+                        "type": "FSN",
+                        "lang": "en",
+                        "term": "Rib somatic dysfunction (finding)",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "effectiveTime": "2005-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "2548190011",
+                        "conceptId": "417242001",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Rib somatic dysfunction",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "effectiveTime": "2005-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "2553571016",
+                        "conceptId": "417242001",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Costal somatic dysfunction",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "ACCEPTABLE",
+                            "900000000000509007": "ACCEPTABLE"
+                        }
+                    }
+                ],
+                "relationships": [
+                    {
+                        "effectiveTime": "2005-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "2766004021",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "203703008",
+                            "fsn": "203703008",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2007-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3180683021",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "118953000",
+                            "fsn": "118953000",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2780172023",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "113197003",
+                            "fsn": "113197003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2780173029",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3377050021",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3448431022",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "113197003",
+                            "fsn": "113197003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3878965026",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "47135001",
+                            "fsn": "47135001",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "4302099028",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "113197003",
+                            "fsn": "113197003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 1,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "4499109020",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 1,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552669023",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "47135001",
+                            "fsn": "47135001",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552670024",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2004-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "298705000",
+                            "fsn": "298705000",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2766003026",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2005-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "417455002",
+                            "fsn": "417455002",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417242001",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    }
+                ],
+                "isLeafStated": false,
+                "isLeafInferred": false
+            },
+            "changes": [
+                {
+                    "componentType": "Relationship",
+                    "componentId": "2766003026",
+                    "type": "INACTIVATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552670024",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552669023",
+                    "type": "CREATE"
+                }
+            ]
+        },
+        "417455002": {
+            "concept": {
+                "effectiveTime": "2005-07-31T00:00:00Z",
+                "moduleId": "900000000000207008",
+                "active": true,
+                "conceptId": "417455002",
+                "fsn": "417455002",
+                "definitionStatus": "FULLY_DEFINED",
+                "descriptions": [
+                    {
+                        "effectiveTime": "2005-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "2548417018",
+                        "conceptId": "417455002",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Thoracic somatic dysfunction",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "descriptionId": "2546142011",
+                        "conceptId": "417455002",
+                        "type": "FSN",
+                        "lang": "en",
+                        "term": "Thoracic somatic dysfunction (finding)",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "3305575012",
+                        "conceptId": "417455002",
+                        "type": "FSN",
+                        "lang": "en",
+                        "term": "Somatic dysfunction of thoracic region (finding)",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "PREFERRED",
+                            "900000000000509007": "PREFERRED"
+                        }
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "3305576013",
+                        "conceptId": "417455002",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Somatic dysfunction of thoracic region",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "ACCEPTABLE",
+                            "900000000000509007": "ACCEPTABLE"
+                        }
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "descriptionId": "3305577016",
+                        "conceptId": "417455002",
+                        "type": "SYNONYM",
+                        "lang": "en",
+                        "term": "Nonallopathic lesion of thoracic region",
+                        "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+                        "acceptabilityMap": {
+                            "900000000000508004": "ACCEPTABLE",
+                            "900000000000509007": "ACCEPTABLE"
+                        }
+                    }
+                ],
+                "relationships": [
+                    {
+                        "effectiveTime": "2005-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "2765985029",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "47135001",
+                            "fsn": "47135001",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2006-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2765986028",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2004-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "298705000",
+                            "fsn": "298705000",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2006-01-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2765987021",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2004-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "410748000",
+                            "fsn": "410748000",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2780143022",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2780144027",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "51185008",
+                            "fsn": "51185008",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "effectiveTime": "2008-07-31T00:00:00Z",
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "3892454026",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "47135001",
+                            "fsn": "47135001",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "4305882022",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "51185008",
+                            "fsn": "51185008",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "4444840029",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552662025",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "304037003",
+                            "fsn": "304037003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "3892455025",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2004-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "298705000",
+                            "fsn": "298705000",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "STATED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "2835203023",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "moduleId": "900000000000207008",
+                            "active": false,
+                            "conceptId": "203696003",
+                            "fsn": "203696003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552666027",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2006-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "418807005",
+                            "fsn": "418807005",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552668026",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "304037003",
+                            "fsn": "304037003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552665028",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2004-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "410748000",
+                            "fsn": "410748000",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "3315996025",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": false,
+                        "relationshipId": "3315995026",
+                        "type": {
+                            "conceptId": "363698007",
+                            "fsn": "363698007"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "51185008",
+                            "fsn": "51185008",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 1,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552667020",
+                        "type": {
+                            "conceptId": "116680003",
+                            "fsn": "116680003"
+                        },
+                        "target": {
+                            "effectiveTime": "2013-07-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "609623002",
+                            "fsn": "609623002",
+                            "definitionStatus": "FULLY_DEFINED"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    },
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "relationshipId": "6552664029",
+                        "type": {
+                            "conceptId": "116676008",
+                            "fsn": "116676008"
+                        },
+                        "target": {
+                            "effectiveTime": "2002-01-31T00:00:00Z",
+                            "moduleId": "900000000000207008",
+                            "active": true,
+                            "conceptId": "49755003",
+                            "fsn": "49755003",
+                            "definitionStatus": "PRIMITIVE"
+                        },
+                        "sourceId": "417455002",
+                        "groupId": 0,
+                        "characteristicType": "INFERRED_RELATIONSHIP",
+                        "modifier": "EXISTENTIAL"
+                    }
+                ],
+                "isLeafStated": false,
+                "isLeafInferred": false
+            },
+            "changes": [
+                {
+                    "componentType": "Relationship",
+                    "componentId": "3315996025",
+                    "type": "INACTIVATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552667020",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552665028",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552666027",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "3315995026",
+                    "type": "INACTIVATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552668026",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "6552664029",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "Relationship",
+                    "componentId": "2835203023",
+                    "type": "INACTIVATE"
+                }
+            ]
+        }
+    }
+}

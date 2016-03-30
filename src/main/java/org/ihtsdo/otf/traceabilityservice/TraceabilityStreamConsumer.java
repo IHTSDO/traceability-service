@@ -1,6 +1,5 @@
 package org.ihtsdo.otf.traceabilityservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
@@ -10,6 +9,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,12 +22,9 @@ public class TraceabilityStreamConsumer {
 	@Autowired
 	private BranchRepository branchRepository;
 
-	@JmsListener(destination = "traceability-stream")
+	@JmsListener(destination = Application.TRACEABILITY_STREAM)
+	@SuppressWarnings(value = "unused")
 	public void receiveMessage(String message) {
-
-		ObjectMapper objectMapper = new ObjectMapper();
-//		objectMapper.
-
 		final Map<String, Object> traceabilityEntry = new JsonJsonParser().parseMap(message);
 		final String userId = (String) traceabilityEntry.get("userId");
 		final String commitComment = (String) traceabilityEntry.get("commitComment");
@@ -35,21 +32,22 @@ public class TraceabilityStreamConsumer {
 		final Long commitTimestampMillis = (Long) traceabilityEntry.get("commitTimestamp");
 		final Date commitTimestamp = new Date(commitTimestampMillis);
 
-		final ActivityType activityType = ActivityType.CONTENT_CHANGE;
-
 		Branch branch = branchRepository.findByBranchPath(branchPath);
 		if (branch == null) {
 			branch = branchRepository.save(new Branch(branchPath));
 		}
 
-		final Activity activity = new Activity(userId, commitComment, branch, commitTimestamp, activityType);
+		final Activity activity = new Activity(userId, commitComment, branch, commitTimestamp);
 
+		boolean anyNonInferredChanges = false;
 		Map<String, Map<String, Object>> conceptChanges = (Map<String, Map<String, Object>>) traceabilityEntry.get("changes");
 		if (conceptChanges != null) {
 			for (String conceptId : conceptChanges.keySet()) {
 				final Map<String, Object> conceptChangeMap = conceptChanges.get(conceptId);
 				final ConceptChange conceptChange = new ConceptChange(Long.parseLong(conceptId));
 
+				Map<String, Object> conceptSnapshot = (Map<String, Object>) conceptChangeMap.get("concept");
+				Map<String, String> relationshipCharacteristicTypes = getRelationshipCharacteristicTypes(conceptSnapshot);
 				List<Map<String, String>> componentChangeMaps = (List<Map<String, String>>) conceptChangeMap.get("changes");
 				for (Map<String, String> componentChangeMap : componentChangeMaps) {
 					final String componentTypeString = componentChangeMap.get("componentType");
@@ -57,15 +55,28 @@ public class TraceabilityStreamConsumer {
 					final String componentId = componentChangeMap.get("componentId");
 					final String changeTypeString = componentChangeMap.get("type");
 					final ComponentChangeType componentChangeType = ComponentChangeType.valueOf(changeTypeString);
+					if (!anyNonInferredChanges) {
+						anyNonInferredChanges = componentType != ComponentType.RELATIONSHIP || !"INFERRED_RELATIONSHIP".equals(relationshipCharacteristicTypes.get(componentId));
+					}
 					conceptChange.addComponentChange(new ComponentChange(componentType, componentId, componentChangeType));
 				}
 				activity.addConceptChange(conceptChange);
 			}
 		}
+		activity.setActivityType(anyNonInferredChanges ? ActivityType.CONTENT_CHANGE : ActivityType.CLASSIFICATION_SAVE);
 
 		activityRepository.save(activity);
 
 		System.out.println("Received <" + commitComment + ">");
+	}
+
+	private Map<String, String> getRelationshipCharacteristicTypes(Map<String, Object> conceptSnapshot) {
+		final Map<String, String> relationshipCharacteristicTypes = new HashMap<>();
+		final List<Map<String, String>> relationships = (List<Map<String, String>>) conceptSnapshot.get("relationships");
+		for (Map<String, String> relationship : relationships) {
+			relationshipCharacteristicTypes.put(relationship.get("relationshipId"), relationship.get("characteristicType"));
+		}
+		return relationshipCharacteristicTypes;
 	}
 
 }
