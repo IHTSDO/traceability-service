@@ -72,4 +72,13 @@ public class ConceptChange {
 		result = 31 * result + (componentChanges != null ? componentChanges.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "ConceptChange{" +
+				"id=" + id +
+				", conceptId=" + conceptId +
+				", componentChanges=" + componentChanges +
+				'}';
+	}
 }

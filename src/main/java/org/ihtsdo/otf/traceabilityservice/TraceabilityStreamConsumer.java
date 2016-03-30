@@ -3,10 +3,14 @@ package org.ihtsdo.otf.traceabilityservice;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
+import org.ihtsdo.otf.traceabilityservice.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonJsonParser;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,32 +27,47 @@ public class TraceabilityStreamConsumer {
 
 	@Autowired
 	private BranchRepository branchRepository;
-	public static final Pattern BRANCH_MERGE_COMMIT_COMMENT_PATTERN = Pattern.compile("^(.*) performed merge of (MAIN[^ ]*) to (MAIN[^ ]*)$");
+
+	@Autowired
+	private UserRepository userRepository;
+
+	private static final Pattern BRANCH_MERGE_COMMIT_COMMENT_PATTERN = Pattern.compile("^(.*) performed merge of (MAIN[^ ]*) to (MAIN[^ ]*)$");
+
+	final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@JmsListener(destination = Application.TRACEABILITY_STREAM)
+	@Transactional
 	@SuppressWarnings(value = "unused")
 	public void receiveMessage(String message) {
 		final Map<String, Object> traceabilityEntry = new JsonJsonParser().parseMap(message);
-		final String userId = (String) traceabilityEntry.get("userId");
+		String username = (String) traceabilityEntry.get("userId");
 		final String commitComment = (String) traceabilityEntry.get("commitComment");
 		final String branchPath = (String) traceabilityEntry.get("branchPath");
 		final Long commitTimestampMillis = (Long) traceabilityEntry.get("commitTimestamp");
 		final Date commitTimestamp = new Date(commitTimestampMillis);
 
-		Branch branch = branchRepository.findByBranchPath(branchPath);
-		if (branch == null) {
-			branch = branchRepository.save(new Branch(branchPath));
-		}
 
-		final Activity activity = new Activity(userId, commitComment, branch, commitTimestamp);
 		ActivityType activityType = null;
 
 		final Matcher matcher = BRANCH_MERGE_COMMIT_COMMENT_PATTERN.matcher(commitComment);
+		Branch mergeSourceBranch = null;
 		if (matcher.matches()) {
-			final String username = matcher.group(1);
-			final String sourceBranchPath = matcher.group(2);
+			username = matcher.group(1);
+			String sourceBranchPath = matcher.group(2);
 			final String destinationBranchPath = matcher.group(3);
 			activityType = destinationBranchPath.contains(sourceBranchPath) ? ActivityType.REBASE : ActivityType.PROMOTION;
+			mergeSourceBranch = getCreateBranch(sourceBranchPath);
+		}
+		Branch branch = getCreateBranch(branchPath);
+
+		User user = userRepository.findByUsername(username);
+		if (user == null) {
+			user = userRepository.save(new User(username));
+		}
+
+		final Activity activity = new Activity(user, commitComment, branch, commitTimestamp);
+		if (mergeSourceBranch != null) {
+			activity.setMergeSourceBranch(mergeSourceBranch);
 		}
 
 		boolean anyNonInferredChanges = false;
@@ -80,9 +99,23 @@ public class TraceabilityStreamConsumer {
 		}
 		activity.setActivityType(activityType);
 
+		logger.debug("Saving activity {}", activity);
 		activityRepository.save(activity);
 
-		System.out.println("Received <" + commitComment + ">");
+		if (activityType == ActivityType.PROMOTION) {
+			// Move activities on the source branch up to the parent
+			activityRepository.setHighestPromotedBranchWhereBranchEquals(branch, mergeSourceBranch);
+		}
+
+		logger.info("Consumed activity <" + commitComment + ">");
+	}
+
+	private Branch getCreateBranch(String branchPath) {
+		Branch branch = branchRepository.findByBranchPath(branchPath);
+		if (branch == null) {
+			branch = branchRepository.save(new Branch(branchPath));
+		}
+		return branch;
 	}
 
 	private Map<String, String> getRelationshipCharacteristicTypes(Map<String, Object> conceptSnapshot) {

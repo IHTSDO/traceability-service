@@ -5,6 +5,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
+import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import org.springframework.util.FileSystemUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -27,6 +29,7 @@ public class ApplicationIntegrationTest {
 
 	private ConfigurableApplicationContext context;
 	private ActivityRepository activityRepository;
+	private BranchRepository branchRepository;
 
 	@Before
 	public void setup() {
@@ -35,6 +38,7 @@ public class ApplicationIntegrationTest {
 		Application.main(new String[]{});
 		context = Application.getContext();
 		activityRepository = context.getBean(ActivityRepository.class);
+		branchRepository = context.getBean(BranchRepository.class);
 	}
 
 	@After
@@ -50,13 +54,14 @@ public class ApplicationIntegrationTest {
 
 		Assert.assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
+		Assert.assertEquals("snowowl", activity.getUser().getUsername());
 		Assert.assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
 		Assert.assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
 		Assert.assertEquals(5, conceptChanges.size());
 		final Map<Long, ConceptChange> conceptChangeMap = getConceptChangeMap(conceptChanges);
 		final ConceptChange conceptChange = conceptChangeMap.get(426560005L);
-		Assert.assertEquals(new Long(426560005), conceptChange.getConceptId());
+		Assert.assertEquals("426560005", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
 		Assert.assertEquals(3, componentChanges.size());
 		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.RELATIONSHIP, "6552672027", ComponentChangeType.CREATE)));
@@ -72,12 +77,13 @@ public class ApplicationIntegrationTest {
 
 		Assert.assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
+		Assert.assertEquals("snowowl", activity.getUser().getUsername());
 		Assert.assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
 		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
 		Assert.assertEquals(1, conceptChanges.size());
 		final ConceptChange conceptChange = conceptChanges.iterator().next();
-		Assert.assertEquals(new Long(416390003), conceptChange.getConceptId());
+		Assert.assertEquals("416390003", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
 		Assert.assertEquals(3, componentChanges.size());
 		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.DESCRIPTION, "2546600013", ComponentChangeType.UPDATE)));
@@ -93,7 +99,9 @@ public class ApplicationIntegrationTest {
 
 		Assert.assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
+		Assert.assertEquals("kkewley", activity.getUser().getUsername());
 		Assert.assertEquals("MAIN/CMTFH/CMTFH-6", activity.getBranch().getBranchPath());
+		Assert.assertEquals("MAIN/CMTFH", activity.getMergeSourceBranch().getBranchPath());
 		Assert.assertEquals(ActivityType.REBASE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
 		Assert.assertEquals(0, conceptChanges.size());
@@ -107,33 +115,65 @@ public class ApplicationIntegrationTest {
 
 		Assert.assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
+		Assert.assertEquals("kkewley", activity.getUser().getUsername());
 		Assert.assertEquals("MAIN/CMTFH", activity.getBranch().getBranchPath());
+		Assert.assertEquals("MAIN/CMTFH/CMTFH-6", activity.getMergeSourceBranch().getBranchPath());
 		Assert.assertEquals(ActivityType.PROMOTION, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
 		Assert.assertEquals(0, conceptChanges.size());
 	}
 
+	@Test
+	public void consumeCreateRebasePromoteTest() throws IOException, InterruptedException {
+
+		streamTestDataAndRetrievePersistedActivities("traceability-create-rebase.txt");
+
+		final Branch projectBranch = branchRepository.findByBranchPath("MAIN/CMTFH");
+		final List<Activity> activitiesAtProjectBeforePromotion = activityRepository.findByHighestPromotedBranchOrderByCommitDate(projectBranch);
+		Assert.assertEquals(0, activitiesAtProjectBeforePromotion.size());
+
+		System.out.println("activity count before " + activityRepository.count());
+		System.out.println("branch count before " + branchRepository.count());
+
+		streamTestDataAndRetrievePersistedActivities("traceability-branch-promote.txt");
+
+		System.out.println("activity count after " + activityRepository.count());
+		System.out.println("branch count after " + branchRepository.count());
+
+		for (Branch branch : branchRepository.findAll()) {
+			System.out.println(branch);
+		}
+
+		final List<Activity> activitiesAtProjectAfterPromotion = activityRepository.findByHighestPromotedBranchOrderByCommitDate(projectBranch);
+		Assert.assertEquals(3, activitiesAtProjectAfterPromotion.size());
+		final Activity activity = activitiesAtProjectAfterPromotion.get(0);
+		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		Assert.assertEquals("716755000", activity.getConceptChanges().iterator().next().getConceptId().toString());
+	}
+
 	private ArrayList<Activity> streamTestDataAndRetrievePersistedActivities(String resource) throws IOException, InterruptedException {
 		final InputStream resourceAsStream = getClass().getResourceAsStream(resource);
+
+		long startingActivityCount = activityRepository.count();
+		long activitiesSent = 0;
 
 		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				sendMessage(line);
+				activitiesSent++;
 			}
 		}
 
-		Iterable<Activity> activitiesIterable = null;
 		int timeoutSeconds = 10;
 		int waitedSeconds = 0;
-		while ((activitiesIterable == null || !activitiesIterable.iterator().hasNext()) && waitedSeconds < timeoutSeconds) {
+		while (activityRepository.count() != startingActivityCount + activitiesSent && waitedSeconds < timeoutSeconds) {
 			Thread.sleep(1000);
-			activitiesIterable = activityRepository.findAll();
 			waitedSeconds++;
 		}
 
 		final ArrayList<Activity> activities = new ArrayList<>();
-		Iterables.addAll(activities, activitiesIterable);
+		Iterables.addAll(activities, activityRepository.findAll());
 		Assert.assertNotNull(activities);
 		return activities;
 	}

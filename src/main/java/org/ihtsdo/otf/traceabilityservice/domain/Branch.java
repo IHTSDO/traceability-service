@@ -10,6 +10,7 @@ public class Branch {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 
+	@Column(nullable = false)
 	private String branchPath;
 
 	public Branch() {
@@ -25,5 +26,13 @@ public class Branch {
 
 	public String getBranchPath() {
 		return branchPath;
+	}
+
+	@Override
+	public String toString() {
+		return "Branch{" +
+				"id=" + id +
+				", branchPath='" + branchPath + '\'' +
+				'}';
 	}
 }

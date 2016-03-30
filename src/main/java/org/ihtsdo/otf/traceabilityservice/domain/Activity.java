@@ -13,13 +13,21 @@ public class Activity {
 	private Long id;
 
 	@ManyToOne
-	private Branch branch;
+	private User user;
 
-	private String userId;
-	private String commitComment;
-	private Date commitDate;
 	@Enumerated
 	private ActivityType activityType;
+
+	@ManyToOne
+	private Branch branch;
+
+	@ManyToOne
+	private Branch mergeSourceBranch;
+
+	@ManyToOne
+	private Branch highestPromotedBranch;
+	private String commitComment;
+	private Date commitDate;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "activity", fetch = FetchType.EAGER)
 	private Set<ConceptChange> conceptChanges;
@@ -27,11 +35,12 @@ public class Activity {
 	public Activity() {
 	}
 
-	public Activity(String userId, String commitComment, Branch branch, Date commitDate) {
-		this.userId = userId;
+	public Activity(User user, String commitComment, Branch branch, Date commitDate) {
+		this.user = user;
 		this.commitComment = commitComment;
 		this.branch = branch;
 		this.commitDate = commitDate;
+		this.highestPromotedBranch = branch;
 		conceptChanges = new HashSet<>();
 	}
 
@@ -44,12 +53,20 @@ public class Activity {
 		this.activityType = activityType;
 	}
 
+	public void setMergeSourceBranch(Branch mergeSourceBranch) {
+		this.mergeSourceBranch = mergeSourceBranch;
+	}
+
+	public void setHighestPromotedBranch(Branch highestPromotedBranch) {
+		this.highestPromotedBranch = highestPromotedBranch;
+	}
+
 	public Long getId() {
 		return id;
 	}
 
-	public String getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
 	public String getCommitComment() {
@@ -70,5 +87,28 @@ public class Activity {
 
 	public Set<ConceptChange> getConceptChanges() {
 		return conceptChanges;
+	}
+
+	public Branch getMergeSourceBranch() {
+		return mergeSourceBranch;
+	}
+
+	public Branch getHighestPromotedBranch() {
+		return highestPromotedBranch;
+	}
+
+	@Override
+	public String toString() {
+		return "Activity{" +
+				"id=" + id +
+				", user=" + user +
+				", activityType=" + activityType +
+				", commitComment='" + commitComment + '\'' +
+				", branch=" + branch +
+				", mergeSourceBranch=" + mergeSourceBranch +
+				", highestPromotedBranch=" + highestPromotedBranch +
+				", commitDate=" + commitDate +
+				", conceptChanges=" + conceptChanges +
+				'}';
 	}
 }
