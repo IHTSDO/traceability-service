@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -132,32 +131,21 @@ public class ApplicationIntegrationTest {
 		final List<Activity> activitiesAtProjectBeforePromotion = activityRepository.findByHighestPromotedBranchOrderByCommitDate(projectBranch);
 		Assert.assertEquals(0, activitiesAtProjectBeforePromotion.size());
 
-		System.out.println("activity count before " + activityRepository.count());
-		System.out.println("branch count before " + branchRepository.count());
-
 		streamTestDataAndRetrievePersistedActivities("traceability-branch-promote.txt");
-
-		System.out.println("activity count after " + activityRepository.count());
-		System.out.println("branch count after " + branchRepository.count());
-
-		for (Branch branch : branchRepository.findAll()) {
-			System.out.println(branch);
-		}
 
 		final List<Activity> activitiesAtProjectAfterPromotion = activityRepository.findByHighestPromotedBranchOrderByCommitDate(projectBranch);
 		Assert.assertEquals(3, activitiesAtProjectAfterPromotion.size());
 		final Activity activity = activitiesAtProjectAfterPromotion.get(0);
 		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		Assert.assertEquals("716755000", activity.getConceptChanges().iterator().next().getConceptId().toString());
+
 	}
 
 	private ArrayList<Activity> streamTestDataAndRetrievePersistedActivities(String resource) throws IOException, InterruptedException {
-		final InputStream resourceAsStream = getClass().getResourceAsStream(resource);
-
 		long startingActivityCount = activityRepository.count();
 		long activitiesSent = 0;
 
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream))) {
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(resource)))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				sendMessage(line);
@@ -180,9 +168,8 @@ public class ApplicationIntegrationTest {
 
 	private Map<Long, ConceptChange> getConceptChangeMap(Set<ConceptChange> conceptChanges) {
 		return Maps.uniqueIndex(conceptChanges, new Function<ConceptChange, Long>() {
-			@Nullable
 			@Override
-			public Long apply(@Nullable ConceptChange conceptChange) {
+			public Long apply(ConceptChange conceptChange) {
 				return conceptChange.getConceptId();
 			}
 		});

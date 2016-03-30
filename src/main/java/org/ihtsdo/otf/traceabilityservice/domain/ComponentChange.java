@@ -1,5 +1,7 @@
 package org.ihtsdo.otf.traceabilityservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,11 +14,14 @@ public class ComponentChange {
 
 	@ManyToOne
 	@JoinColumn(name = "concept_change_id")
+	@JsonIgnore
 	private ConceptChange conceptChange;
 
 	private String componentId;
+
 	@Enumerated
 	private ComponentType componentType;
+
 	@Enumerated
 	private ComponentChangeType changeType;
 

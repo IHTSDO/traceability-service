@@ -1,10 +1,18 @@
 package org.ihtsdo.otf.traceabilityservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 
 @Entity
+@Table(
+		indexes = {
+				@Index(columnList = "conceptId", name = "concept_id_index")
+		}
+)
 public class ConceptChange {
 
 	@Id
@@ -14,11 +22,13 @@ public class ConceptChange {
 
 	@ManyToOne
 	@JoinColumn(name="activity_id", nullable=false)
+	@JsonIgnore
 	private Activity activity;
 
 	private Long conceptId;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "conceptChange", fetch = FetchType.EAGER)
+	@JsonManagedReference
 	private Set<ComponentChange> componentChanges;
 
 	public ConceptChange() {

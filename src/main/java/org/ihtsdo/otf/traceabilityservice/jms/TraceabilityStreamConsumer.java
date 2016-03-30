@@ -1,5 +1,6 @@
-package org.ihtsdo.otf.traceabilityservice;
+package org.ihtsdo.otf.traceabilityservice.jms;
 
+import org.ihtsdo.otf.traceabilityservice.Application;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;

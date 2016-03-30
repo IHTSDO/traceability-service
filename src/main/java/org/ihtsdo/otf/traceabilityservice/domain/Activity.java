@@ -6,6 +6,14 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
+@Table(
+		indexes = {
+			@Index(columnList = "branch", name = "branch_index"),
+			@Index(columnList = "highest_promoted_branch", name = "highest_branch_index"),
+			@Index(columnList = "user", name = "user_index"),
+			@Index(columnList = "commitDate", name = "commit_date_index")
+		}
+)
 public class Activity {
 
 	@Id
@@ -26,6 +34,7 @@ public class Activity {
 
 	@ManyToOne
 	private Branch highestPromotedBranch;
+
 	private String commitComment;
 	private Date commitDate;
 
