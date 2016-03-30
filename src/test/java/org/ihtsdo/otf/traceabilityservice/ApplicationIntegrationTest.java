@@ -85,6 +85,34 @@ public class ApplicationIntegrationTest {
 		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.DESCRIPTION, "3305227015", ComponentChangeType.CREATE)));
 	}
 
+	@Test
+	public void consumeBranchRebaseTest() throws IOException, InterruptedException {
+		final String resource = "traceability-branch-rebase.txt";
+
+		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
+
+		Assert.assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		Assert.assertEquals("MAIN/CMTFH/CMTFH-6", activity.getBranch().getBranchPath());
+		Assert.assertEquals(ActivityType.REBASE, activity.getActivityType());
+		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
+		Assert.assertEquals(0, conceptChanges.size());
+	}
+
+	@Test
+	public void consumeBranchPromoteTest() throws IOException, InterruptedException {
+		final String resource = "traceability-branch-promote.txt";
+
+		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
+
+		Assert.assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		Assert.assertEquals("MAIN/CMTFH", activity.getBranch().getBranchPath());
+		Assert.assertEquals(ActivityType.PROMOTION, activity.getActivityType());
+		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
+		Assert.assertEquals(0, conceptChanges.size());
+	}
+
 	private ArrayList<Activity> streamTestDataAndRetrievePersistedActivities(String resource) throws IOException, InterruptedException {
 		final InputStream resourceAsStream = getClass().getResourceAsStream(resource);
 

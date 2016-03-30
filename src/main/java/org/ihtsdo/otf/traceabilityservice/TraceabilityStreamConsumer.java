@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class TraceabilityStreamConsumer {
@@ -21,6 +23,7 @@ public class TraceabilityStreamConsumer {
 
 	@Autowired
 	private BranchRepository branchRepository;
+	public static final Pattern BRANCH_MERGE_COMMIT_COMMENT_PATTERN = Pattern.compile("^(.*) performed merge of (MAIN[^ ]*) to (MAIN[^ ]*)$");
 
 	@JmsListener(destination = Application.TRACEABILITY_STREAM)
 	@SuppressWarnings(value = "unused")
@@ -38,6 +41,15 @@ public class TraceabilityStreamConsumer {
 		}
 
 		final Activity activity = new Activity(userId, commitComment, branch, commitTimestamp);
+		ActivityType activityType = null;
+
+		final Matcher matcher = BRANCH_MERGE_COMMIT_COMMENT_PATTERN.matcher(commitComment);
+		if (matcher.matches()) {
+			final String username = matcher.group(1);
+			final String sourceBranchPath = matcher.group(2);
+			final String destinationBranchPath = matcher.group(3);
+			activityType = destinationBranchPath.contains(sourceBranchPath) ? ActivityType.REBASE : ActivityType.PROMOTION;
+		}
 
 		boolean anyNonInferredChanges = false;
 		Map<String, Map<String, Object>> conceptChanges = (Map<String, Map<String, Object>>) traceabilityEntry.get("changes");
@@ -63,7 +75,10 @@ public class TraceabilityStreamConsumer {
 				activity.addConceptChange(conceptChange);
 			}
 		}
-		activity.setActivityType(anyNonInferredChanges ? ActivityType.CONTENT_CHANGE : ActivityType.CLASSIFICATION_SAVE);
+		if (activityType == null) {
+			activityType = anyNonInferredChanges ? ActivityType.CONTENT_CHANGE : ActivityType.CLASSIFICATION_SAVE;
+		}
+		activity.setActivityType(activityType);
 
 		activityRepository.save(activity);
 
