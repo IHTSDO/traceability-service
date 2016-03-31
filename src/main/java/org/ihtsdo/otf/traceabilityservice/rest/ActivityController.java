@@ -2,6 +2,7 @@ package org.ihtsdo.otf.traceabilityservice.rest;
 
 import com.google.common.base.Strings;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
+import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.Branch;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
@@ -27,17 +28,35 @@ public class ActivityController {
 	@ResponseBody
 	public Page<Activity> getActivities(
 			@RequestParam(required = false) String onBranch,
+			@RequestParam(required = false) String activityType,
 			@RequestParam(required = false, defaultValue = "0") int page,
 			@RequestParam(required = false, defaultValue = "1000") int size) {
 
+		ActivityType activityTypeEnum = null;
+		if (!Strings.isNullOrEmpty(activityType)) {
+			activityTypeEnum = ActivityType.valueOf(activityType.toUpperCase());
+		}
+
+		Branch branch = null;
 		if (!Strings.isNullOrEmpty(onBranch)) {
-			final Branch branch = branchRepository.findByBranchPath(onBranch);
+			branch = branchRepository.findByBranchPath(onBranch);
 			if (branch == null) {
 				throw new HttpServerErrorException(HttpStatus.NOT_FOUND, "Branch not found '" + onBranch + "'");
 			}
-			return activityRepository.findOnBranch(branch, new PageRequest(page, size));
+		}
+
+		if (branch != null) {
+			if (activityTypeEnum != null) {
+				return activityRepository.findOnBranch(branch, activityTypeEnum, new PageRequest(page, size));
+			} else {
+				return activityRepository.findOnBranch(branch, new PageRequest(page, size));
+			}
 		} else {
-			return activityRepository.findAll(new PageRequest(page, size));
+			if (activityTypeEnum != null) {
+				return activityRepository.findAll(activityTypeEnum, new PageRequest(page, size));
+			} else {
+				return activityRepository.findAll(new PageRequest(page, size));
+			}
 		}
 	}
 
