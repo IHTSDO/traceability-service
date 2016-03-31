@@ -22,8 +22,9 @@ public class LogLoader {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public void loadLogs(File loadLogsDir) {
-		final List<String> failedFiles = new ArrayList<>();
+	public void loadLogs(File loadLogsDir) throws LogLoaderException {
+		final List<String> partiallyLoaded = new ArrayList<>();
+		final List<String> completelyLoaded = new ArrayList<>();
 		for (File file : loadLogsDir.listFiles()) {
 			final String fileName = file.getName();
 			if (file.isFile() && fileName.startsWith("snomed-traceability")) {
@@ -49,19 +50,19 @@ public class LogLoader {
 							}
 						}
 					}
+					completelyLoaded.add(fileName);
 				} catch (IOException e) {
 					logger.error("Failed to load log file '{}'.", fileName, e);
-					failedFiles.add(fileName);
+					partiallyLoaded.add(fileName);
 				} catch (NullPointerException e) {
-					logger.error("Failed to load all of log file '{}', problem with line{} .", fileName, lineNum, e);
-					failedFiles.add(fileName);
+					throw new LogLoaderException(String.format("Failed to load all of log file '%s', problem with line %s .", fileName, lineNum), e);
 				}
 			}
 		}
-		if (failedFiles.isEmpty()) {
-			logger.info("All log files were loaded successfully.");
+		if (partiallyLoaded.isEmpty()) {
+			logger.info("All log files were loaded successfully. Completely loaded: {}", completelyLoaded);
 		} else {
-			logger.error("Some log files failed to load: {}", failedFiles);
+			logger.error("Some log files failed to load. Partially loaded: {}. Completely loaded: {}", partiallyLoaded, completelyLoaded);
 		}
 	}
 

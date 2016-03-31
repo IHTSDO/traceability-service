@@ -1,6 +1,7 @@
 package org.ihtsdo.otf.traceabilityservice;
 
 import org.ihtsdo.otf.traceabilityservice.setup.LogLoader;
+import org.ihtsdo.otf.traceabilityservice.setup.LogLoaderException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -16,7 +17,7 @@ public class Application {
 
 	private static ConfigurableApplicationContext context;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws LogLoaderException {
 
 		File loadLogsDir = null;
 		if (args.length == 2 && args[0].equals("--loadLogs")) {

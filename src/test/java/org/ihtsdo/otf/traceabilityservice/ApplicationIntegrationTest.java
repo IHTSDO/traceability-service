@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
+import org.ihtsdo.otf.traceabilityservice.setup.LogLoaderException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +32,7 @@ public class ApplicationIntegrationTest {
 	private BranchRepository branchRepository;
 
 	@Before
-	public void setup() {
+	public void setup() throws LogLoaderException {
 		// Clean out any ActiveMQ data from a previous run
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 		Application.main(new String[]{});
