@@ -20,7 +20,7 @@ public class Application {
 	public static void main(String[] args) throws LogLoaderException {
 
 		File loadLogsDir = null;
-		if (args.length == 2 && args[0].equals("--loadLogs")) {
+		if (args.length >= 2 && args[0].equals("--loadLogs")) {
 			final String loadLogsPath = args[1];
 			loadLogsDir = new File(loadLogsPath);
 			if (!loadLogsDir.isDirectory()) {
