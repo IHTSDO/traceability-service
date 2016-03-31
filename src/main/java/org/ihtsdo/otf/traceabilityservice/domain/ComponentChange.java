@@ -10,6 +10,7 @@ public class ComponentChange {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@JsonIgnore
 	private Long id;
 
 	@ManyToOne

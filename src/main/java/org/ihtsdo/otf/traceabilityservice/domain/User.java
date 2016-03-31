@@ -1,5 +1,7 @@
 package org.ihtsdo.otf.traceabilityservice.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,6 +9,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
+	@JsonIgnore
 	private Long id;
 
 	@Column(nullable = false)

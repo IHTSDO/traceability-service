@@ -53,6 +53,7 @@ public class LogLoader {
 							}
 						}
 					}
+					logger.info("Successfully loaded {}, {} lines", fileName, lineNum);
 					completelyLoaded.add(fileName);
 				} catch (IOException e) {
 					logger.error("Failed to load log file '{}'.", fileName, e);

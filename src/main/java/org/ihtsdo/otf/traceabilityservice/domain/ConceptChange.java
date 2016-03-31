@@ -18,6 +18,7 @@ public class ConceptChange {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy= GenerationType.AUTO)
+	@JsonIgnore
 	private Long id;
 
 	@ManyToOne
