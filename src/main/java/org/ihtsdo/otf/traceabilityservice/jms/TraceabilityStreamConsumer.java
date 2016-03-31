@@ -122,8 +122,10 @@ public class TraceabilityStreamConsumer {
 	private Map<String, String> getRelationshipCharacteristicTypes(Map<String, Object> conceptSnapshot) {
 		final Map<String, String> relationshipCharacteristicTypes = new HashMap<>();
 		final List<Map<String, String>> relationships = (List<Map<String, String>>) conceptSnapshot.get("relationships");
-		for (Map<String, String> relationship : relationships) {
-			relationshipCharacteristicTypes.put(relationship.get("relationshipId"), relationship.get("characteristicType"));
+		if (relationships != null) { // If a concept is inactive relationships are not required
+			for (Map<String, String> relationship : relationships) {
+				relationshipCharacteristicTypes.put(relationship.get("relationshipId"), relationship.get("characteristicType"));
+			}
 		}
 		return relationshipCharacteristicTypes;
 	}
