@@ -13,7 +13,7 @@ import java.io.File;
 @EnableJms
 public class Application {
 
-	public static final String TRACEABILITY_STREAM = "traceability-stream";
+	public static final String TRACEABILITY_QUEUE_NAME = "traceability";
 
 	private static ConfigurableApplicationContext context;
 

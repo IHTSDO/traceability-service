@@ -184,7 +184,7 @@ public class ApplicationIntegrationTest {
 			}
 		};
 		JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-		jmsTemplate.send(Application.TRACEABILITY_STREAM, messageCreator);
+		jmsTemplate.send(Application.TRACEABILITY_QUEUE_NAME, messageCreator);
 	}
 
 }

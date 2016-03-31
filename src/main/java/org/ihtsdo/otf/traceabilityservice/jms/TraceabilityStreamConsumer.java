@@ -36,7 +36,7 @@ public class TraceabilityStreamConsumer {
 
 	final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@JmsListener(destination = Application.TRACEABILITY_STREAM)
+	@JmsListener(destination = Application.TRACEABILITY_QUEUE_NAME)
 	@Transactional
 	@SuppressWarnings(value = "unused")
 	public void receiveMessage(String message) {
