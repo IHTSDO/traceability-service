@@ -1,6 +1,7 @@
 package org.ihtsdo.otf.traceabilityservice.setup;
 
 import org.ihtsdo.otf.traceabilityservice.jms.TraceabilityStreamConsumer;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -58,7 +60,7 @@ public class LogLoader {
 				} catch (IOException e) {
 					logger.error("Failed to load log file '{}'.", fileName, e);
 					partiallyLoaded.add(fileName);
-				} catch (NullPointerException e) {
+				} catch (NullPointerException | JSONException e) {
 					throw new LogLoaderException(String.format("Failed to load all of log file '%s', problem with line %s .", fileName, lineNum), e);
 				}
 			}
@@ -73,6 +75,12 @@ public class LogLoader {
 	private List<File> sortFiles(File[] files) {
 		final List<File> filesToLoad = new ArrayList<>();
 		Collections.addAll(filesToLoad, files);
+		Collections.sort(filesToLoad, new Comparator<File>() {
+			@Override
+			public int compare(File a, File b) {
+				return a.getName().compareTo(b.getName());
+			}
+		});
 		if (filesToLoad.size() > 1) {
 			final File file = filesToLoad.get(0);
 			if (file.getName().equals("snomed-traceability.log")) {
