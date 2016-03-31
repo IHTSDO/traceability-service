@@ -29,40 +29,38 @@ public class LogLoader {
 		final List<String> partiallyLoaded = new ArrayList<>();
 		final List<String> completelyLoaded = new ArrayList<>();
 		final File[] files = loadLogsDir.listFiles();
-		final List<File> filesToLoad = sortFiles(files);
+		final List<File> filesToLoad = filterAndSortFiles(files);
 		for (File file : filesToLoad) {
 			final String fileName = file.getName();
-			if (file.isFile() && fileName.startsWith("snomed-traceability")) {
-				logger.info("Loading {}", fileName);
-				long lineNum = -1;
-				try {
-					final InputStream in;
-					if (fileName.endsWith(".gz")) {
-						in = new GZIPInputStream(new FileInputStream(file));
-					} else {
-						in = new FileInputStream(file);
-					}
-					try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in))) {
-						String line;
-						lineNum = 0;
-						while ((line = bufferedReader.readLine()) != null) {
-							lineNum++;
-							final int beginIndex = line.indexOf("{");
-							if (beginIndex != -1) {
-								traceabilityStreamConsumer.receiveMessage(line.substring(beginIndex));
-							} else {
-								logger.warn("Line {} of {} does not contain '{' character, we are expecting JSON... skipped line.", lineNum, fileName);
-							}
+			logger.info("Loading {}", fileName);
+			long lineNum = -1;
+			try {
+				final InputStream in;
+				if (fileName.endsWith(".gz")) {
+					in = new GZIPInputStream(new FileInputStream(file));
+				} else {
+					in = new FileInputStream(file);
+				}
+				try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in))) {
+					String line;
+					lineNum = 0;
+					while ((line = bufferedReader.readLine()) != null) {
+						lineNum++;
+						final int beginIndex = line.indexOf("{");
+						if (beginIndex != -1) {
+							traceabilityStreamConsumer.receiveMessage(line.substring(beginIndex));
+						} else {
+							logger.warn("Line {} of {} does not contain '{' character, we are expecting JSON... skipped line.", lineNum, fileName);
 						}
 					}
-					logger.info("Successfully loaded {}, {} lines", fileName, lineNum);
-					completelyLoaded.add(fileName);
-				} catch (IOException e) {
-					logger.error("Failed to load log file '{}'.", fileName, e);
-					partiallyLoaded.add(fileName);
-				} catch (NullPointerException | JSONException e) {
-					throw new LogLoaderException(String.format("Failed to load all of log file '%s', problem with line %s .", fileName, lineNum), e);
 				}
+				logger.info("Successfully loaded {}, {} lines", fileName, lineNum);
+				completelyLoaded.add(fileName);
+			} catch (IOException e) {
+				logger.error("Failed to load log file '{}'.", fileName, e);
+				partiallyLoaded.add(fileName);
+			} catch (NullPointerException | JSONException e) {
+				throw new LogLoaderException(String.format("Failed to load all of log file '%s', problem with line %s .", fileName, lineNum), e);
 			}
 		}
 		if (partiallyLoaded.isEmpty()) {
@@ -72,9 +70,13 @@ public class LogLoader {
 		}
 	}
 
-	private List<File> sortFiles(File[] files) {
+	private List<File> filterAndSortFiles(File[] files) {
 		final List<File> filesToLoad = new ArrayList<>();
-		Collections.addAll(filesToLoad, files);
+		for (File file : files) {
+			if (file.isFile() && file.getName().startsWith("snomed-traceability")) {
+				filesToLoad.add(file);
+			}
+		}
 		Collections.sort(filesToLoad, new Comparator<File>() {
 			@Override
 			public int compare(File a, File b) {
@@ -85,7 +87,7 @@ public class LogLoader {
 			final File file = filesToLoad.get(0);
 			if (file.getName().equals("snomed-traceability.log")) {
 				// move to end
-				filesToLoad.remove(file);
+				filesToLoad.remove(0);
 				filesToLoad.add(file);
 			}
 		}
