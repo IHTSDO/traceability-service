@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -25,7 +26,9 @@ public class LogLoader {
 	public void loadLogs(File loadLogsDir) throws LogLoaderException {
 		final List<String> partiallyLoaded = new ArrayList<>();
 		final List<String> completelyLoaded = new ArrayList<>();
-		for (File file : loadLogsDir.listFiles()) {
+		final File[] files = loadLogsDir.listFiles();
+		final List<File> filesToLoad = sortFiles(files);
+		for (File file : filesToLoad) {
 			final String fileName = file.getName();
 			if (file.isFile() && fileName.startsWith("snomed-traceability")) {
 				logger.info("Loading {}", fileName);
@@ -64,6 +67,20 @@ public class LogLoader {
 		} else {
 			logger.error("Some log files failed to load. Partially loaded: {}. Completely loaded: {}", partiallyLoaded, completelyLoaded);
 		}
+	}
+
+	private List<File> sortFiles(File[] files) {
+		final List<File> filesToLoad = new ArrayList<>();
+		Collections.addAll(filesToLoad, files);
+		if (filesToLoad.size() > 1) {
+			final File file = filesToLoad.get(0);
+			if (file.getName().equals("snomed-traceability.log")) {
+				// move to end
+				filesToLoad.remove(file);
+				filesToLoad.add(file);
+			}
+		}
+		return filesToLoad;
 	}
 
 }
