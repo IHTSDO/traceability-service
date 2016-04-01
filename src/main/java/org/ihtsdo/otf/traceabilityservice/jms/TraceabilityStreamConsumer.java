@@ -71,7 +71,8 @@ public class TraceabilityStreamConsumer {
 			activity.setMergeSourceBranch(mergeSourceBranch);
 		}
 
-		boolean anyNonInferredChanges = false;
+		boolean manualChangeFound = false;
+		boolean relationshipDeletion = false;
 		Map<String, Map<String, Object>> conceptChanges = (Map<String, Map<String, Object>>) traceabilityEntry.get("changes");
 		if (conceptChanges != null) {
 			for (String conceptId : conceptChanges.keySet()) {
@@ -87,8 +88,17 @@ public class TraceabilityStreamConsumer {
 					final String componentId = componentChangeMap.get("componentId");
 					final String changeTypeString = componentChangeMap.get("type");
 					final ComponentChangeType componentChangeType = ComponentChangeType.valueOf(changeTypeString);
-					if (!anyNonInferredChanges) {
-						anyNonInferredChanges = componentType != ComponentType.RELATIONSHIP || !"INFERRED_RELATIONSHIP".equals(relationshipCharacteristicTypes.get(componentId));
+					if (!manualChangeFound) {
+						if (componentType != ComponentType.RELATIONSHIP) {
+							manualChangeFound = true;
+						} else {
+							final String charType = relationshipCharacteristicTypes.get(componentId);
+							if(charType != null && !"INFERRED_RELATIONSHIP".equals(charType)) {
+								manualChangeFound = true;
+							} else if (componentChangeType == ComponentChangeType.DELETE) {
+								relationshipDeletion = true;
+							}
+						}
 					}
 					conceptChange.addComponentChange(new ComponentChange(componentType, componentId, componentChangeType));
 				}
@@ -96,7 +106,7 @@ public class TraceabilityStreamConsumer {
 			}
 		}
 		if (activityType == null) {
-			activityType = anyNonInferredChanges ? ActivityType.CONTENT_CHANGE : ActivityType.CLASSIFICATION_SAVE;
+			activityType = !manualChangeFound && commitComment.equals("Classified ontology.") ? ActivityType.CLASSIFICATION_SAVE : ActivityType.CONTENT_CHANGE;
 		}
 		activity.setActivityType(activityType);
 

@@ -70,6 +70,39 @@ public class ApplicationIntegrationTest {
 	}
 
 	@Test
+	public void consumeClassificationDelAndCreateTest() throws IOException, InterruptedException {
+		final String resource = "traceability-classif-rel-del-create.txt";
+
+		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
+
+		Assert.assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		Assert.assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
+	}
+
+	@Test
+	public void consumeClassificationRelationshipDeletionOnlyTest() throws IOException, InterruptedException {
+		final String resource = "traceability-classif-rel-del-only.txt";
+
+		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
+
+		Assert.assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		Assert.assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
+	}
+
+	@Test
+	public void consumeManualChangeRelationshipDeletionOnlyTest() throws IOException, InterruptedException {
+		final String resource = "traceability-manual-rel-del-only.txt";
+
+		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
+
+		Assert.assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+	}
+
+	@Test
 	public void consumeConceptUpdateTest() throws IOException, InterruptedException {
 		final String resource = "traceability-example-update.txt";
 
