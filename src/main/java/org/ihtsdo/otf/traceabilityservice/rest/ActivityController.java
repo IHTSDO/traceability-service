@@ -9,10 +9,8 @@ import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 
 @RestController
 @RequestMapping(value = "/activities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,7 +39,7 @@ public class ActivityController {
 		if (!Strings.isNullOrEmpty(onBranch)) {
 			branch = branchRepository.findByBranchPath(onBranch);
 			if (branch == null) {
-				throw new HttpServerErrorException(HttpStatus.NOT_FOUND, "Branch not found '" + onBranch + "'");
+				throw new BranchNotFoundException();
 			}
 		}
 
