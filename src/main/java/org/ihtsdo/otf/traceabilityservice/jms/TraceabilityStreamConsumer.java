@@ -72,7 +72,6 @@ public class TraceabilityStreamConsumer {
 		}
 
 		boolean manualChangeFound = false;
-		boolean relationshipDeletion = false;
 		Map<String, Map<String, Object>> conceptChanges = (Map<String, Map<String, Object>>) traceabilityEntry.get("changes");
 		if (conceptChanges != null) {
 			for (String conceptId : conceptChanges.keySet()) {
@@ -80,7 +79,10 @@ public class TraceabilityStreamConsumer {
 				final ConceptChange conceptChange = new ConceptChange(Long.parseLong(conceptId));
 
 				Map<String, Object> conceptSnapshot = (Map<String, Object>) conceptChangeMap.get("concept");
-				Map<String, String> relationshipCharacteristicTypes = getRelationshipCharacteristicTypes(conceptSnapshot);
+				Map<String, String> relationshipCharacteristicTypes = null;
+				if (conceptSnapshot != null) {
+					relationshipCharacteristicTypes = getRelationshipCharacteristicTypes(conceptSnapshot);
+				}
 				List<Map<String, String>> componentChangeMaps = (List<Map<String, String>>) conceptChangeMap.get("changes");
 				for (Map<String, String> componentChangeMap : componentChangeMaps) {
 					final String componentTypeString = componentChangeMap.get("componentType");
@@ -92,11 +94,11 @@ public class TraceabilityStreamConsumer {
 						if (componentType != ComponentType.RELATIONSHIP) {
 							manualChangeFound = true;
 						} else {
-							final String charType = relationshipCharacteristicTypes.get(componentId);
-							if(charType != null && !"INFERRED_RELATIONSHIP".equals(charType)) {
-								manualChangeFound = true;
-							} else if (componentChangeType == ComponentChangeType.DELETE) {
-								relationshipDeletion = true;
+							if (relationshipCharacteristicTypes != null) {
+								final String charType = relationshipCharacteristicTypes.get(componentId);
+								if (charType != null && !"INFERRED_RELATIONSHIP".equals(charType)) {
+									manualChangeFound = true;
+								}
 							}
 						}
 					}

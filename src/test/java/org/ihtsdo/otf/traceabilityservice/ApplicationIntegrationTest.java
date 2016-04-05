@@ -125,6 +125,28 @@ public class ApplicationIntegrationTest {
 	}
 
 	@Test
+	public void consumeConceptDeleteTest() throws IOException, InterruptedException {
+		final String resource = "traceability-concept-deletion.txt";
+
+		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
+
+		Assert.assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		Assert.assertEquals("snowowl", activity.getUser().getUsername());
+		Assert.assertEquals("MAIN/CONREQEXT/CONREQEXT-374", activity.getBranch().getBranchPath());
+		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
+		Assert.assertEquals(1, conceptChanges.size());
+		final ConceptChange conceptChange = conceptChanges.iterator().next();
+		Assert.assertEquals("715891009", conceptChange.getConceptId().toString());
+		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
+		Assert.assertEquals(7, componentChanges.size());
+		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.CONCEPT, "715891009", ComponentChangeType.DELETE)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.DESCRIPTION, "3302620017", ComponentChangeType.DELETE)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.RELATIONSHIP, "6546557027", ComponentChangeType.DELETE)));
+	}
+
+	@Test
 	public void consumeBranchRebaseTest() throws IOException, InterruptedException {
 		final String resource = "traceability-branch-rebase.txt";
 
