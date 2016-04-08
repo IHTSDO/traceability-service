@@ -19,10 +19,7 @@ import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
@@ -207,22 +204,29 @@ public class ApplicationIntegrationTest {
 		final Page<Activity> activities = activityRepository.findOnBranch(branch, getPageRequestMax());
 		int inferredRelationshipChanges = 0;
 		int statedRelationshipChanges = 0;
+		Set<Long> conceptStatedChanges = new HashSet<>();
+		Set<Long> conceptInferredChanges = new HashSet<>();
 		for (Activity activity : activities.getContent()) {
 			for (ConceptChange conceptChange : activity.getConceptChanges()) {
 				for (ComponentChange componentChange : conceptChange.getComponentChanges()) {
 					if (componentChange.getComponentType() == ComponentType.RELATIONSHIP) {
 						if (componentChange.getComponentSubType() == ComponentSubType.INFERRED_RELATIONSHIP) {
 							inferredRelationshipChanges++;
+							conceptInferredChanges.add(conceptChange.getConceptId());
 						} else {
 							statedRelationshipChanges++;
+							conceptStatedChanges.add(conceptChange.getConceptId());
 						}
 					}
 				}
 			}
 		}
 
-		Assert.assertEquals(1167, inferredRelationshipChanges);
 		Assert.assertEquals(499, statedRelationshipChanges);
+		Assert.assertEquals(1167, inferredRelationshipChanges);
+		Assert.assertEquals(458, conceptStatedChanges.size());
+		conceptInferredChanges.removeAll(conceptStatedChanges);
+		Assert.assertEquals(658, conceptInferredChanges.size());
 	}
 
 	private PageRequest getPageRequestMax() {
