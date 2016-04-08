@@ -24,23 +24,23 @@ public class ComponentChange {
 	private ComponentType componentType;
 
 	@Enumerated
+	private ComponentSubType componentSubType;
+
+	@Enumerated
 	private ComponentChangeType changeType;
 
 	public ComponentChange() {
 	}
 
-	public ComponentChange(ComponentType componentType, String componentId, ComponentChangeType changeType) {
-		this.componentType = componentType;
+	public ComponentChange(String componentId, ComponentChangeType changeType, ComponentType componentType, ComponentSubType componentSubType) {
 		this.componentId = componentId;
 		this.changeType = changeType;
+		this.componentType = componentType;
+		this.componentSubType = componentSubType;
 	}
 
 	public void setConceptChange(ConceptChange conceptChange) {
 		this.conceptChange = conceptChange;
-	}
-
-	public ComponentType getComponentType() {
-		return componentType;
 	}
 
 	public String getComponentId() {
@@ -51,6 +51,14 @@ public class ComponentChange {
 		return changeType;
 	}
 
+	public ComponentType getComponentType() {
+		return componentType;
+	}
+
+	public ComponentSubType getComponentSubType() {
+		return componentSubType;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -58,16 +66,18 @@ public class ComponentChange {
 
 		ComponentChange that = (ComponentChange) o;
 
-		if (componentType != that.componentType) return false;
 		if (componentId != null ? !componentId.equals(that.componentId) : that.componentId != null) return false;
+		if (componentType != that.componentType) return false;
+		if (componentSubType != that.componentSubType) return false;
 		return changeType == that.changeType;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = componentType != null ? componentType.hashCode() : 0;
-		result = 31 * result + (componentId != null ? componentId.hashCode() : 0);
+		int result = componentId != null ? componentId.hashCode() : 0;
+		result = 31 * result + (componentType != null ? componentType.hashCode() : 0);
+		result = 31 * result + (componentSubType != null ? componentSubType.hashCode() : 0);
 		result = 31 * result + (changeType != null ? changeType.hashCode() : 0);
 		return result;
 	}

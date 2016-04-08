@@ -1,6 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice.setup;
 
-import org.ihtsdo.otf.traceabilityservice.jms.TraceabilityStreamConsumer;
+import org.ihtsdo.otf.traceabilityservice.service.TraceabilityStreamConsumer;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -12,6 +12,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
@@ -64,9 +66,9 @@ public class ApplicationIntegrationTest {
 		Assert.assertEquals("426560005", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
 		Assert.assertEquals(3, componentChanges.size());
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.RELATIONSHIP, "6552672027", ComponentChangeType.CREATE)));
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.RELATIONSHIP, "3207822025", ComponentChangeType.INACTIVATE)));
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.RELATIONSHIP, "3198463025", ComponentChangeType.INACTIVATE)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("6552672027", ComponentChangeType.CREATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("3207822025", ComponentChangeType.INACTIVATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("3198463025", ComponentChangeType.INACTIVATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
 	}
 
 	@Test
@@ -119,9 +121,9 @@ public class ApplicationIntegrationTest {
 		Assert.assertEquals("416390003", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
 		Assert.assertEquals(3, componentChanges.size());
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.DESCRIPTION, "2546600013", ComponentChangeType.UPDATE)));
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.DESCRIPTION, "3305226012", ComponentChangeType.CREATE)));
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.DESCRIPTION, "3305227015", ComponentChangeType.CREATE)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("2546600013", ComponentChangeType.UPDATE, ComponentType.DESCRIPTION, ComponentSubType.FSN_DESCRIPTION)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("3305226012", ComponentChangeType.CREATE, ComponentType.DESCRIPTION, ComponentSubType.SYNONYM_DESCRIPTION)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("3305227015", ComponentChangeType.CREATE, ComponentType.DESCRIPTION, ComponentSubType.FSN_DESCRIPTION)));
 	}
 
 	@Test
@@ -141,9 +143,9 @@ public class ApplicationIntegrationTest {
 		Assert.assertEquals("715891009", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
 		Assert.assertEquals(7, componentChanges.size());
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.CONCEPT, "715891009", ComponentChangeType.DELETE)));
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.DESCRIPTION, "3302620017", ComponentChangeType.DELETE)));
-		Assert.assertTrue(componentChanges.contains(new ComponentChange(ComponentType.RELATIONSHIP, "6546557027", ComponentChangeType.DELETE)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("715891009", ComponentChangeType.DELETE, ComponentType.CONCEPT, null)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("3302620017", ComponentChangeType.DELETE, ComponentType.DESCRIPTION, null)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("6546557027", ComponentChangeType.DELETE, ComponentType.RELATIONSHIP, null)));
 	}
 
 	@Test
@@ -194,7 +196,37 @@ public class ApplicationIntegrationTest {
 		final Activity activity = activitiesAtProjectAfterPromotion.get(0);
 		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		Assert.assertEquals("716755000", activity.getConceptChanges().iterator().next().getConceptId().toString());
+	}
 
+	@Test
+	public void consumeLargeInactivationTest() throws IOException, InterruptedException {
+
+		streamTestDataAndRetrievePersistedActivities("traceability-large-inactivation.txt");
+
+		final Branch branch = branchRepository.findByBranchPath("MAIN/WRPSUL/WRPSUL-89");
+		final Page<Activity> activities = activityRepository.findOnBranch(branch, getPageRequestMax());
+		int inferredRelationshipChanges = 0;
+		int statedRelationshipChanges = 0;
+		for (Activity activity : activities.getContent()) {
+			for (ConceptChange conceptChange : activity.getConceptChanges()) {
+				for (ComponentChange componentChange : conceptChange.getComponentChanges()) {
+					if (componentChange.getComponentType() == ComponentType.RELATIONSHIP) {
+						if (componentChange.getComponentSubType() == ComponentSubType.INFERRED_RELATIONSHIP) {
+							inferredRelationshipChanges++;
+						} else {
+							statedRelationshipChanges++;
+						}
+					}
+				}
+			}
+		}
+
+		Assert.assertEquals(1167, inferredRelationshipChanges);
+		Assert.assertEquals(499, statedRelationshipChanges);
+	}
+
+	private PageRequest getPageRequestMax() {
+		return new PageRequest(0, Integer.MAX_VALUE);
 	}
 
 	private ArrayList<Activity> streamTestDataAndRetrievePersistedActivities(String resource) throws IOException, InterruptedException {
