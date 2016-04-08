@@ -58,4 +58,9 @@ public class ActivityController {
 		}
 	}
 
+	@RequestMapping("/{activityId}")
+	public Activity getActivity(@PathVariable String activityId) {
+		return activityRepository.findOne(ControllerHelper.parseLong(activityId));
+	}
+
 }
