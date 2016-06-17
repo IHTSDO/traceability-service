@@ -14,11 +14,15 @@ import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.StreamUtils;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -227,6 +231,18 @@ public class ApplicationIntegrationTest {
 		Assert.assertEquals(458, conceptStatedChanges.size());
 		conceptInferredChanges.removeAll(conceptStatedChanges);
 		Assert.assertEquals(658, conceptInferredChanges.size());
+	}
+
+	@Test
+	public void testSerialisedForm() throws IOException, InterruptedException {
+		final String resource = "traceability-concept-deletion.txt";
+		streamTestDataAndRetrievePersistedActivities(resource);
+
+		final HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://127.0.0.1:8085/activities").openConnection();
+		Assert.assertEquals(200, urlConnection.getResponseCode());
+		try (final InputStream inputStream = urlConnection.getInputStream()) {
+			Assert.assertTrue(StreamUtils.copyToString(inputStream, Charset.forName("UTF-8")).contains("\"conceptId\":\"715891009\""));
+		}
 	}
 
 	private PageRequest getPageRequestMax() {

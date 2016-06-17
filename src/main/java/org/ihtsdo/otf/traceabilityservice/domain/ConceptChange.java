@@ -2,6 +2,8 @@ package org.ihtsdo.otf.traceabilityservice.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +15,7 @@ import javax.persistence.*;
 				@Index(columnList = "conceptId", name = "concept_id_index")
 		}
 )
+@JsonPropertyOrder({"conceptId", "componentChanges"})
 public class ConceptChange {
 
 	@Id
@@ -57,8 +60,14 @@ public class ConceptChange {
 		return activity;
 	}
 
+	@JsonIgnore
 	public Long getConceptId() {
 		return conceptId;
+	}
+
+	@JsonProperty("conceptId")
+	public String getConceptIdAsString() {
+		return conceptId.toString();
 	}
 
 	public Set<ComponentChange> getComponentChanges() {
