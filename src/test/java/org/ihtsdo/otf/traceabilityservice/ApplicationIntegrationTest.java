@@ -245,6 +245,16 @@ public class ApplicationIntegrationTest {
 		}
 	}
 
+	@Test
+	public void testFindByConceptId() throws IOException, InterruptedException {
+		final String resource = "traceability-example-update.txt";
+
+		streamTestDataAndRetrievePersistedActivities(resource);
+
+		final Page<Activity> activities = activityRepository.findByConceptId(416390003L, new PageRequest(0, 10));
+		Assert.assertEquals(1, activities.getNumberOfElements());
+	}
+
 	private PageRequest getPageRequestMax() {
 		return new PageRequest(0, Integer.MAX_VALUE);
 	}

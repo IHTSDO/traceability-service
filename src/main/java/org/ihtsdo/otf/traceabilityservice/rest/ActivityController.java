@@ -27,6 +27,7 @@ public class ActivityController {
 	public Page<Activity> getActivities(
 			@RequestParam(required = false) String onBranch,
 			@RequestParam(required = false) String activityType,
+			@RequestParam(required = false) Long conceptId,
 			@RequestParam(required = false, defaultValue = "0") int page,
 			@RequestParam(required = false, defaultValue = "1000") int size) {
 
@@ -43,7 +44,9 @@ public class ActivityController {
 			}
 		}
 
-		if (branch != null) {
+		if (conceptId != null) {
+			return activityRepository.findByConceptId(conceptId, new PageRequest(page, size));
+		} else if (branch != null) {
 			if (activityTypeEnum != null) {
 				return activityRepository.findOnBranch(branch, activityTypeEnum, new PageRequest(page, size));
 			} else {

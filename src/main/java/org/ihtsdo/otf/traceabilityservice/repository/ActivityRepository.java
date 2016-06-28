@@ -36,6 +36,13 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 	List<Activity> findByHighestPromotedBranchOrderByCommitDate(Branch branch);
 
+	@Query("select a " +
+			"from Activity a " +
+			"join a.conceptChanges changes " +
+			"where changes.conceptId = ?1 " +
+			"order by a.commitDate")
+	Page<Activity> findByConceptId(Long conceptId, Pageable pageRequest);
+
 	/**
 	 * This helps us track where an Activity has been promoted to.
 	 */
@@ -46,5 +53,4 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"and activityType <> org.ihtsdo.otf.traceabilityservice.domain.ActivityType.REBASE " +
 			"and activityType <> org.ihtsdo.otf.traceabilityservice.domain.ActivityType.PROMOTION")
 	void setHighestPromotedBranchWhereBranchEquals(Branch newHighestPromotedBranch, Branch oldHighestPromotedBranch);
-
 }
