@@ -19,7 +19,7 @@ import java.util.TimeZone;
 @EnableJms
 public class Application {
 
-	public static final String TRACEABILITY_QUEUE_NAME = "traceability";
+	public static final String TRACEABILITY_QUEUE_SUFFIX = "traceability";
 
 	private static ConfigurableApplicationContext context;
 

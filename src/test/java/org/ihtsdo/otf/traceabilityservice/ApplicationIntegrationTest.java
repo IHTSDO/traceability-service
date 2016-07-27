@@ -33,6 +33,7 @@ public class ApplicationIntegrationTest {
 	private ConfigurableApplicationContext context;
 	private ActivityRepository activityRepository;
 	private BranchRepository branchRepository;
+	private String destinationName;
 
 	@Before
 	public void setup() throws LogLoaderException {
@@ -42,6 +43,7 @@ public class ApplicationIntegrationTest {
 		context = Application.getContext();
 		activityRepository = context.getBean(ActivityRepository.class);
 		branchRepository = context.getBean(BranchRepository.class);
+		destinationName = context.getBeanFactory().resolveEmbeddedValue("${platform.name}." + Application.TRACEABILITY_QUEUE_SUFFIX);
 	}
 
 	@After
@@ -301,7 +303,7 @@ public class ApplicationIntegrationTest {
 			}
 		};
 		JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-		jmsTemplate.send(Application.TRACEABILITY_QUEUE_NAME, messageCreator);
+		jmsTemplate.send(destinationName, messageCreator);
 	}
 
 }

@@ -36,9 +36,8 @@ public class TraceabilityStreamConsumer {
 
 	final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@JmsListener(destination = Application.TRACEABILITY_QUEUE_NAME)
+	@JmsListener(destination = "${platform.name}." + Application.TRACEABILITY_QUEUE_SUFFIX)
 	@Transactional
-	@SuppressWarnings(value = "unused")
 	public void receiveMessage(String message) {
 		final Map<String, Object> traceabilityEntry = new JsonJsonParser().parseMap(message);
 		String username = (String) traceabilityEntry.get("userId");
