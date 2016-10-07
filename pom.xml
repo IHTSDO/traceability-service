@@ -15,6 +15,8 @@
 
 	<properties>
 		<java.version>1.7</java.version>
+                <execFinalName>${project.build.finalName}.jar</execFinalName>
+                <packageName>${project.artifactId}</packageName>
 	</properties>
 
 	<dependencies>
@@ -68,16 +70,63 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>
-
+        </build>
+        <profiles>
+		<profile>
+			<id>deb</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.vafer</groupId>
+						<artifactId>jdeb</artifactId>
+						<version>1.1.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jdeb</goal>
+								</goals>
+								<configuration>
+									<deb>${project.build.directory}/${packageName}-${project.version}-all.deb</deb>
+									<controlDir>${basedir}/src/deb/control</controlDir>
+									<snapshotExpand>true</snapshotExpand>
+									<snapshotEnv>BUILD_NUMBER</snapshotEnv>
+									<verbose>true</verbose>
+									<classifier>all</classifier>
+									<signPackage>false</signPackage>
+									<dataSet>
+										<data>
+											<src>${project.build.directory}/${execFinalName}</src>
+											<dst>app.jar</dst>
+											<type>file</type>
+											<mapper>
+												<type>perm</type>
+												<prefix>/opt/${packageName}/</prefix>
+											</mapper>
+										</data>
+										<data>
+											<src>${basedir}/src/deb/supervisor.conf</src>
+											<dst>/etc/supervisor/conf.d/${packageName}.conf</dst>
+											<type>file</type>
+											<conffile>true</conffile>
+										</data>
+									</dataSet>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<distributionManagement>
 		<repository>
-			<id>ihtsdo-public-nexus</id>
+			<id>ihtsdo-public-nexus-releases</id>
 			<name>IHTSDO Public Nexus Releases</name>
 			<url>https://maven.ihtsdotools.org/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>ihtsdo-public-nexus</id>
+			<id>ihtsdo-public-nexus-snapshots</id>
 			<name>IHTSDO Public Nexus Snapshots</name>
 			<url>https://maven.ihtsdotools.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
