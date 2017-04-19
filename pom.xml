@@ -14,9 +14,9 @@
 	</parent>
 
 	<properties>
-		<java.version>1.7</java.version>
-                <execFinalName>${project.build.finalName}.jar</execFinalName>
-                <packageName>${project.artifactId}</packageName>
+		<java.version>1.8</java.version>
+		<execFinalName>${project.build.finalName}.jar</execFinalName>
+		<packageName>${project.artifactId}</packageName>
 	</properties>
 
 	<dependencies>
@@ -37,15 +37,6 @@
 			<artifactId>activemq-broker</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>15.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160212</version>
@@ -55,10 +46,15 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.36</version>
 		</dependency>
+		<!-- Test dependencies -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

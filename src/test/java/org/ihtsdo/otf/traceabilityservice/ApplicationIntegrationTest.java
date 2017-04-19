@@ -1,8 +1,5 @@
 package org.ihtsdo.otf.traceabilityservice;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
@@ -14,25 +11,25 @@ import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.util.StreamUtils;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StreamUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ApplicationIntegrationTest {
 
 	private ConfigurableApplicationContext context;
 	private ActivityRepository activityRepository;
 	private BranchRepository branchRepository;
+	private JmsTemplate jmsTemplate;
 	private String destinationName;
 
 	@Before
@@ -43,6 +40,7 @@ public class ApplicationIntegrationTest {
 		context = Application.getContext();
 		activityRepository = context.getBean(ActivityRepository.class);
 		branchRepository = context.getBean(BranchRepository.class);
+		jmsTemplate = context.getBean(JmsTemplate.class);
 		destinationName = context.getBeanFactory().resolveEmbeddedValue("${platform.name}." + Application.TRACEABILITY_QUEUE_SUFFIX);
 	}
 
@@ -281,28 +279,17 @@ public class ApplicationIntegrationTest {
 		}
 
 		final ArrayList<Activity> activities = new ArrayList<>();
-		Iterables.addAll(activities, activityRepository.findAll());
+		activityRepository.findAll().forEach(activities::add);
 		Assert.assertNotNull(activities);
 		return activities;
 	}
 
 	private Map<Long, ConceptChange> getConceptChangeMap(Set<ConceptChange> conceptChanges) {
-		return Maps.uniqueIndex(conceptChanges, new Function<ConceptChange, Long>() {
-			@Override
-			public Long apply(ConceptChange conceptChange) {
-				return conceptChange.getConceptId();
-			}
-		});
+		return conceptChanges.stream().collect(Collectors.toMap(ConceptChange::getConceptId, Function.identity()));
 	}
 
 	private void sendMessage(final String message) {
-		MessageCreator messageCreator = new MessageCreator() {
-			@Override
-			public Message createMessage(Session session) throws JMSException {
-				return session.createTextMessage(message);
-			}
-		};
-		JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+		MessageCreator messageCreator = session -> session.createTextMessage(message);
 		jmsTemplate.send(destinationName, messageCreator);
 	}
 

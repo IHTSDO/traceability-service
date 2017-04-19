@@ -1,7 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice.setup;
 
 import org.ihtsdo.otf.traceabilityservice.service.TraceabilityStreamConsumer;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class LogLoader {
 			} catch (IOException e) {
 				logger.error("Failed to load log file '{}'.", fileName, e);
 				partiallyLoaded.add(fileName);
-			} catch (NullPointerException | JSONException e) {
+			} catch (NullPointerException e) {
 				throw new LogLoaderException(String.format("Failed to load all of log file '%s', problem with line %s .", fileName, lineNum), e);
 			}
 		}

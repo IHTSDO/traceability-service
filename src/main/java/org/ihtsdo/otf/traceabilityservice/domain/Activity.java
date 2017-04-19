@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(
+		name = "activity",
 		indexes = {
 			@Index(columnList = "branch", name = "branch_index"),
 			@Index(columnList = "highest_promoted_branch", name = "highest_branch_index"),
@@ -21,18 +22,21 @@ public class Activity {
 	private Long id;
 
 	@ManyToOne
+	@JoinColumn(name = "user")
 	private User user;
 
 	@Enumerated
 	private ActivityType activityType;
 
 	@ManyToOne
+	@JoinColumn(name = "branch")
 	private Branch branch;
 
 	@ManyToOne
 	private Branch mergeSourceBranch;
 
 	@ManyToOne
+	@JoinColumn(name = "highest_promoted_branch")
 	private Branch highestPromotedBranch;
 
 	private String commitComment;

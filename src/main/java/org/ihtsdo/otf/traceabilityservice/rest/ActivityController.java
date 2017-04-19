@@ -1,6 +1,5 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
-import com.google.common.base.Strings;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.Branch;
@@ -26,18 +25,13 @@ public class ActivityController {
 	@ResponseBody
 	public Page<Activity> getActivities(
 			@RequestParam(required = false) String onBranch,
-			@RequestParam(required = false) String activityType,
+			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) Long conceptId,
 			@RequestParam(required = false, defaultValue = "0") int page,
 			@RequestParam(required = false, defaultValue = "1000") int size) {
 
-		ActivityType activityTypeEnum = null;
-		if (!Strings.isNullOrEmpty(activityType)) {
-			activityTypeEnum = ActivityType.valueOf(activityType.toUpperCase());
-		}
-
 		Branch branch = null;
-		if (!Strings.isNullOrEmpty(onBranch)) {
+		if (onBranch != null) {
 			branch = branchRepository.findByBranchPath(onBranch);
 			if (branch == null) {
 				throw new BranchNotFoundException();
@@ -47,14 +41,14 @@ public class ActivityController {
 		if (conceptId != null) {
 			return activityRepository.findByConceptId(conceptId, new PageRequest(page, size));
 		} else if (branch != null) {
-			if (activityTypeEnum != null) {
-				return activityRepository.findOnBranch(branch, activityTypeEnum, new PageRequest(page, size));
+			if (activityType != null) {
+				return activityRepository.findOnBranch(branch, activityType, new PageRequest(page, size));
 			} else {
 				return activityRepository.findOnBranch(branch, new PageRequest(page, size));
 			}
 		} else {
-			if (activityTypeEnum != null) {
-				return activityRepository.findAll(activityTypeEnum, new PageRequest(page, size));
+			if (activityType != null) {
+				return activityRepository.findAll(activityType, new PageRequest(page, size));
 			} else {
 				return activityRepository.findAll(new PageRequest(page, size));
 			}
