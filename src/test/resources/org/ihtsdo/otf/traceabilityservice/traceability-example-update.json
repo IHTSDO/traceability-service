@@ -267,6 +267,42 @@
                         "modifier": "EXISTENTIAL"
                     }
                 ],
+                "additionalAxioms": [
+                    {
+                        "moduleId": "900000000000207008",
+                        "active": true,
+                        "released": false,
+                        "axiomId": "41241d85-62be-437b-931a-eb036b126cc1",
+                        "definitionStatus": "PRIMITIVE",
+                        "relationships": [
+                            {
+                                "active": true,
+                                "released": false,
+                                "type": {
+                                    "conceptId": "116680003",
+                                    "fsn": "Is a (attribute)"
+                                },
+                                "target": {
+                                    "active": false,
+                                    "released": false,
+                                    "conceptId": "73211009"
+                                },
+                                "groupId": 0
+                            },
+                            {
+                                "active": true,
+                                "released": false,
+                                "type": {
+                                    "conceptId": "100106001"
+                                },
+                                "target": {
+                                    "conceptId": "100102001"
+                                },
+                                "groupId": 1
+                            }
+                        ]
+                    }
+                ],
                 "isLeafStated": true,
                 "isLeafInferred": true
             },
@@ -284,6 +320,11 @@
                 {
                     "componentType": "Description",
                     "componentId": "3305227015",
+                    "type": "CREATE"
+                },
+                {
+                    "componentType": "OwlAxiom",
+                    "componentId": "41241d85-62be-437b-931a-eb036b126cc1",
                     "type": "CREATE"
                 }
             ]

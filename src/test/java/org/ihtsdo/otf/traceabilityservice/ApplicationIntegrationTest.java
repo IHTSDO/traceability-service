@@ -121,10 +121,11 @@ public class ApplicationIntegrationTest {
 		final ConceptChange conceptChange = conceptChanges.iterator().next();
 		Assert.assertEquals("416390003", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
-		Assert.assertEquals(3, componentChanges.size());
+		Assert.assertEquals(4, componentChanges.size());
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("2546600013", ComponentChangeType.UPDATE, ComponentType.DESCRIPTION, ComponentSubType.FSN_DESCRIPTION)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3305226012", ComponentChangeType.CREATE, ComponentType.DESCRIPTION, ComponentSubType.SYNONYM_DESCRIPTION)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3305227015", ComponentChangeType.CREATE, ComponentType.DESCRIPTION, ComponentSubType.FSN_DESCRIPTION)));
+		Assert.assertTrue(componentChanges.contains(new ComponentChange("41241d85-62be-437b-931a-eb036b126cc1", ComponentChangeType.CREATE, ComponentType.OWLAXIOM, null)));
 	}
 
 	@Test
