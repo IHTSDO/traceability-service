@@ -11,12 +11,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.EnableJms;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.io.File;
 import java.util.TimeZone;
 
+import static com.google.common.base.Predicates.not;
+import static springfox.documentation.builders.PathSelectors.regex;
+
 @SpringBootApplication
 @EnableJms
+@EnableSwagger2
 public class Application {
 
 	public static final String TRACEABILITY_QUEUE_SUFFIX = "traceability";
@@ -50,6 +58,16 @@ public class Application {
 		objectMapper.setDateFormat(df);
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		return objectMapper;
+	}
+
+	@Bean
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2)
+						.select()
+						.apis(RequestHandlerSelectors.any())
+						.paths(not(regex("/")))
+						.paths(not(regex("/error")))
+						.build();
 	}
 
 	protected static ConfigurableApplicationContext getContext() {
