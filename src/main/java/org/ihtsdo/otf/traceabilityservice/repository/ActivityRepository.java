@@ -50,6 +50,12 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"where changes.conceptId = ?1")
 	Page<Activity> findByConceptId(Long conceptId, Pageable pageRequest);
 
+	@Query("select a " +
+			"from Activity a " +
+			"where a.activityType = ?1 " +
+			"and a.commitComment like CONCAT('%',?2,'%')")
+	Page<Activity> findByActivityAndComment(ActivityType activityType, String comment, Pageable page);
+
 	/**
 	 * This helps us track where an Activity has been promoted to.
 	 */

@@ -30,10 +30,12 @@ public class ActivityController {
 	@ResponseBody
 	@ApiOperation(value = "Fetch activities.", notes = "Fetch authoring activities by 'originalBranch' (the branch the activity originated on), " +
 			"'onBranch' (the original branch or highest branch the activity has been promoted to). " +
-			"Filtering by activity type and sorting is also available.")
+			"Filtering by activity type and sorting is also available.\n" +
+			"Note that promotions are recorded against the branch receiving the content.")
 	public Page<Activity> getActivities(
 			@RequestParam(required = false) String originalBranch,
 			@RequestParam(required = false) String onBranch,
+			@RequestParam(required = false) String commitComment,
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) Long conceptId,
 			Pageable page) {
@@ -66,6 +68,18 @@ public class ActivityController {
 				return activityRepository.findAll(page);
 			}
 		}
+	}
+
+	@RequestMapping("/promotions")
+	public Page<Activity> getPromotions(@RequestParam String sourceBranch, Pageable page) {
+		if (page == null) {
+			page = new PageRequest(0, 100, COMMIT_DATE_SORT);
+		}
+		if (page.getSort() == null) {
+			page = new PageRequest(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
+		}
+		getBranchOrThrow(sourceBranch);// Just check branch exists
+		return activityRepository.findByActivityAndComment(ActivityType.PROMOTION, String.format("merge of %s ", sourceBranch), page);
 	}
 
 	private Branch getBranchOrThrow(@RequestParam(required = false) String branch) {
