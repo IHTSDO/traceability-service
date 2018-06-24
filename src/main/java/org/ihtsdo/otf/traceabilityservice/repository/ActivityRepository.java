@@ -16,22 +16,19 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 	@Query("select a " +
 			"from Activity a " +
-			"where a.activityType = ?1 " +
-			"order by a.commitDate")
+			"where a.activityType = ?1")
 	Page<Activity> findAll(ActivityType activityType, Pageable pageRequest);
 
 	@Query("select a " +
 			"from Activity a " +
 			"where a.branch = ?1 " +
-			"or a.highestPromotedBranch = ?1 " +
-			"order by a.commitDate")
+			"or a.highestPromotedBranch = ?1")
 	Page<Activity> findOnBranch(Branch branch, Pageable pageRequest);
 
 	@Query("select a " +
 			"from Activity a " +
 			"where (a.branch = ?1 or a.highestPromotedBranch = ?1) " +
-			"and a.activityType = ?2 " +
-			"order by a.commitDate")
+			"and a.activityType = ?2")
 	Page<Activity> findOnBranch(Branch branch, ActivityType activityType, Pageable pageRequest);
 
 	List<Activity> findByHighestPromotedBranchOrderByCommitDate(Branch branch);
@@ -39,8 +36,7 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 	@Query("select a " +
 			"from Activity a " +
 			"join a.conceptChanges changes " +
-			"where changes.conceptId = ?1 " +
-			"order by a.commitDate")
+			"where changes.conceptId = ?1")
 	Page<Activity> findByConceptId(Long conceptId, Pageable pageRequest);
 
 	/**
