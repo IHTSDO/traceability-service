@@ -21,6 +21,17 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 	@Query("select a " +
 			"from Activity a " +
+			"where a.branch = ?1 ")
+	Page<Activity> findByOriginalBranch(Branch branch, Pageable page);
+
+	@Query("select a " +
+			"from Activity a " +
+			"where a.branch = ?1 " +
+			"and a.activityType = ?2")
+	Page<Activity> findByOriginalBranch(Branch branch, ActivityType activityType, Pageable page);
+
+	@Query("select a " +
+			"from Activity a " +
 			"where a.branch = ?1 " +
 			"or a.highestPromotedBranch = ?1")
 	Page<Activity> findOnBranch(Branch branch, Pageable pageRequest);

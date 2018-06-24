@@ -1,7 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.*;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.Branch;
@@ -29,7 +28,11 @@ public class ActivityController {
 
 	@RequestMapping
 	@ResponseBody
+	@ApiOperation(value = "Fetch activities.", notes = "Fetch authoring activities by 'originalBranch' (the branch the activity originated on), " +
+			"'onBranch' (the original branch or highest branch the activity has been promoted to). " +
+			"Filtering by activity type and sorting is also available.")
 	public Page<Activity> getActivities(
+			@RequestParam(required = false) String originalBranch,
 			@RequestParam(required = false) String onBranch,
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) Long conceptId,
@@ -42,21 +45,19 @@ public class ActivityController {
 			page = new PageRequest(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
 		}
 
-		Branch branch = null;
-		if (onBranch != null) {
-			branch = branchRepository.findByBranchPath(onBranch);
-			if (branch == null) {
-				throw new BranchNotFoundException();
-			}
-		}
-
 		if (conceptId != null) {
 			return activityRepository.findByConceptId(conceptId, page);
-		} else if (branch != null) {
+		} else if (originalBranch != null) {
 			if (activityType != null) {
-				return activityRepository.findOnBranch(branch, activityType, page);
+				return activityRepository.findByOriginalBranch(getBranchOrThrow(originalBranch), activityType, page);
 			} else {
-				return activityRepository.findOnBranch(branch, page);
+				return activityRepository.findByOriginalBranch(getBranchOrThrow(originalBranch), page);
+			}
+		} else if (onBranch != null) {
+			if (activityType != null) {
+				return activityRepository.findOnBranch(getBranchOrThrow(onBranch), activityType, page);
+			} else {
+				return activityRepository.findOnBranch(getBranchOrThrow(onBranch), page);
 			}
 		} else {
 			if (activityType != null) {
@@ -65,6 +66,17 @@ public class ActivityController {
 				return activityRepository.findAll(page);
 			}
 		}
+	}
+
+	private Branch getBranchOrThrow(@RequestParam(required = false) String branch) {
+		Branch branchB = null;
+		if (branch != null) {
+			branchB = branchRepository.findByBranchPath(branch);
+			if (branchB == null) {
+				throw new BranchNotFoundException();
+			}
+		}
+		return branchB;
 	}
 
 	@RequestMapping("/{activityId}")
