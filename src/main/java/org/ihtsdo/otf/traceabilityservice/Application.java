@@ -6,16 +6,23 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import org.ihtsdo.otf.traceabilityservice.setup.LogLoader;
 import org.ihtsdo.otf.traceabilityservice.setup.LogLoaderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerContainerFactory;
+import org.springframework.util.ErrorHandler;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.jms.ConnectionFactory;
 import java.io.File;
 import java.util.TimeZone;
 
@@ -30,6 +37,8 @@ public class Application {
 	public static final String TRACEABILITY_QUEUE_SUFFIX = "traceability";
 
 	private static ConfigurableApplicationContext context;
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static void main(String[] args) throws LogLoaderException {
 
@@ -47,6 +56,14 @@ public class Application {
 		if (loadLogsDir != null) {
 			context.getBean(LogLoader.class).loadLogs(loadLogsDir);
 		}
+	}
+
+	@Bean
+	public JmsListenerContainerFactory<?> jmsListenerContainerFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
+		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+		factory.setErrorHandler(t -> logger.error("Failed to consume message.", t));
+		configurer.configure(factory, connectionFactory);
+		return factory;
 	}
 
 	@Bean

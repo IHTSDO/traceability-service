@@ -25,6 +25,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ApplicationIntegrationTest {
 
@@ -315,6 +317,13 @@ public class ApplicationIntegrationTest {
 
 		final Page<Activity> activities = activityRepository.findByConceptId(416390003L, new PageRequest(0, 10));
 		assertEquals(1, activities.getNumberOfElements());
+	}
+
+	@Test
+	public void testErrorHandling() throws IOException, InterruptedException {
+		streamTestDataAndRetrievePersistedActivities("traceability-invalid-content-message.txt");
+		Iterable<Activity> all = activityRepository.findAll();
+		assertFalse(all.iterator().hasNext());
 	}
 
 	private PageRequest getPageRequestMax() {
