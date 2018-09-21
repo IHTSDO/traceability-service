@@ -74,6 +74,10 @@ public class TraceabilityStreamConsumer {
 		Map<String, Map<String, Object>> conceptChanges = (Map<String, Map<String, Object>>) traceabilityEntry.get("changes");
 		if (conceptChanges != null) {
 			for (String conceptId : conceptChanges.keySet()) {
+				if (!"0".equals(conceptId.substring(conceptId.length() - 2, conceptId.length() - 1))) {
+					// Skip non-concept components at this level
+					continue;
+				}
 				final Map<String, Object> conceptChangeMap = conceptChanges.get(conceptId);
 				final ConceptChange conceptChange = new ConceptChange(Long.parseLong(conceptId));
 

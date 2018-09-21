@@ -24,6 +24,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
+
 public class ApplicationIntegrationTest {
 
 	private ConfigurableApplicationContext context;
@@ -55,18 +57,18 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals("snowowl", activity.getUser().getUsername());
-		Assert.assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
-		Assert.assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
+		assertEquals("snowowl", activity.getUser().getUsername());
+		assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
+		assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
-		Assert.assertEquals(5, conceptChanges.size());
+		assertEquals(5, conceptChanges.size());
 		final Map<Long, ConceptChange> conceptChangeMap = getConceptChangeMap(conceptChanges);
 		final ConceptChange conceptChange = conceptChangeMap.get(426560005L);
-		Assert.assertEquals("426560005", conceptChange.getConceptId().toString());
+		assertEquals("426560005", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
-		Assert.assertEquals(3, componentChanges.size());
+		assertEquals(3, componentChanges.size());
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("6552672027", ComponentChangeType.CREATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3207822025", ComponentChangeType.INACTIVATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3198463025", ComponentChangeType.INACTIVATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
@@ -78,9 +80,9 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
+		assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
 	}
 
 	@Test
@@ -89,9 +91,9 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
+		assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
 	}
 
 	@Test
@@ -100,9 +102,9 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 	}
 
 	@Test
@@ -111,17 +113,17 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals("snowowl", activity.getUser().getUsername());
-		Assert.assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
-		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		assertEquals("snowowl", activity.getUser().getUsername());
+		assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
-		Assert.assertEquals(1, conceptChanges.size());
+		assertEquals(1, conceptChanges.size());
 		final ConceptChange conceptChange = conceptChanges.iterator().next();
-		Assert.assertEquals("416390003", conceptChange.getConceptId().toString());
+		assertEquals("416390003", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
-		Assert.assertEquals(4, componentChanges.size());
+		assertEquals(4, componentChanges.size());
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("2546600013", ComponentChangeType.UPDATE, ComponentType.DESCRIPTION, ComponentSubType.FSN_DESCRIPTION)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3305226012", ComponentChangeType.CREATE, ComponentType.DESCRIPTION, ComponentSubType.SYNONYM_DESCRIPTION)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3305227015", ComponentChangeType.CREATE, ComponentType.DESCRIPTION, ComponentSubType.FSN_DESCRIPTION)));
@@ -134,17 +136,17 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals("snowowl", activity.getUser().getUsername());
-		Assert.assertEquals("MAIN/CONREQEXT/CONREQEXT-374", activity.getBranch().getBranchPath());
-		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		assertEquals("snowowl", activity.getUser().getUsername());
+		assertEquals("MAIN/CONREQEXT/CONREQEXT-374", activity.getBranch().getBranchPath());
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
-		Assert.assertEquals(1, conceptChanges.size());
+		assertEquals(1, conceptChanges.size());
 		final ConceptChange conceptChange = conceptChanges.iterator().next();
-		Assert.assertEquals("715891009", conceptChange.getConceptId().toString());
+		assertEquals("715891009", conceptChange.getConceptId().toString());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
-		Assert.assertEquals(7, componentChanges.size());
+		assertEquals(7, componentChanges.size());
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("715891009", ComponentChangeType.DELETE, ComponentType.CONCEPT, null)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3302620017", ComponentChangeType.DELETE, ComponentType.DESCRIPTION, null)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("6546557027", ComponentChangeType.DELETE, ComponentType.RELATIONSHIP, null)));
@@ -156,14 +158,14 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals("kkewley", activity.getUser().getUsername());
-		Assert.assertEquals("MAIN/CMTFH/CMTFH-6", activity.getBranch().getBranchPath());
-		Assert.assertEquals("MAIN/CMTFH", activity.getMergeSourceBranch().getBranchPath());
-		Assert.assertEquals(ActivityType.REBASE, activity.getActivityType());
+		assertEquals("kkewley", activity.getUser().getUsername());
+		assertEquals("MAIN/CMTFH/CMTFH-6", activity.getBranch().getBranchPath());
+		assertEquals("MAIN/CMTFH", activity.getMergeSourceBranch().getBranchPath());
+		assertEquals(ActivityType.REBASE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
-		Assert.assertEquals(0, conceptChanges.size());
+		assertEquals(0, conceptChanges.size());
 	}
 
 	@Test
@@ -172,14 +174,14 @@ public class ApplicationIntegrationTest {
 
 		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
 
-		Assert.assertEquals(1, activities.size());
+		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		Assert.assertEquals("kkewley", activity.getUser().getUsername());
-		Assert.assertEquals("MAIN/CMTFH", activity.getBranch().getBranchPath());
-		Assert.assertEquals("MAIN/CMTFH/CMTFH-6", activity.getMergeSourceBranch().getBranchPath());
-		Assert.assertEquals(ActivityType.PROMOTION, activity.getActivityType());
+		assertEquals("kkewley", activity.getUser().getUsername());
+		assertEquals("MAIN/CMTFH", activity.getBranch().getBranchPath());
+		assertEquals("MAIN/CMTFH/CMTFH-6", activity.getMergeSourceBranch().getBranchPath());
+		assertEquals(ActivityType.PROMOTION, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
-		Assert.assertEquals(0, conceptChanges.size());
+		assertEquals(0, conceptChanges.size());
 	}
 
 	@Test
@@ -189,15 +191,74 @@ public class ApplicationIntegrationTest {
 
 		final Branch projectBranch = branchRepository.findByBranchPath("MAIN/CMTFH");
 		final List<Activity> activitiesAtProjectBeforePromotion = activityRepository.findByHighestPromotedBranchOrderByCommitDate(projectBranch);
-		Assert.assertEquals(0, activitiesAtProjectBeforePromotion.size());
+		assertEquals(0, activitiesAtProjectBeforePromotion.size());
 
 		streamTestDataAndRetrievePersistedActivities("traceability-branch-promote.txt");
 
 		final List<Activity> activitiesAtProjectAfterPromotion = activityRepository.findByHighestPromotedBranchOrderByCommitDate(projectBranch);
-		Assert.assertEquals(3, activitiesAtProjectAfterPromotion.size());
+		assertEquals(3, activitiesAtProjectAfterPromotion.size());
 		final Activity activity = activitiesAtProjectAfterPromotion.get(0);
-		Assert.assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
-		Assert.assertEquals("716755000", activity.getConceptChanges().iterator().next().getConceptId().toString());
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		assertEquals("716755000", activity.getConceptChanges().iterator().next().getConceptId().toString());
+	}
+
+	@Test
+	public void consumeDescriptionReplacementTest() throws IOException, InterruptedException {
+		streamTestDataAndRetrievePersistedActivities("traceability-description-replacement.txt");
+
+		final Branch branch = branchRepository.findByBranchPath("MAIN/DRUGSJAN19/DRUGSJAN19-1198");
+		final List<Activity> activities = activityRepository.findByHighestPromotedBranchOrderByCommitDate(branch);
+		assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		Set<ConceptChange> conceptChanges = activity.getConceptChanges();
+		// There are 2 changes in the payload at this level but only 1 is against a concept id
+		assertEquals(1, conceptChanges.size());
+		ConceptChange conceptChange = conceptChanges.iterator().next();
+		assertEquals("781176006", conceptChange.getConceptId().toString());
+		List<ComponentChange> componentChanges = new ArrayList<>(conceptChange.getComponentChanges());
+		componentChanges.sort(Comparator.comparing(ComponentChange::getComponentId));
+
+		assertEquals(2, componentChanges.size());
+		int a = 0;
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.DELETE, componentChanges.get(a++));
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.CREATE, componentChanges.get(a++));
+	}
+
+	@Test
+	public void consumeInactivationTest() throws IOException, InterruptedException {
+		streamTestDataAndRetrievePersistedActivities("traceability-concept-inactivation.txt");
+
+		final Branch branch = branchRepository.findByBranchPath("MAIN/CRSJAN19/CRSJAN19-832");
+		final List<Activity> activities = activityRepository.findByHighestPromotedBranchOrderByCommitDate(branch);
+		assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		Set<ConceptChange> conceptChanges = activity.getConceptChanges();
+		// There are 4 changes in the payload at this level but only 1 is against a concept id
+		assertEquals(1, conceptChanges.size());
+		ConceptChange conceptChange = conceptChanges.iterator().next();
+		assertEquals("397946003", conceptChange.getConceptId().toString());
+		List<ComponentChange> componentChanges = new ArrayList<>(conceptChange.getComponentChanges());
+		componentChanges.sort(Comparator.comparing(ComponentChange::getComponentId));
+
+		assertEquals(10, componentChanges.size());
+		int a = 0;
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.INACTIVATE, componentChanges.get(a++));
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.INACTIVATE, componentChanges.get(a++));
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.INACTIVATE, componentChanges.get(a++));
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.INACTIVATE, componentChanges.get(a++));
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.DELETE, componentChanges.get(a++));
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.DELETE, componentChanges.get(a++));
+		assertChange(ComponentType.CONCEPT, ComponentChangeType.INACTIVATE, componentChanges.get(a++));
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.INACTIVATE, componentChanges.get(a++));
+	}
+
+	private void assertChange(ComponentType componentType, ComponentChangeType changeType, ComponentChange componentChange) {
+		assertEquals(componentType, componentChange.getComponentType());
+		assertEquals(changeType, componentChange.getChangeType());
 	}
 
 	@Test
@@ -227,11 +288,11 @@ public class ApplicationIntegrationTest {
 			}
 		}
 
-		Assert.assertEquals(499, statedRelationshipChanges);
-		Assert.assertEquals(1167, inferredRelationshipChanges);
-		Assert.assertEquals(458, conceptStatedChanges.size());
+		assertEquals(499, statedRelationshipChanges);
+		assertEquals(1167, inferredRelationshipChanges);
+		assertEquals(458, conceptStatedChanges.size());
 		conceptInferredChanges.removeAll(conceptStatedChanges);
-		Assert.assertEquals(658, conceptInferredChanges.size());
+		assertEquals(658, conceptInferredChanges.size());
 	}
 
 	@Test
@@ -240,7 +301,7 @@ public class ApplicationIntegrationTest {
 		streamTestDataAndRetrievePersistedActivities(resource);
 
 		final HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://127.0.0.1:8085/activities").openConnection();
-		Assert.assertEquals(200, urlConnection.getResponseCode());
+		assertEquals(200, urlConnection.getResponseCode());
 		try (final InputStream inputStream = urlConnection.getInputStream()) {
 			Assert.assertTrue(StreamUtils.copyToString(inputStream, Charset.forName("UTF-8")).contains("\"conceptId\":\"715891009\""));
 		}
@@ -253,7 +314,7 @@ public class ApplicationIntegrationTest {
 		streamTestDataAndRetrievePersistedActivities(resource);
 
 		final Page<Activity> activities = activityRepository.findByConceptId(416390003L, new PageRequest(0, 10));
-		Assert.assertEquals(1, activities.getNumberOfElements());
+		assertEquals(1, activities.getNumberOfElements());
 	}
 
 	private PageRequest getPageRequestMax() {

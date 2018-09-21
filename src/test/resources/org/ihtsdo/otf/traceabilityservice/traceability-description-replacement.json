@@ -1,0 +1,146 @@
+{
+  "userId": "testuser",
+  "commitComment": "testuser Bulk update.",
+  "branchPath": "MAIN/DRUGSJAN19/DRUGSJAN19-1198",
+  "commitTimestamp": 1537224718858,
+  "changes": {
+    "781176006": {
+      "concept": {
+        "moduleId": "900000000000207008",
+        "active": true,
+        "released": false,
+        "conceptId": "781176006",
+        "fsn": "781176006",
+        "definitionStatus": "FULLY_DEFINED",
+        "descriptions": [
+          {
+            "moduleId": "900000000000207008",
+            "active": true,
+            "released": false,
+            "descriptionId": "3745157012",
+            "conceptId": "781176006",
+            "type": "SYNONYM",
+            "lang": "en",
+            "term": "Efmoroctocog alfa-containing product in parenteral dose form",
+            "caseSignificance": "CASE_INSENSITIVE",
+            "acceptabilityMap": {
+              "900000000000509007": "PREFERRED",
+              "900000000000508004": "PREFERRED"
+            }
+          },
+          {
+            "moduleId": "900000000000207008",
+            "active": true,
+            "released": false,
+            "descriptionId": "3745158019",
+            "conceptId": "781176006",
+            "type": "FSN",
+            "lang": "en",
+            "term": "Product containing efmoroctocog alfa in parenteral dose form (medicinal product form)",
+            "caseSignificance": "CASE_INSENSITIVE",
+            "acceptabilityMap": {
+              "900000000000509007": "PREFERRED",
+              "900000000000508004": "PREFERRED"
+            }
+          }
+        ],
+        "relationships": [
+          {
+            "moduleId": "900000000000207008",
+            "active": true,
+            "released": false,
+            "relationshipId": "10743249029",
+            "type": {
+              "conceptId": "127489000",
+              "fsn": "127489000"
+            },
+            "target": {
+              "effectiveTime": "2017-01-31T00:00:00Z",
+              "moduleId": "900000000000207008",
+              "active": true,
+              "released": false,
+              "conceptId": "718943005",
+              "fsn": "718943005",
+              "definitionStatus": "PRIMITIVE"
+            },
+            "sourceId": "781176006",
+            "characteristicType": "STATED_RELATIONSHIP",
+            "modifier": "EXISTENTIAL"
+          },
+          {
+            "moduleId": "900000000000207008",
+            "active": true,
+            "released": false,
+            "relationshipId": "10743248021",
+            "type": {
+              "conceptId": "116680003",
+              "fsn": "116680003"
+            },
+            "target": {
+              "effectiveTime": "2018-07-31T00:00:00Z",
+              "moduleId": "900000000000207008",
+              "active": true,
+              "released": false,
+              "conceptId": "763158003",
+              "fsn": "763158003",
+              "definitionStatus": "PRIMITIVE"
+            },
+            "sourceId": "781176006",
+            "characteristicType": "STATED_RELATIONSHIP",
+            "modifier": "EXISTENTIAL"
+          },
+          {
+            "moduleId": "900000000000207008",
+            "active": true,
+            "released": false,
+            "relationshipId": "10743247027",
+            "type": {
+              "conceptId": "411116001",
+              "fsn": "411116001"
+            },
+            "target": {
+              "effectiveTime": "2018-01-31T00:00:00Z",
+              "moduleId": "900000000000207008",
+              "active": true,
+              "released": false,
+              "conceptId": "385287007",
+              "fsn": "385287007",
+              "definitionStatus": "FULLY_DEFINED"
+            },
+            "sourceId": "781176006",
+            "characteristicType": "STATED_RELATIONSHIP",
+            "modifier": "EXISTENTIAL"
+          }
+        ],
+        "isLeafInferred": false,
+        "isLeafStated": false
+      },
+      "changes": [
+        {
+          "componentType": "Description",
+          "componentId": "3745158019",
+          "type": "CREATE"
+        },
+        {
+          "componentType": "Description",
+          "componentId": "3745156015",
+          "type": "DELETE"
+        }
+      ]
+    },
+    "3745156015": {
+      "changes": [
+        {
+          "componentType": "SnomedLanguageRefSetMember",
+          "componentId": "0f2b9fe0-5c1a-4417-a07d-fd4b2b8fcb2c",
+          "type": "DELETE"
+        },
+        {
+          "componentType": "SnomedLanguageRefSetMember",
+          "componentId": "c1daa9d0-1521-4d66-9ec7-af12a4c725aa",
+          "type": "DELETE"
+        }
+      ]
+    }
+  }
+}
