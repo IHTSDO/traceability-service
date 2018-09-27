@@ -337,7 +337,7 @@
           "type": "INACTIVATE"
         },
         {
-          "componentType": "Concept",
+          "componentType": "EClass",
           "componentId": "397946003",
           "type": "INACTIVATE"
         },

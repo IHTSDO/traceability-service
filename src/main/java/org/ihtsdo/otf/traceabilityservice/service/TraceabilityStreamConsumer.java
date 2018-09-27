@@ -92,6 +92,7 @@ public class TraceabilityStreamConsumer {
 				for (Map<String, String> componentChangeMap : componentChangeMaps) {
 					final String componentId = componentChangeMap.get("componentId");
 					String componentTypeString = componentChangeMap.get("componentType");
+					componentTypeString = componentTypeString.replaceAll("EClass", "Concept");
 					componentTypeString = componentTypeString.replaceAll("Snomed.*RefSetMember", "ReferenceSetMember");
 					final ComponentType componentType = ComponentType.valueOf(componentTypeString.toUpperCase());
 					ComponentSubType componentSubType = null;
