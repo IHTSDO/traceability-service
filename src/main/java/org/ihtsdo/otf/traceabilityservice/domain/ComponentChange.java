@@ -81,4 +81,15 @@ public class ComponentChange {
 		result = 31 * result + (changeType != null ? changeType.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "ComponentChange{" +
+				"id=" + id +
+				", componentId='" + componentId + '\'' +
+				", componentType=" + componentType +
+				", componentSubType=" + componentSubType +
+				", changeType=" + changeType +
+				'}';
+	}
 }

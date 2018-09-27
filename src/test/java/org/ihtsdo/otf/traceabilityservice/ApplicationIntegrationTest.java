@@ -258,6 +258,31 @@ public class ApplicationIntegrationTest {
 		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.INACTIVATE, componentChanges.get(a++));
 	}
 
+	@Test
+	public void testDescriptionReactivation() throws IOException, InterruptedException {
+		streamTestDataAndRetrievePersistedActivities("traceability-description-reactivation.txt");
+
+		final Branch branch = branchRepository.findByBranchPath("MAIN/CRSJAN19/CRSJAN19-856");
+		final List<Activity> activities = activityRepository.findByHighestPromotedBranchOrderByCommitDate(branch);
+		assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		ConceptChange conceptChange = activity.getConceptChanges().iterator().next();
+		List<ComponentChange> componentChanges = new ArrayList<>(conceptChange.getComponentChanges());
+		componentChanges.sort(Comparator.comparing(ComponentChange::getComponentId));
+
+		assertEquals(9, componentChanges.size());
+		int a = 0;
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.CREATE, componentChanges.get(a++));
+		assertChange(ComponentType.REFERENCESETMEMBER, ComponentChangeType.DELETE, componentChanges.get(a++));
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.RELATIONSHIP, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.CONCEPT, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.DESCRIPTION, ComponentChangeType.UPDATE, componentChanges.get(a++));
+		assertChange(ComponentType.REFERENCESETMEMBER, ComponentChangeType.DELETE, componentChanges.get(a++));
+	}
+
 	private void assertChange(ComponentType componentType, ComponentChangeType changeType, ComponentChange componentChange) {
 		assertEquals(componentType, componentChange.getComponentType());
 		assertEquals(changeType, componentChange.getChangeType());
