@@ -1,6 +1,9 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
 import io.swagger.annotations.*;
+
+import java.util.List;
+
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.Branch;
@@ -14,8 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import com.google.common.collect.Sets;
+
 @RestController
-@RequestMapping(value = "/activities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ActivityController {
 
 	@Autowired
@@ -26,7 +30,7 @@ public class ActivityController {
 
 	private static final Sort COMMIT_DATE_SORT = new Sort("commitDate");
 
-	@RequestMapping
+	@RequestMapping(value = "/activities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(value = "Fetch activities.", notes = "Fetch authoring activities by 'originalBranch' (the branch the activity originated on), " +
 			"'onBranch' (the original branch or highest branch the activity has been promoted to). " +
@@ -70,7 +74,7 @@ public class ActivityController {
 		}
 	}
 
-	@RequestMapping("/promotions")
+	@RequestMapping(value="/activities/promotions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<Activity> getPromotions(@RequestParam String sourceBranch, Pageable page) {
 		if (page == null) {
 			page = new PageRequest(0, 100, COMMIT_DATE_SORT);
@@ -93,9 +97,15 @@ public class ActivityController {
 		return branchB;
 	}
 
-	@RequestMapping("/{activityId}")
+	@RequestMapping(value="/activities/{activityId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Activity getActivity(@PathVariable String activityId) {
 		return activityRepository.findOne(ControllerHelper.parseLong(activityId));
 	}
 
+	@RequestMapping(value = "/activities/branches/last", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Fetch the last activity on each branches.")
+	public  List<Activity> getLastModifiedOnBranches (@RequestBody List<String> branches) {
+		List<Branch> list = branchRepository.findByBranchPathIn(Sets.newHashSet(branches));
+		return activityRepository.findByLastActivityOnBranches(Sets.newHashSet(list));
+	}
 }

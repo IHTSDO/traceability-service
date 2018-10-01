@@ -1,16 +1,16 @@
 package org.ihtsdo.otf.traceabilityservice.repository;
 
+import java.util.List;
+import java.util.Set;
+
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.Branch;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-
-import java.util.List;
 
 public interface ActivityRepository extends PagingAndSortingRepository<Activity, Long> {
 
@@ -66,4 +66,9 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"and activityType <> org.ihtsdo.otf.traceabilityservice.domain.ActivityType.REBASE " +
 			"and activityType <> org.ihtsdo.otf.traceabilityservice.domain.ActivityType.PROMOTION")
 	void setHighestPromotedBranchWhereBranchEquals(Branch newHighestPromotedBranch, Branch oldHighestPromotedBranch);
+	
+	@Query("select a from Activity a " + 
+			"where a.branch in ?1 and a.commitDate = (select max(a1.commitDate) from Activity a1 where a1.branch = a.branch ) " + 
+			"      and not exists (select a2 from Activity a2 where a2.branch = a.branch and a2.commitDate > a.commitDate)")
+	List<Activity> findByLastActivityOnBranches(Set<Branch> branches);
 }
