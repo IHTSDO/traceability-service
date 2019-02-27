@@ -1,12 +1,11 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
-import io.swagger.annotations.*;
-
-import java.util.List;
-
+import com.google.common.collect.Sets;
+import io.swagger.annotations.ApiOperation;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.Branch;
+import org.ihtsdo.otf.traceabilityservice.domain.ConceptChange;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import com.google.common.collect.Sets;
+import java.util.List;
 
 @RestController
 public class ActivityController {
@@ -35,13 +34,14 @@ public class ActivityController {
 	@ApiOperation(value = "Fetch activities.", notes = "Fetch authoring activities by 'originalBranch' (the branch the activity originated on), " +
 			"'onBranch' (the original branch or highest branch the activity has been promoted to). " +
 			"Filtering by activity type and sorting is also available.\n" +
+			"The 'brief' flag will return activities and concept changes but no component changes.\n" +
 			"Note that promotions are recorded against the branch receiving the content.")
 	public Page<Activity> getActivities(
 			@RequestParam(required = false) String originalBranch,
 			@RequestParam(required = false) String onBranch,
-			@RequestParam(required = false) String commitComment,
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) Long conceptId,
+			@RequestParam(required = false, defaultValue = "false") boolean brief,
 			Pageable page) {
 
 		if (page == null) {
@@ -51,6 +51,18 @@ public class ActivityController {
 			page = new PageRequest(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
 		}
 
+		Page<Activity> activities = doGetActivities(originalBranch, onBranch, activityType, conceptId, page);
+		if (brief) {
+			for (Activity activity : activities.getContent()) {
+				for (ConceptChange conceptChange : activity.getConceptChanges()) {
+					conceptChange.getComponentChanges().clear();
+				}
+			}
+		}
+		return activities;
+	}
+
+	private Page<Activity> doGetActivities(@RequestParam(required = false) String originalBranch, @RequestParam(required = false) String onBranch, @RequestParam(required = false) ActivityType activityType, @RequestParam(required = false) Long conceptId, Pageable page) {
 		if (conceptId != null) {
 			return activityRepository.findByConceptId(conceptId, page);
 		} else if (originalBranch != null) {
@@ -103,7 +115,7 @@ public class ActivityController {
 	}
 
 	@RequestMapping(value = "/activities/branches/last", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Fetch the last activity on each branches.")
+	@ApiOperation(value = "Fetch the lastest activity on multiple branches.")
 	public  List<Activity> getLastModifiedOnBranches (@RequestBody List<String> branches) {
 		List<Branch> list = branchRepository.findByBranchPathIn(Sets.newHashSet(branches));
 		return activityRepository.findByLastActivityOnBranches(Sets.newHashSet(list));
