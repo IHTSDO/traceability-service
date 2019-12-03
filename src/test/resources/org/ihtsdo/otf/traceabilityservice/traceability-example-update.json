@@ -267,7 +267,7 @@
                         "modifier": "EXISTENTIAL"
                     }
                 ],
-                "additionalAxioms": [
+                "classAxioms": [
                     {
                         "moduleId": "900000000000207008",
                         "active": true,
@@ -323,7 +323,7 @@
                     "type": "CREATE"
                 },
                 {
-                    "componentType": "OwlAxiom",
+                    "componentType": "OWLAxiom",
                     "componentId": "41241d85-62be-437b-931a-eb036b126cc1",
                     "type": "CREATE"
                 }

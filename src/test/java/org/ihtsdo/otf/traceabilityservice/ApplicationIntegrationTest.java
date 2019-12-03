@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jms.core.JmsTemplate;
@@ -26,8 +27,21 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
+/**
+ * Note: this integration test requires a local MySQL instance.
+ *
+ * The Spring application is created using the "test" profile.
+ * Add a properties file called application-test.properties to configure connection details.
+ * For example:
+ *   spring.datasource.url=jdbc:mysql://localhost/traceability_integration_test
+ *   spring.datasource.username=test
+ *   spring.datasource.password=test
+ *
+ * Example creating MySQL database and user:
+ *   CREATE USER test@localhost identified by test;
+ *   GRANT ALL PRIVILEGES ON traceability_integration_test.* TO 'test'@'localhost';
+ */
 public class ApplicationIntegrationTest {
 
 	private ConfigurableApplicationContext context;
@@ -40,7 +54,7 @@ public class ApplicationIntegrationTest {
 	public void setup() throws LogLoaderException {
 		// Clean out any ActiveMQ data from a previous run
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
-		Application.main(new String[]{});
+		Application.main(new String[]{"--spring.profiles.active=test"});
 		context = Application.getContext();
 		activityRepository = context.getBean(ActivityRepository.class);
 		branchRepository = context.getBean(BranchRepository.class);
