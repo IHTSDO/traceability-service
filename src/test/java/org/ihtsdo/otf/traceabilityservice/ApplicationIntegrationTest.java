@@ -9,18 +9,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.util.StreamUtils;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -334,18 +332,6 @@ public class ApplicationIntegrationTest {
 		assertEquals(458, conceptStatedChanges.size());
 		conceptInferredChanges.removeAll(conceptStatedChanges);
 		assertEquals(658, conceptInferredChanges.size());
-	}
-
-	@Test
-	public void testSerialisedForm() throws IOException, InterruptedException {
-		final String resource = "traceability-concept-deletion.txt";
-		streamTestDataAndRetrievePersistedActivities(resource);
-
-		final HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://127.0.0.1:8085/activities").openConnection();
-		assertEquals(200, urlConnection.getResponseCode());
-		try (final InputStream inputStream = urlConnection.getInputStream()) {
-			Assert.assertTrue(StreamUtils.copyToString(inputStream, Charset.forName("UTF-8")).contains("\"conceptId\":\"715891009\""));
-		}
 	}
 
 	@Test
