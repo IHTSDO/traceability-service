@@ -1,8 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice.rest.swagger;
 
-import com.fasterxml.classmate.TypeResolver;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Pageable;

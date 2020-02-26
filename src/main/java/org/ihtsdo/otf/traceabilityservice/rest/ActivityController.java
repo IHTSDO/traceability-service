@@ -44,20 +44,10 @@ public class ActivityController {
 			@RequestParam(required = false, defaultValue = "false") boolean brief,
 			Pageable page) {
 
-		if (page == null) {
-			page = new PageRequest(0, 1000, COMMIT_DATE_SORT);
-		}
-		if (page.getSort() == null) {
-			page = new PageRequest(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
-		}
-
+		page = setPageDefaults(page, 1000);
 		Page<Activity> activities = doGetActivities(originalBranch, onBranch, activityType, conceptId, page);
 		if (brief) {
-			for (Activity activity : activities.getContent()) {
-				for (ConceptChange conceptChange : activity.getConceptChanges()) {
-					conceptChange.getComponentChanges().clear();
-				}
-			}
+			makeBrief(activities);
 		}
 		return activities;
 	}
@@ -85,15 +75,26 @@ public class ActivityController {
 			}
 		}
 	}
+	
+	
+	@RequestMapping(value = "/activitiesBulk", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@ApiOperation(value = "Fetch a filtered set of activities in bulk.", notes = "Fetch a bulk set of authoring activities, filtered on the commit comment " +
+			"Sorting is also available.")
+	public Page<Activity> getActivitiesBulk(
+			@RequestParam(required = true) ActivityType activityType,
+			@RequestParam(required = true) String commentFilter,
+			@RequestBody List<Long> conceptIds,
+			Pageable page) {
+		page = setPageDefaults(page, 1000);
+		Page<Activity> activities = activityRepository.findByConceptIdActivityAndCommentBulk(conceptIds, activityType, commentFilter, page);
+		makeBrief(activities);
+		return activities;
+	}
 
 	@RequestMapping(value="/activities/promotions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<Activity> getPromotions(@RequestParam String sourceBranch, Pageable page) {
-		if (page == null) {
-			page = new PageRequest(0, 100, COMMIT_DATE_SORT);
-		}
-		if (page.getSort() == null) {
-			page = new PageRequest(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
-		}
+		page = setPageDefaults(page, 100);
 		getBranchOrThrow(sourceBranch);// Just check branch exists
 		return activityRepository.findByActivityAndComment(ActivityType.PROMOTION, String.format("merge of %s ", sourceBranch), page);
 	}
@@ -119,5 +120,23 @@ public class ActivityController {
 	public  List<Activity> getLastModifiedOnBranches (@RequestBody List<String> branches) {
 		List<Branch> list = branchRepository.findByBranchPathIn(Sets.newHashSet(branches));
 		return activityRepository.findByLastActivityOnBranches(Sets.newHashSet(list));
+	}
+
+	private Pageable setPageDefaults(Pageable page, int maxSize) {
+		if (page == null) {
+			page = new PageRequest(0, maxSize, COMMIT_DATE_SORT);
+		}
+		if (page.getSort() == null) {
+			page = new PageRequest(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
+		}
+		return page;
+	}
+	
+	private void makeBrief(Page<Activity> activities) {
+		for (Activity activity : activities.getContent()) {
+			for (ConceptChange conceptChange : activity.getConceptChanges()) {
+				conceptChange.getComponentChanges().clear();
+			}
+		}
 	}
 }

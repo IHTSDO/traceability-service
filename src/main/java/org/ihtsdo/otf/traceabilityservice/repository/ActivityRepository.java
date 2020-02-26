@@ -56,6 +56,14 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"and a.commitComment like CONCAT('%',?2,'%')")
 	Page<Activity> findByActivityAndComment(ActivityType activityType, String comment, Pageable page);
 
+	@Query("select a " +
+			"from Activity a " +
+			"join a.conceptChanges changes " +
+			"where changes.conceptId IN (?1) " +
+			"and a.activityType = ?2 " +
+			"and a.commitComment like CONCAT('%',?3,'%')")
+	Page<Activity> findByConceptIdActivityAndCommentBulk(List<Long> conceptIds, ActivityType activityType, String comment, Pageable page);
+
 	/**
 	 * This helps us track where an Activity has been promoted to.
 	 */
