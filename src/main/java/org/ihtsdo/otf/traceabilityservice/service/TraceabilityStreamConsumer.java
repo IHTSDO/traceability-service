@@ -1,12 +1,12 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
 import org.ihtsdo.otf.traceabilityservice.Application;
-import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.snomed.otf.traceability.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonJsonParser;
 import org.springframework.jms.annotation.JmsListener;

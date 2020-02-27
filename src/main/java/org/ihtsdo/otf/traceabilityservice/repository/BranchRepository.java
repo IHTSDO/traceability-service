@@ -3,7 +3,7 @@ package org.ihtsdo.otf.traceabilityservice.repository;
 import java.util.List;
 import java.util.Set;
 
-import org.ihtsdo.otf.traceabilityservice.domain.Branch;
+import org.snomed.otf.traceability.domain.Branch;
 import org.springframework.data.repository.CrudRepository;
 
 public interface BranchRepository extends CrudRepository<Branch, Long> {

@@ -3,9 +3,9 @@ package org.ihtsdo.otf.traceabilityservice.repository;
 import java.util.List;
 import java.util.Set;
 
-import org.ihtsdo.otf.traceabilityservice.domain.Activity;
-import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
-import org.ihtsdo.otf.traceabilityservice.domain.Branch;
+import org.snomed.otf.traceability.domain.Activity;
+import org.snomed.otf.traceability.domain.ActivityType;
+import org.snomed.otf.traceability.domain.Branch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -71,8 +71,8 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 	@Query("update Activity " +
 			"set highestPromotedBranch = ?1 " +
 			"where highestPromotedBranch = ?2 " +
-			"and activityType <> org.ihtsdo.otf.traceabilityservice.domain.ActivityType.REBASE " +
-			"and activityType <> org.ihtsdo.otf.traceabilityservice.domain.ActivityType.PROMOTION")
+			"and activityType <> org.snomed.otf.traceability.domain.ActivityType.REBASE " +
+			"and activityType <> org.snomed.otf.traceability.domain.ActivityType.PROMOTION")
 	void setHighestPromotedBranchWhereBranchEquals(Branch newHighestPromotedBranch, Branch oldHighestPromotedBranch);
 	
 	@Query("select a from Activity a " + 

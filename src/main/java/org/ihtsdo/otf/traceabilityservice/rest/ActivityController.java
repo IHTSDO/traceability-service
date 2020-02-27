@@ -2,12 +2,13 @@ package org.ihtsdo.otf.traceabilityservice.rest;
 
 import com.google.common.collect.Sets;
 import io.swagger.annotations.ApiOperation;
-import org.ihtsdo.otf.traceabilityservice.domain.Activity;
-import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
-import org.ihtsdo.otf.traceabilityservice.domain.Branch;
-import org.ihtsdo.otf.traceabilityservice.domain.ConceptChange;
+
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
+import org.snomed.otf.traceability.domain.Activity;
+import org.snomed.otf.traceability.domain.ActivityType;
+import org.snomed.otf.traceability.domain.Branch;
+import org.snomed.otf.traceability.domain.ConceptChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,6 +1,5 @@
 package org.ihtsdo.otf.traceabilityservice;
 
-import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.repository.BranchRepository;
 import org.ihtsdo.otf.traceabilityservice.setup.LogLoaderException;
@@ -8,6 +7,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.snomed.otf.traceability.domain.*;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
