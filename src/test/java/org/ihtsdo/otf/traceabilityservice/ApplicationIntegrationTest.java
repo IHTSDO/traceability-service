@@ -63,6 +63,7 @@ public class ApplicationIntegrationTest {
 	@After
 	public void tearDown() {
 		context.close();
+		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
 
 	@Test
