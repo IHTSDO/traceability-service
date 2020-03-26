@@ -143,6 +143,18 @@
 			</build>
 		</profile>
 	</profiles>
+	<repositories>
+		<repository>
+			<id>ihtsdo-releases</id>
+			<url>https://nexus3.ihtsdotools.org/repository/maven-releases/</url>
+			<snapshots><enabled>false</enabled></snapshots>
+		</repository>
+		<repository>
+			<id>ihtsdo-snapshots</id>
+			<url>https://nexus3.ihtsdotools.org/repository/maven-snapshots/</url>
+			<releases><enabled>false</enabled></releases>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
 			<id>ihtsdo-public-nexus</id>
