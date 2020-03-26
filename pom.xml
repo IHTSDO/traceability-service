@@ -14,7 +14,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<otf.common.version>3.1.0-SNAPSHOT</otf.common.version>
+		<otf.common.version>3.1.0</otf.common.version>
 		<execFinalName>${project.build.finalName}.jar</execFinalName>
 		<packageName>${project.artifactId}</packageName>
 	</properties>
