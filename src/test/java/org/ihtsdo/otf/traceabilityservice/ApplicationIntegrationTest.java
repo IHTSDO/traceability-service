@@ -62,7 +62,9 @@ public class ApplicationIntegrationTest {
 
 	@After
 	public void tearDown() {
-		context.close();
+		if (context != null) {
+			context.close();
+		}
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
 
@@ -87,6 +89,21 @@ public class ApplicationIntegrationTest {
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("6552672027", ComponentChangeType.CREATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3207822025", ComponentChangeType.INACTIVATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
 		Assert.assertTrue(componentChanges.contains(new ComponentChange("3198463025", ComponentChangeType.INACTIVATE, ComponentType.RELATIONSHIP, ComponentSubType.INFERRED_RELATIONSHIP)));
+	}
+
+	@Test
+	public void consumeClassificationTest2() throws IOException, InterruptedException {
+		final String resource = "traceability-classification-save2.txt";
+
+		final ArrayList<Activity> activities = streamTestDataAndRetrievePersistedActivities(resource);
+
+		assertEquals(1, activities.size());
+		final Activity activity = activities.get(0);
+		assertEquals("pamos", activity.getUser().getUsername());
+		assertEquals("MAIN/QIJUL20/QIJUL20-918", activity.getBranch().getBranchPath());
+		assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
+		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
+		assertEquals(8, conceptChanges.size());
 	}
 
 	@Test
