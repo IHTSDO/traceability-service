@@ -76,7 +76,7 @@ public class ApplicationIntegrationTest {
 
 		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		assertEquals("snowowl", activity.getUser().getUsername());
+		assertEquals("snowstorm", activity.getUser().getUsername());
 		assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
 		assertEquals(ActivityType.CLASSIFICATION_SAVE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
@@ -147,7 +147,7 @@ public class ApplicationIntegrationTest {
 
 		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		assertEquals("snowowl", activity.getUser().getUsername());
+		assertEquals("snowstorm", activity.getUser().getUsername());
 		assertEquals("MAIN/CONREQEXT/CONREQEXT-442", activity.getBranch().getBranchPath());
 		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
@@ -170,7 +170,7 @@ public class ApplicationIntegrationTest {
 
 		assertEquals(1, activities.size());
 		final Activity activity = activities.get(0);
-		assertEquals("snowowl", activity.getUser().getUsername());
+		assertEquals("snowstorm", activity.getUser().getUsername());
 		assertEquals("MAIN/CONREQEXT/CONREQEXT-374", activity.getBranch().getBranchPath());
 		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();

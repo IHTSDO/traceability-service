@@ -1,1 +1,1 @@
-{"userId":"snowowl","commitComment":"snowowl creating concept","branchPath":"MAIN/CMTFH/CMTFH-6","commitTimestamp":1458635696996,"changes":{"716755000":{"changes":[{"componentType":"ABCClass","componentId":"3307441010","type":"CREATE"}]}}}
+{"userId":"snowstorm","commitComment":"snowstorm creating concept","branchPath":"MAIN/CMTFH/CMTFH-6","commitTimestamp":1458635696996,"changes":{"716755000":{"changes":[{"componentType":"ABCClass","componentId":"3307441010","type":"CREATE"}]}}}

@@ -22,7 +22,7 @@ GET http://localhost:8080/activities?onBranch=MAIN/DENTISTRY
             "highestPromotedBranch": {
                 "branchPath": "MAIN/DENTISTRY"
             },
-            "commitComment": "snowowl updating concept Body structure (body structure)",
+            "commitComment": "snowstorm updating concept Body structure (body structure)",
             "commitDate": "2016-09-02T13:13:53Z",
             "conceptChanges": [
                 {

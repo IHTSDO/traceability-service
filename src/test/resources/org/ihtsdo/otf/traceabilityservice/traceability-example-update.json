@@ -1,11 +1,8 @@
 {
-    "userId": "snowowl",
-    "commitComment": "snowowl updating concept Abdominal somatic dysfunction (finding)",
+    "userId": "snowstorm",
     "branchPath": "MAIN/CONREQEXT/CONREQEXT-442",
     "commitTimestamp": 1456944223426,
-    "changes": {
-        "416390003": {
-            "concept": {
+    "conceptChanges": {
                 "effectiveTime": "2005-07-31T00:00:00Z",
                 "moduleId": "900000000000207008",
                 "active": true,
