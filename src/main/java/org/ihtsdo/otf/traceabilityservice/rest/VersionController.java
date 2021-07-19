@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "Version", description = "Build Version")
 public class VersionController {
 
-	@Autowired
+	@Autowired(required = false)
 	BuildProperties buildProperties;
 
 	@ApiOperation("Software build version and timestamp.")
 	@RequestMapping(value = "/version", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public BuildVersion getBuildInformation() {
+		if (buildProperties == null) {
+			return new BuildVersion("dev", "");
+		}
 		return new BuildVersion(buildProperties.getVersion(), buildProperties.getTime().toString());
 	}
 
