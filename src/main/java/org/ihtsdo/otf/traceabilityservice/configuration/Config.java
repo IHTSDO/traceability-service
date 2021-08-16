@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 
@@ -29,7 +28,6 @@ import java.util.TimeZone;
 @SpringBootApplication(
 		exclude = {
 				ElasticsearchDataAutoConfiguration.class,
-				RestClients.ElasticsearchRestClient.class,
 				ContextStackAutoConfiguration.class,
 		}
 )
