@@ -5,10 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Api(tags = "Version", description = "Build Version")
@@ -18,7 +15,7 @@ public class VersionController {
 	BuildProperties buildProperties;
 
 	@ApiOperation("Software build version and timestamp.")
-	@RequestMapping(value = "/version", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/version", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public BuildVersion getBuildInformation() {
 		if (buildProperties == null) {
@@ -29,8 +26,8 @@ public class VersionController {
 
 	public static final class BuildVersion {
 
-		private String version;
-		private String time;
+		private final String version;
+		private final String time;
 
 		BuildVersion(String version, String time) {
 			this.version = version;

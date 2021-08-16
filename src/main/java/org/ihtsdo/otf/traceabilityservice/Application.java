@@ -1,83 +1,25 @@
 package org.ihtsdo.otf.traceabilityservice;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import org.ihtsdo.otf.traceabilityservice.setup.LogLoader;
-import org.ihtsdo.otf.traceabilityservice.setup.LogLoaderException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.ihtsdo.otf.traceabilityservice.configuration.Config;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.config.JmsListenerContainerFactory;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.jms.ConnectionFactory;
-import java.io.File;
-import java.util.TimeZone;
-
 import static com.google.common.base.Predicates.not;
 import static springfox.documentation.builders.PathSelectors.regex;
 
-@SpringBootApplication
 @EnableJms
 @EnableSwagger2
-@ComponentScan(basePackages = {"org.ihtsdo.otf.traceabilityservice", "org.snomed.otf.traceability.domain"})
-@EntityScan(basePackages="org.snomed.otf.traceability.domain")
-public class Application {
+public class Application extends Config {
 
 	public static final String TRACEABILITY_QUEUE_SUFFIX = "traceability";
 
-	private static ConfigurableApplicationContext context;
-
-	private Logger logger = LoggerFactory.getLogger(getClass());
-
-	public static void main(String[] args) throws LogLoaderException {
-
-		File loadLogsDir = null;
-		if (args.length >= 2 && args[0].equals("--loadLogs")) {
-			final String loadLogsPath = args[1];
-			loadLogsDir = new File(loadLogsPath);
-			if (!loadLogsDir.isDirectory()) {
-				throw new IllegalArgumentException("'" + loadLogsPath + "' is not a directory.");
-			}
-		}
-
-		context = SpringApplication.run(Application.class, args);
-
-		if (loadLogsDir != null) {
-			context.getBean(LogLoader.class).loadLogs(loadLogsDir);
-		}
-	}
-
-	@Bean
-	public JmsListenerContainerFactory<?> jmsListenerContainerFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
-		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-		factory.setErrorHandler(t -> logger.error("Failed to consume message.", t));
-		configurer.configure(factory, connectionFactory);
-		return factory;
-	}
-
-	@Bean
-	public ObjectMapper objectMapper() {
-		final ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-		final ISO8601DateFormat df = new ISO8601DateFormat();
-		df.setTimeZone(TimeZone.getTimeZone("UTC"));
-		objectMapper.setDateFormat(df);
-		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		return objectMapper;
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
 	}
 
 	@Bean
@@ -90,7 +32,4 @@ public class Application {
 						.build();
 	}
 
-	protected static ConfigurableApplicationContext getContext() {
-		return context;
-	}
 }

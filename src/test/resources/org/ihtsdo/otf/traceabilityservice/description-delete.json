@@ -1,0 +1,34 @@
+{
+  "userId": "kkewley",
+  "branchPath": "MAIN/STORMTEST2/STORMTEST2-243",
+  "activityType": "CONTENT_CHANGE",
+  "commitTimestamp": 1628718141860,
+  "changes": [
+    {
+      "conceptId": "4195653005",
+      "componentChanges": [
+        {
+          "changeType": "DELETE",
+          "componentType": "DESCRIPTION",
+          "componentSubType": 900000000000013009,
+          "componentId": "10430313014",
+          "effectiveTimeNull": true
+        },
+        {
+          "changeType": "DELETE",
+          "componentType": "REFERENCE_SET_MEMBER",
+          "componentSubType": 900000000000508004,
+          "componentId": "b8fe9249-e532-4e34-b1c1-a12bb5fbfb66",
+          "effectiveTimeNull": true
+        },
+        {
+          "changeType": "DELETE",
+          "componentType": "REFERENCE_SET_MEMBER",
+          "componentSubType": 900000000000509007,
+          "componentId": "09918c72-ac79-4617-8ad1-cad4347831d0",
+          "effectiveTimeNull": true
+        }
+      ]
+    }
+  ]
+}
