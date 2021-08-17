@@ -23,7 +23,7 @@ public class ActivityController {
 	@Autowired
 	private ActivityRepository activityRepository;
 
-	private static final Sort COMMIT_DATE_SORT = Sort.by("commitDate");
+	private static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").descending();
 
 	@GetMapping(value = "/activities")
 	@ResponseBody
@@ -50,22 +50,22 @@ public class ActivityController {
 
 	private Page<Activity> doGetActivities(String originalBranch, String onBranch, ActivityType activityType, Long conceptId, Pageable page) {
 		if (conceptId != null) {
-			return activityRepository.findByConceptIdOrderByCommitDate(conceptId, page);
+			return activityRepository.findByConceptId(conceptId, page);
 		} else if (originalBranch != null) {
 			if (activityType != null) {
-				return activityRepository.findByBranchAndActivityTypeOrderByCommitDate(originalBranch, activityType, page);
+				return activityRepository.findByBranchAndActivityType(originalBranch, activityType, page);
 			} else {
-				return activityRepository.findByBranchOrderByCommitDate(originalBranch, page);
+				return activityRepository.findByBranch(originalBranch, page);
 			}
 		} else if (onBranch != null) {
 			if (activityType != null) {
-				return activityRepository.findByActivityTypeAndHighestPromotedBranchOrderByCommitDate(activityType, onBranch, page);
+				return activityRepository.findByActivityTypeAndHighestPromotedBranch(activityType, onBranch, page);
 			} else {
-				return activityRepository.findByHighestPromotedBranchOrderByCommitDate(onBranch, page);
+				return activityRepository.findByHighestPromotedBranch(onBranch, page);
 			}
 		} else {
 			if (activityType != null) {
-				return activityRepository.findByActivityTypeOrderByCommitDate(activityType, page);
+				return activityRepository.findByActivityType(activityType, page);
 			} else {
 				return activityRepository.findAll(page);
 			}
@@ -82,7 +82,7 @@ public class ActivityController {
 			@RequestBody List<Long> conceptIds,
 			Pageable page) {
 		page = setPageDefaults(page, 1000);
-		Page<Activity> activities = activityRepository.findByActivityTypeConceptIdAndUserOrderByCommitDate(activityType, conceptIds, user, page);
+		Page<Activity> activities = activityRepository.findByActivityTypeConceptIdAndUser(activityType, conceptIds, user, page);
 		makeBrief(activities);
 		return activities;
 	}
@@ -102,8 +102,9 @@ public class ActivityController {
 	@ApiOperation(value = "Fetch the latest activity on multiple branches.")
 	public List<Activity> getLastModifiedOnBranches (@RequestBody List<String> branches) {
 		List<Activity> activities = new ArrayList<>();
+		final PageRequest sortedPage = PageRequest.of(0, 1, COMMIT_DATE_SORT.descending());
 		for (String branch : branches) {
-			final Page<Activity> page = activityRepository.findByBranchOrderByCommitDateDesc(branch, PageRequest.of(0, 1));
+			final Page<Activity> page = activityRepository.findByBranch(branch, sortedPage);
 			if (!page.isEmpty()) {
 				activities.add(page.getContent().get(0));
 			}

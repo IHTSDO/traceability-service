@@ -11,20 +11,18 @@ import java.util.List;
 
 public interface ActivityRepository extends PagingAndSortingRepository<Activity, Long> {
 
-	Page<Activity> findByActivityTypeOrderByCommitDate(ActivityType activityType, Pageable pageRequest);
+	Page<Activity> findByActivityType(ActivityType activityType, Pageable pageRequest);
 
-	Page<Activity> findByBranchOrderByCommitDate(String branch, Pageable page);
+	Page<Activity> findByBranch(String branch, Pageable page);
 
-	Page<Activity> findByBranchOrderByCommitDateDesc(String branch, Pageable page);
+	Page<Activity> findByBranchAndActivityType(String branch, ActivityType activityType, Pageable page);
 
-	Page<Activity> findByBranchAndActivityTypeOrderByCommitDate(String branch, ActivityType activityType, Pageable page);
+	Page<Activity> findByHighestPromotedBranch(String highestPromotedBranch, Pageable pageRequest);
 
-	Page<Activity> findByHighestPromotedBranchOrderByCommitDate(String highestPromotedBranch, Pageable pageRequest);
-
-	Page<Activity> findByActivityTypeAndHighestPromotedBranchOrderByCommitDate(ActivityType activityType, String highestPromotedBranch, Pageable pageRequest);
+	Page<Activity> findByActivityTypeAndHighestPromotedBranch(ActivityType activityType, String highestPromotedBranch, Pageable pageRequest);
 
 	@Query("{ \"term\" : { \"conceptChanges.conceptId\" : \"?0\" } }")
-	Page<Activity> findByConceptIdOrderByCommitDate(Long conceptId, Pageable pageRequest);
+	Page<Activity> findByConceptId(Long conceptId, Pageable pageRequest);
 
 	Page<Activity> findByActivityTypeAndSourceBranch(ActivityType activityType, String sourceBranch, Pageable page);
 
@@ -33,6 +31,6 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"{ \"term\" : { \"conceptChanges.conceptId\" : \"?1\" } }, " +
 			"{ \"term\" : { \"user\" : \"?2\" } } " +
 			"] } }")
-	Page<Activity> findByActivityTypeConceptIdAndUserOrderByCommitDate(ActivityType activityType, List<Long> conceptIds, String user, Pageable page);
+	Page<Activity> findByActivityTypeConceptIdAndUser(ActivityType activityType, List<Long> conceptIds, String user, Pageable page);
 
 }
