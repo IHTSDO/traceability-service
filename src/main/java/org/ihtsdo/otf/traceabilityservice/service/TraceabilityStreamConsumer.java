@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Component
 public class TraceabilityStreamConsumer {
@@ -74,14 +73,12 @@ public class TraceabilityStreamConsumer {
 			final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE);
 
 			List<Activity> toSave = new ArrayList<>();
-			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(Activity.Fields.commitDate);
 
 			try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeSearchQueryBuilder()
 					.withQuery(boolQuery()
 							.must(termQuery(Activity.Fields.highestPromotedBranch, mergeSourceBranch))
-							.must(termQuery(Activity.Fields.activityType, contentActivityTypes))
+							.must(termsQuery(Activity.Fields.activityType, contentActivityTypes))
 					)
-					.withSort(sortBuilder)
 					.withPageable(PageRequest.of(0, 1_000))
 					.build(), Activity.class)) {
 				stream.forEachRemaining(activitySearchHit -> {

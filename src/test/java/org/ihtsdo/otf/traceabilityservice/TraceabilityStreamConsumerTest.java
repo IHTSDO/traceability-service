@@ -5,7 +5,9 @@ import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.StreamUtils;
@@ -22,31 +24,14 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class TraceabilityStreamConsumerTest extends AbstractTest {
 
-	@Autowired
-	private ActivityRepository activityRepository;
-
-	@Autowired
-	private JmsTemplate jmsTemplate;
-
-	@Autowired
-	private String destinationName;
-
-	@BeforeEach
-	void setup() {
-		jmsTemplate.setDeliveryPersistent(false);
-		activityRepository.deleteAll();
-	}
-
 	@Test
-	void consumeConceptCreateTest() throws IOException, InterruptedException {
-		final String resource = "concept-create.json";
-		final List<Activity> activities = sendAndReceiveActivity(resource);
+	void consumeConceptCreateAndPromoteTest() throws IOException, InterruptedException {
+		List<Activity> activities = sendAndReceiveActivity("concept-create.json");
 
 		assertEquals(1, activities.size());
-		final Activity activity = activities.get(0);
+		Activity activity = activities.get(0);
 		assertEquals("kkewley", activity.getUsername());
 		assertEquals("MAIN/STORMTEST2/STORMTEST2-243", activity.getBranch());
 		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
@@ -64,6 +49,21 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 		assertTrue(componentChanges.contains(new ComponentChange("09918c72-ac79-4617-8ad1-cad4347831d0", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, Concepts.US_LANG_REFSET)));
 		assertTrue(componentChanges.contains(new ComponentChange("2aee3da1-08fe-4ca7-827f-252c74d4aec5", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, Concepts.GB_LANG_REFSET)));
 		assertTrue(componentChanges.contains(new ComponentChange("a68cf3f2-fedb-4a07-ba40-cd00f26c86b5", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, Concepts.US_LANG_REFSET)));
+
+		activities = sendAndReceiveActivity("promotion.json");
+		assertEquals(1, activities.size());
+		activity = activities.get(0);
+		assertEquals("kkewley", activity.getUsername());
+		assertEquals("MAIN/STORMTEST2", activity.getBranch());
+		assertEquals("MAIN/STORMTEST2/STORMTEST2-243", activity.getSourceBranch());
+		assertEquals(ActivityType.PROMOTION, activity.getActivityType());
+		assertEquals(0, activity.getConceptChanges().size());
+
+		final Page<Activity> byBranch = activityRepository.findByBranch("MAIN/STORMTEST2/STORMTEST2-243", Pageable.unpaged());
+		assertEquals(1, byBranch.getTotalElements());
+		final Activity originalCommit = byBranch.getContent().iterator().next();
+		assertEquals(ActivityType.CONTENT_CHANGE, originalCommit.getActivityType());
+		assertEquals("MAIN/STORMTEST2", originalCommit.getHighestPromotedBranch());
 	}
 
 	@Test
@@ -99,39 +99,5 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 	// find by concept id
 
 	// consume invalid message
-
-	private PageRequest getPageRequestMax() {
-		return PageRequest.of(0, 10_000);
-	}
-
-	private List<Activity> sendAndReceiveActivity(String resource) throws IOException, InterruptedException {
-		long startingActivityCount = activityRepository.count();
-
-		final InputStream resourceAsStream = getClass().getResourceAsStream(resource);
-		assertNotNull(resourceAsStream);
-		final String message = StreamUtils.copyToString(resourceAsStream, StandardCharsets.UTF_8);
-		sendMessage(message);
-
-		int timeoutSeconds = 10;
-		int waitedSeconds = 0;
-		while (activityRepository.count() != startingActivityCount + 1 && waitedSeconds < timeoutSeconds) {
-			Thread.sleep(1000);
-			waitedSeconds++;
-		}
-
-		final List<Activity> activities = new ArrayList<>();
-		activityRepository.findAll().forEach(activities::add);
-		assertNotNull(activities);
-		return activities;
-	}
-
-	private Map<Long, ConceptChange> getConceptChangeMap(Set<ConceptChange> conceptChanges) {
-		return conceptChanges.stream().collect(Collectors.toMap(ConceptChange::getConceptId, Function.identity()));
-	}
-
-	private void sendMessage(final String message) {
-		MessageCreator messageCreator = session -> session.createTextMessage(message);
-		jmsTemplate.send(destinationName, messageCreator);
-	}
 
 }
