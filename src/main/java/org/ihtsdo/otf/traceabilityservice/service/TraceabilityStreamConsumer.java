@@ -89,7 +89,7 @@ public class TraceabilityStreamConsumer {
 			}
 			if (!toSave.isEmpty()) {
 				logger.debug("Updating highest promoted branch on {} existing activities.", toSave.size());
-				activityRepository.saveAll(toSave);
+				toSave.forEach(activityRepository::save);// Saving one at a time to avoid AWS permissions issue when using "/_bulk" URI
 			}
 		}
 
