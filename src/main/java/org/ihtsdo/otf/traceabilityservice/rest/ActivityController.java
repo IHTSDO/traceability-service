@@ -5,6 +5,9 @@ import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.ConceptChange;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
+import org.ihtsdo.otf.traceabilityservice.service.ActivityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,9 +22,13 @@ import java.util.List;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ActivityController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
 	@Autowired
 	private ActivityRepository activityRepository;
+
+	@Autowired
+	private ActivityService activityService;
 
 	private static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").descending();
 
@@ -77,12 +84,13 @@ public class ActivityController {
 	@ResponseBody
 	@ApiOperation(value = "Fetch a filtered set of brief activities in bulk.")
 	public Page<Activity> getActivitiesBulk(
-			@RequestParam ActivityType activityType,
-			@RequestParam String user,
+			@RequestParam(required = false) ActivityType activityType,
+			@RequestParam(required = false) String user,
 			@RequestBody List<Long> conceptIds,
 			Pageable page) {
+		LOGGER.info("Finding activities in bulk.");
 		page = setPageDefaults(page, 1000);
-		Page<Activity> activities = activityRepository.findByActivityTypeConceptIdAndUser(activityType, conceptIds, user, page);
+		Page<Activity> activities = activityService.findBy(conceptIds, activityType, user, page);
 		makeBrief(activities);
 		return activities;
 	}

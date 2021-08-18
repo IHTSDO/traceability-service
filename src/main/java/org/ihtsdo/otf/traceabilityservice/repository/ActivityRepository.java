@@ -27,10 +27,27 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 	Page<Activity> findByActivityTypeAndSourceBranch(ActivityType activityType, String sourceBranch, Pageable page);
 
 	@Query("{ \"bool\": { \"must\": [ " +
-			"{ \"term\" : { \"activityType\" : \"?0\" } }, " +
-			"{ \"term\" : { \"conceptChanges.conceptId\" : \"?1\" } }, " +
-			"{ \"term\" : { \"user\" : \"?2\" } } " +
+			"{ \"terms\" : { \"conceptChanges.conceptId\" : ?0 } }, " +
+			"{ \"term\" : { \"activityType\" : \"?1\" } }, " +
+			"{ \"term\" : { \"username\" : \"?2\" } } " +
 			"] } }")
-	Page<Activity> findByActivityTypeConceptIdAndUser(ActivityType activityType, List<Long> conceptIds, String user, Pageable page);
+	Page<Activity> findBy(List<Long> conceptIds, ActivityType activityType, String user, Pageable page);
+
+	@Query("{ \"bool\": { \"must\": [ " +
+			"{ \"terms\" : { \"conceptChanges.conceptId\" : ?0 } }, " +
+			"{ \"term\" : { \"activityType\" : \"?1\" } } " +
+			"] } }")
+	Page<Activity> findBy(List<Long> conceptIds, ActivityType activityType, Pageable page);
+
+	@Query("{ \"bool\": { \"must\": [ " +
+			"{ \"terms\" : { \"conceptChanges.conceptId\" : ?0 } }, " +
+			"{ \"term\" : { \"username\" : \"?1\" } } " +
+			"] } }")
+	Page<Activity> findBy(List<Long> conceptIds, String user, Pageable page);
+
+	@Query("{ \"bool\": { \"must\": [ " +
+			"{ \"terms\" : { \"conceptChanges.conceptId\" : ?0 } } " +
+			"] } }")
+	Page<Activity> findBy(List<Long> conceptIds, Pageable page);
 
 }
