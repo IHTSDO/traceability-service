@@ -1,28 +1,16 @@
 package org.ihtsdo.otf.traceabilityservice;
 
 import org.ihtsdo.otf.traceabilityservice.domain.*;
-import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
-import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TraceabilityStreamConsumerTest extends AbstractTest {
 
@@ -34,6 +22,7 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 		Activity activity = activities.get(0);
 		assertEquals("kkewley", activity.getUsername());
 		assertEquals("MAIN/STORMTEST2/STORMTEST2-243", activity.getBranch());
+		assertEquals(3, activity.getBranchDepth());
 		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
 		assertEquals(1, conceptChanges.size());

@@ -29,6 +29,9 @@ public class Activity {
 	@Field(type = FieldType.Keyword)
 	private String branch;
 
+	@Field(type = FieldType.Integer)
+	private int branchDepth;
+
 	@Field(type = FieldType.Keyword)
 	private String sourceBranch;
 
@@ -48,11 +51,19 @@ public class Activity {
 	public Activity(String username, String branchPath, String sourceBranch, Date commitTimestamp, ActivityType activityType) {
 		this.username = username;
 		this.branch = branchPath;
+		this.branchDepth = getBranchDepth(branchPath);
 		this.sourceBranch = sourceBranch;
 		this.commitDate = commitTimestamp;
 		this.conceptChanges = new HashSet<>();
 		this.activityType = activityType;
 		this.highestPromotedBranch = branchPath;
+	}
+
+	// Get branch depth relative to code system, relies on "SNOMEDCT-XX" code system naming convention.
+	static int getBranchDepth(String branchPath) {
+		branchPath = branchPath.replace("MAIN", "SNOMEDCT");
+		branchPath = branchPath.replaceAll(".*SNOMEDCT-?[^/]*", "");
+		return branchPath.split("/").length;
 	}
 
 	public void addConceptChange(ConceptChange conceptChange) {
@@ -65,6 +76,10 @@ public class Activity {
 
 	public String getBranch() {
 		return branch;
+	}
+
+	public int getBranchDepth() {
+		return branchDepth;
 	}
 
 	public String getSourceBranch() {
