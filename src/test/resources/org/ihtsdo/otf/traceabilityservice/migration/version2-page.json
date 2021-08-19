@@ -1,0 +1,4343 @@
+{
+  "content": [
+    {
+      "id": 889802,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Updating concept Cladosporium langeronii (organism)",
+      "commitDate": "2021-08-19T14:53:45Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30641000087103",
+          "componentChanges": [
+            {
+              "componentId": "4636190013",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889803,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium dominicanum (organism)",
+      "commitDate": "2021-08-19T14:55:31Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30621000087107",
+          "componentChanges": [
+            {
+              "componentId": "4636191012",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "30621000087107",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636192017",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "0c3fc83e-768c-4744-a966-da7ddac7f147",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889804,
+      "user": {
+        "username": "bgoldberg"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5577"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5577"
+      },
+      "commitComment": "Updating concept Juvenile arthritis in Crohn's disease (disorder)",
+      "commitDate": "2021-08-19T14:56:25Z",
+      "conceptChanges": [
+        {
+          "conceptId": "201805000",
+          "componentChanges": [
+            {
+              "componentId": "f1cca462-d9c8-404c-994b-cb1eb0ade313",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889805,
+      "user": {
+        "username": "tmorrison"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/DHM1/DHM1-449"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-449"
+      },
+      "commitComment": "tmorrison performed merge of MAIN/DHM1 to MAIN/DHM1/DHM1-449",
+      "commitDate": "2021-08-19T14:56:26Z"
+    },
+    {
+      "id": 889806,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T14:56:55Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278677006",
+          "componentChanges": [
+            {
+              "componentId": "605375021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020184024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020183029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020182023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "605376022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020185020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "278678001",
+          "componentChanges": [
+            {
+              "componentId": "96975025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889807,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium velox (organism)",
+      "commitDate": "2021-08-19T14:57:06Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30231000087106",
+          "componentChanges": [
+            {
+              "componentId": "4636194016",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636193010",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "f72e0321-3f94-4313-94fd-054c07505b23",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "30231000087106",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889808,
+      "user": {
+        "username": "ewooler"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "commitComment": "Updating concept Intubation of gastrointestinal tract via fistula (procedure)",
+      "commitDate": "2021-08-19T14:58:06Z",
+      "conceptChanges": [
+        {
+          "conceptId": "235431004",
+          "componentChanges": [
+            {
+              "componentId": "235431004",
+              "componentType": "CONCEPT",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "94939630-3176-4660-b139-0430fc1588d0",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889809,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium fusiforme (organism)",
+      "commitDate": "2021-08-19T14:58:44Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30631000087109",
+          "componentChanges": [
+            {
+              "componentId": "9acf3a21-e8a5-4654-af2e-c31f82f4453a",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "4636196019",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "30631000087109",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636195015",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889810,
+      "user": {
+        "username": "tmorrison"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/DHM1/DHM1-439"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-439"
+      },
+      "commitComment": "tmorrison performed merge of MAIN/DHM1 to MAIN/DHM1/DHM1-439",
+      "commitDate": "2021-08-19T14:59:17Z"
+    },
+    {
+      "id": 889811,
+      "user": {
+        "username": "mharry"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T15:05:35Z",
+      "conceptChanges": [
+        {
+          "conceptId": "90976006",
+          "componentChanges": [
+            {
+              "componentId": "2698511025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "297005024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020186021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020144026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2843467020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020143021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3330475022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "173930002",
+          "componentChanges": [
+            {
+              "componentId": "9696028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019680024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "12930948021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "173918008",
+          "componentChanges": [
+            {
+              "componentId": "14020199024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020201021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "9688022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020198027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020197021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020200022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "359583006",
+          "componentChanges": [
+            {
+              "componentId": "14020191022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020188022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020189025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020190023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020187028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "159439029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "85534006",
+          "componentChanges": [
+            {
+              "componentId": "14020195029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020196028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020194025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020192026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020193020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "287501023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889812,
+      "user": {
+        "username": "tmorrison"
+      },
+      "activityType": "PROMOTION",
+      "branch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-439"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "commitComment": "tmorrison performed merge of MAIN/DHM1/DHM1-439 to MAIN/DHM1",
+      "commitDate": "2021-08-19T15:05:37Z"
+    },
+    {
+      "id": 889813,
+      "user": {
+        "username": "ningram"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/DHM1/DHM1-449"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-449"
+      },
+      "commitComment": "ningram performed merge of MAIN/DHM1 to MAIN/DHM1/DHM1-449",
+      "commitDate": "2021-08-19T15:05:56Z"
+    },
+    {
+      "id": 889814,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Updating concept Finding of interincisal teeth angle (finding)",
+      "commitDate": "2021-08-19T15:07:56Z",
+      "conceptChanges": [
+        {
+          "conceptId": "366228003",
+          "componentChanges": [
+            {
+              "componentId": "b938f126-e50d-49a6-8393-dd43422f27f2",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889815,
+      "user": {
+        "username": "tmorrison"
+      },
+      "activityType": "PROMOTION",
+      "branch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-449"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "commitComment": "tmorrison performed merge of MAIN/DHM1/DHM1-449 to MAIN/DHM1",
+      "commitDate": "2021-08-19T15:08:18Z"
+    },
+    {
+      "id": 889816,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Updating concept Interincisal teeth angle - increased (finding)",
+      "commitDate": "2021-08-19T15:08:30Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278677006",
+          "componentChanges": [
+            {
+              "componentId": "7dd3c3a3-0d2c-4bc3-85f9-b3f07a830c9d",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "278677006",
+              "componentType": "CONCEPT",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889817,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Nasal cavity structure (body structure)",
+      "commitDate": "2021-08-19T15:08:46Z",
+      "conceptChanges": [
+        {
+          "conceptId": "279549004",
+          "componentChanges": [
+            {
+              "componentId": "995301000202115",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "995291000202119",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889818,
+      "user": {
+        "username": "bgoldberg"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5577"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5577"
+      },
+      "commitComment": "Updating concept Perineal finding (finding)",
+      "commitDate": "2021-08-19T15:08:50Z",
+      "conceptChanges": [
+        {
+          "conceptId": "124734007",
+          "componentChanges": [
+            {
+              "componentId": "193223011",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "e2e39b15-2ae7-4975-aeb8-1d589df2a18d",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889819,
+      "user": {
+        "username": "tmorrison"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/DHM1/DHM1-448"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-448"
+      },
+      "commitComment": "tmorrison performed merge of MAIN/DHM1 to MAIN/DHM1/DHM1-448",
+      "commitDate": "2021-08-19T15:08:56Z"
+    },
+    {
+      "id": 889820,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-399"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/CRSJAN22"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-399"
+      },
+      "commitComment": "swarren performed merge of MAIN/CRSJAN22 to MAIN/CRSJAN22/CRSJAN22-399",
+      "commitDate": "2021-08-19T15:09:07Z"
+    },
+    {
+      "id": 889821,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium tenuissimum (organism)",
+      "commitDate": "2021-08-19T15:10:18Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30221000087109",
+          "componentChanges": [
+            {
+              "componentId": "4636197011",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636198018",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "30221000087109",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "74acfe53-6e94-45b5-97f1-84ea436e3df7",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889822,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Removal of foreign body from nasal cavity (procedure)",
+      "commitDate": "2021-08-19T15:10:52Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1083351000202105",
+          "componentChanges": [
+            {
+              "componentId": "1343791000202110",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343801000202114",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "12348221000202111",
+              "componentType": "DESCRIPTION",
+              "changeType": "DELETE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889823,
+      "user": {
+        "username": "bgoldberg"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/AUTHORTEST/AUTHORTEST-280"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/AUTHORTEST"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/AUTHORTEST/AUTHORTEST-280"
+      },
+      "commitComment": "bgoldberg performed merge of MAIN/AUTHORTEST to MAIN/AUTHORTEST/AUTHORTEST-280",
+      "commitDate": "2021-08-19T15:10:57Z"
+    },
+    {
+      "id": 889824,
+      "user": {
+        "username": "ewooler"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T15:12:08Z",
+      "conceptChanges": [
+        {
+          "conceptId": "235434007",
+          "componentChanges": [
+            {
+              "componentId": "14020204029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235431004",
+          "componentChanges": [
+            {
+              "componentId": "14020202025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235433001",
+          "componentChanges": [
+            {
+              "componentId": "14020203024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889826,
+      "user": {
+        "username": "bgoldberg"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/AUTHORTEST/AUTHORTEST-285"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/AUTHORTEST"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/AUTHORTEST/AUTHORTEST-285"
+      },
+      "commitComment": "bgoldberg performed merge of MAIN/AUTHORTEST to MAIN/AUTHORTEST/AUTHORTEST-285",
+      "commitDate": "2021-08-19T15:12:24Z"
+    },
+    {
+      "id": 889825,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium subuliforme (organism)",
+      "commitDate": "2021-08-19T15:12:27Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30211000087101",
+          "componentChanges": [
+            {
+              "componentId": "4636199014",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636200012",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "30211000087101",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "830326be-6c41-486e-b07c-d5ed779bfdf9",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889827,
+      "user": {
+        "username": "ewooler"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "commitComment": "Updating concept Intubation of gastrointestinal tract via fistula (procedure)",
+      "commitDate": "2021-08-19T15:13:53Z",
+      "conceptChanges": [
+        {
+          "conceptId": "235431004",
+          "componentChanges": [
+            {
+              "componentId": "94939630-3176-4660-b139-0430fc1588d0",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020202025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "DELETE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889828,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium ramotenellum (organism)",
+      "commitDate": "2021-08-19T15:14:32Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30201000087103",
+          "componentChanges": [
+            {
+              "componentId": "4636201011",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636202016",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "d8151d4f-483f-46b7-846f-fd71ac868ad1",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "30201000087103",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889829,
+      "user": {
+        "username": "ewooler"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "commitComment": "Updating concept Intubation of intestine for decompression (procedure)",
+      "commitDate": "2021-08-19T15:14:34Z",
+      "conceptChanges": [
+        {
+          "conceptId": "16256009",
+          "componentChanges": [
+            {
+              "componentId": "ec022610-b0ff-44b6-bddf-7abf130f4b13",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889830,
+      "user": {
+        "username": "ewooler"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "commitComment": "Updating concept Intubation of gastrointestinal tract via large bowel fistula (procedure)",
+      "commitDate": "2021-08-19T15:14:58Z",
+      "conceptChanges": [
+        {
+          "conceptId": "235434007",
+          "componentChanges": [
+            {
+              "componentId": "7769d7d5-a664-40d6-aba9-066faf625711",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889832,
+      "user": {
+        "username": "bgoldberg"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/AUTHORTEST/AUTHORTEST-284"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/AUTHORTEST"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/AUTHORTEST/AUTHORTEST-284"
+      },
+      "commitComment": "bgoldberg performed merge of MAIN/AUTHORTEST to MAIN/AUTHORTEST/AUTHORTEST-284",
+      "commitDate": "2021-08-19T15:14:59Z"
+    },
+    {
+      "id": 889831,
+      "user": {
+        "username": "tmorrison"
+      },
+      "activityType": "PROMOTION",
+      "branch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-448"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "commitComment": "tmorrison performed merge of MAIN/DHM1/DHM1-448 to MAIN/DHM1",
+      "commitDate": "2021-08-19T15:15:24Z"
+    },
+    {
+      "id": 889833,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T15:15:47Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278677006",
+          "componentChanges": [
+            {
+              "componentId": "14020182023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "366228003",
+          "componentChanges": [
+            {
+              "componentId": "14020206027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2750928025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020205028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "278678001",
+          "componentChanges": [
+            {
+              "componentId": "14019948024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889834,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Mastoid structure (body structure)",
+      "commitDate": "2021-08-19T15:15:55Z",
+      "conceptChanges": [
+        {
+          "conceptId": "59066005",
+          "componentChanges": [
+            {
+              "componentId": "240271000202118",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "1343811000202111",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343821000202115",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889835,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium psychrotolerans (organism)",
+      "commitDate": "2021-08-19T15:16:06Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30191000087100",
+          "componentChanges": [
+            {
+              "componentId": "4636203014",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "30191000087100",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636204015",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "db42eebd-619a-4c4e-9609-69165c109f11",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889836,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Removal of foreign body from mastoid (procedure)",
+      "commitDate": "2021-08-19T15:17:25Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1085361000202109",
+          "componentChanges": [
+            {
+              "componentId": "1343831000202118",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889837,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium pseudocladosporioides (organism)",
+      "commitDate": "2021-08-19T15:17:44Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30181000087102",
+          "componentChanges": [
+            {
+              "componentId": "30181000087102",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "f507bc25-0afb-4755-9fe4-8595ea5cb99d",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "4636205019",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636206018",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889838,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Creating concept Cladosporium perangustum (organism)",
+      "commitDate": "2021-08-19T15:19:25Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30171000087104",
+          "componentChanges": [
+            {
+              "componentId": "4636207010",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "30171000087104",
+              "componentType": "CONCEPT",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "3a7c7ec3-d6c2-421a-b8a3-bab2fb7c8c6d",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "4636208017",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889839,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Temporal bone structure (body structure)",
+      "commitDate": "2021-08-19T15:20:25Z",
+      "conceptChanges": [
+        {
+          "conceptId": "60911003",
+          "componentChanges": [
+            {
+              "componentId": "101198010",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "1343841000202112",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343851000202110",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "250311000202116",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889840,
+      "user": {
+        "username": "mbraithwaite"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-404"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T15:24:12Z",
+      "conceptChanges": [
+        {
+          "conceptId": "30211000087101",
+          "componentChanges": [
+            {
+              "componentId": "14020213027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30651000087100",
+          "componentChanges": [
+            {
+              "componentId": "14020207020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30201000087103",
+          "componentChanges": [
+            {
+              "componentId": "14020214022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30181000087102",
+          "componentChanges": [
+            {
+              "componentId": "14020216024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30621000087107",
+          "componentChanges": [
+            {
+              "componentId": "14020209023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30631000087109",
+          "componentChanges": [
+            {
+              "componentId": "14020211025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30171000087104",
+          "componentChanges": [
+            {
+              "componentId": "14020217026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30231000087106",
+          "componentChanges": [
+            {
+              "componentId": "14020210029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30191000087100",
+          "componentChanges": [
+            {
+              "componentId": "14020215023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30641000087103",
+          "componentChanges": [
+            {
+              "componentId": "14020208026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "30221000087109",
+          "componentChanges": [
+            {
+              "componentId": "14020212021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889841,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Removal of implant from bone of nose (procedure)",
+      "commitDate": "2021-08-19T15:27:53Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1083341000202107",
+          "componentChanges": [
+            {
+              "componentId": "12348191000202119",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "1343861000202113",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343871000202116",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889842,
+      "user": {
+        "username": "ewooler"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/INTQA/INTQA-5676"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T15:28:40Z",
+      "conceptChanges": [
+        {
+          "conceptId": "235431004",
+          "componentChanges": [
+            {
+              "componentId": "14020218020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889843,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Nasal bone structure (body structure)",
+      "commitDate": "2021-08-19T15:28:56Z",
+      "conceptChanges": [
+        {
+          "conceptId": "74386004",
+          "componentChanges": [
+            {
+              "componentId": "1343891000202117",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343901000202116",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343881000202119",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889844,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Removal of implant from mandible (procedure)",
+      "commitDate": "2021-08-19T15:29:54Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1085431000202106",
+          "componentChanges": [
+            {
+              "componentId": "1343911000202119",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343921000202110",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889845,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Updating concept Increased Interincisal teeth angle (finding)",
+      "commitDate": "2021-08-19T15:30:20Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278677006",
+          "componentChanges": [
+            {
+              "componentId": "4636209013",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "671864017",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889846,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Updating concept Increased Interincisal teeth angle (finding)",
+      "commitDate": "2021-08-19T15:30:39Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278677006",
+          "componentChanges": [
+            {
+              "componentId": "415671012",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "671864017",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "4636210015",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889847,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Updating concept Increased interincisal teeth angle (finding)",
+      "commitDate": "2021-08-19T15:31:04Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278677006",
+          "componentChanges": [
+            {
+              "componentId": "671864017",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "4636209013",
+              "componentType": "DESCRIPTION",
+              "changeType": "DELETE"
+            },
+            {
+              "componentId": "4636212011",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636210015",
+              "componentType": "DESCRIPTION",
+              "changeType": "DELETE"
+            },
+            {
+              "componentId": "4636211016",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889848,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Updating concept Reduced Interincisal teeth angle (finding)",
+      "commitDate": "2021-08-19T15:31:44Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278678001",
+          "componentChanges": [
+            {
+              "componentId": "4636214012",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "4636213018",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "415672017",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "671865016",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889849,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-148"
+      },
+      "commitComment": "Updating concept Reduced interincisal teeth angle (finding)",
+      "commitDate": "2021-08-19T15:34:31Z",
+      "conceptChanges": [
+        {
+          "conceptId": "278678001",
+          "componentChanges": [
+            {
+              "componentId": "4636216014",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "671865016",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "4636213018",
+              "componentType": "DESCRIPTION",
+              "changeType": "DELETE"
+            },
+            {
+              "componentId": "4636214012",
+              "componentType": "DESCRIPTION",
+              "changeType": "DELETE"
+            },
+            {
+              "componentId": "4636215013",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "FSN_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889850,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "PROMOTION",
+      "branch": {
+        "branchPath": "MAIN"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN"
+      },
+      "commitComment": "swarren performed merge of MAIN/DHM1 to MAIN",
+      "commitDate": "2021-08-19T15:38:54Z"
+    },
+    {
+      "id": 889851,
+      "user": {
+        "username": "tmorrison"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/DHM1/DHM1-320"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/DHM1"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/DHM1/DHM1-320"
+      },
+      "commitComment": "tmorrison performed merge of MAIN/DHM1 to MAIN/DHM1/DHM1-320",
+      "commitDate": "2021-08-19T15:39:21Z"
+    },
+    {
+      "id": 889852,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-398"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-398"
+      },
+      "commitComment": "Updating concept Excision of root of single-rooted tooth (procedure)",
+      "commitDate": "2021-08-19T15:40:09Z",
+      "conceptChanges": [
+        {
+          "conceptId": "446286008",
+          "componentChanges": [
+            {
+              "componentId": "8aa8fa8a-86a3-44a3-8e48-340299af3e0b",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2881797011",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889853,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Structure of maxillary tooth (body structure)",
+      "commitDate": "2021-08-19T15:50:44Z",
+      "conceptChanges": [
+        {
+          "conceptId": "420393006",
+          "componentChanges": [
+            {
+              "componentId": "1162281000202112",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "1162261000202118",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889854,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Bone structure of maxilla (body structure)",
+      "commitDate": "2021-08-19T15:51:22Z",
+      "conceptChanges": [
+        {
+          "conceptId": "70925003",
+          "componentChanges": [
+            {
+              "componentId": "987351000202111",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "242651000202110",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "987361000202114",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "117817016",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889855,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Posterior segment of maxilla (body structure)",
+      "commitDate": "2021-08-19T15:52:03Z",
+      "conceptChanges": [
+        {
+          "conceptId": "280710004",
+          "componentChanges": [
+            {
+              "componentId": "1139311000202111",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "1139321000202115",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889856,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Removal of implant from maxilla (procedure)",
+      "commitDate": "2021-08-19T15:52:22Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1085451000202102",
+          "componentChanges": [
+            {
+              "componentId": "1343931000202112",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343941000202118",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889857,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Reconstruction of maxilla using implant (procedure)",
+      "commitDate": "2021-08-19T15:53:54Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1085441000202100",
+          "componentChanges": [
+            {
+              "componentId": "1343681000202115",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "12348371000202115",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889858,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-398"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/CRSJAN22"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-398"
+      },
+      "commitComment": "swarren performed merge of MAIN/CRSJAN22 to MAIN/CRSJAN22/CRSJAN22-398",
+      "commitDate": "2021-08-19T15:57:08Z"
+    },
+    {
+      "id": 889859,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "REBASE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "ovage performed merge of MAIN/SNOMEDCT-NO/NO8 to MAIN/SNOMEDCT-NO/NO8/NO8-392",
+      "commitDate": "2021-08-19T15:58:58Z"
+    },
+    {
+      "id": 889860,
+      "user": {
+        "username": "mharry"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "commitComment": "Updating concept Endoscopy of intestine (procedure)",
+      "commitDate": "2021-08-19T15:59:15Z",
+      "conceptChanges": [
+        {
+          "conceptId": "69201005",
+          "componentChanges": [
+            {
+              "componentId": "1680622021",
+              "componentType": "RELATIONSHIP",
+              "componentSubType": "INFERRED_RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "2942564022",
+              "componentType": "RELATIONSHIP",
+              "componentSubType": "INFERRED_RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020118026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "DELETE"
+            },
+            {
+              "componentId": "114942015",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2942565023",
+              "componentType": "RELATIONSHIP",
+              "componentSubType": "INFERRED_RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020117020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "DELETE"
+            },
+            {
+              "componentId": "ede03905-73eb-4267-804a-b89d6d33ed0f",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3387152023",
+              "componentType": "RELATIONSHIP",
+              "componentSubType": "INFERRED_RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889861,
+      "user": {
+        "username": "mharry"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "commitComment": "Updating concept Endoscopy of intestine (procedure)",
+      "commitDate": "2021-08-19T15:59:49Z",
+      "conceptChanges": [
+        {
+          "conceptId": "69201005",
+          "componentChanges": [
+            {
+              "componentId": "114942015",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "ede03905-73eb-4267-804a-b89d6d33ed0f",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889862,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO8/NO8-392"
+      },
+      "commitComment": "Updating concept Ear ossicle structure (body structure)",
+      "commitDate": "2021-08-19T16:02:46Z",
+      "conceptChanges": [
+        {
+          "conceptId": "41845008",
+          "componentChanges": [
+            {
+              "componentId": "1343951000202115",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343961000202117",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "239151000202110",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "69812017",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889863,
+      "user": {
+        "username": "mharry"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T16:03:20Z",
+      "conceptChanges": [
+        {
+          "conceptId": "241674004",
+          "componentChanges": [
+            {
+              "componentId": "14020127025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020130021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020226028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020129027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020128024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "446885004",
+          "componentChanges": [
+            {
+              "componentId": "14020177027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020178021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3794572020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "367535003",
+          "componentChanges": [
+            {
+              "componentId": "14020170025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020235024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "44441009",
+          "componentChanges": [
+            {
+              "componentId": "14020157023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020230025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "446415001",
+          "componentChanges": [
+            {
+              "componentId": "14020172022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020236020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "427431008",
+          "componentChanges": [
+            {
+              "componentId": "14020168023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020166022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3176405023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020167029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020169026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020165021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "699832001",
+          "componentChanges": [
+            {
+              "componentId": "12189017029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "4787503027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235147008",
+          "componentChanges": [
+            {
+              "componentId": "14020222026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020223020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020224025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "49312027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "83226002",
+          "componentChanges": [
+            {
+              "componentId": "14020159021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2969370022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020158029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "85534006",
+          "componentChanges": [
+            {
+              "componentId": "14020195029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020196028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020194025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020192026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020231026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "265409002",
+          "componentChanges": [
+            {
+              "componentId": "14020227021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020135027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020132029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020134028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020133023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "112870002",
+          "componentChanges": [
+            {
+              "componentId": "14020161028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020162024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020160027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020163025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020232022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "69201005",
+          "componentChanges": [
+            {
+              "componentId": "14020220023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2942564022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020221022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "12350003",
+          "componentChanges": [
+            {
+              "componentId": "14020116027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020219028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "446416000",
+          "componentChanges": [
+            {
+              "componentId": "14020173028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020174023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020176020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020175024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "13004001",
+          "componentChanges": [
+            {
+              "componentId": "14020229024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020145025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020146029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020147022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020148028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "396226005",
+          "componentChanges": [
+            {
+              "componentId": "14020164020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020234023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "40826009",
+          "componentChanges": [
+            {
+              "componentId": "2841943027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020120028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3000749023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "2029144021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020119023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "425734003",
+          "componentChanges": [
+            {
+              "componentId": "14020150020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020152028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020149020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020153022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3176404022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020151024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "700137002",
+          "componentChanges": [
+            {
+              "componentId": "12189018023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "4952674026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "4952675025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "259393001",
+          "componentChanges": [
+            {
+              "componentId": "14020131020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3416449021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "443870002",
+          "componentChanges": [
+            {
+              "componentId": "14020180026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020179029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020181027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020237027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "39686002",
+          "componentChanges": [
+            {
+              "componentId": "14020155026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020154027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3000645022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020156025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235153008",
+          "componentChanges": [
+            {
+              "componentId": "14020126023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020225029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "80267006",
+          "componentChanges": [
+            {
+              "componentId": "14020142027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020139022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020140024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020141023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "76009000",
+          "componentChanges": [
+            {
+              "componentId": "2696743020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020171026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2042323023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "176007002",
+          "componentChanges": [
+            {
+              "componentId": "14020123026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2990104024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020124021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020122020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020121029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020125022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "360563003",
+          "componentChanges": [
+            {
+              "componentId": "3220604021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "286780001",
+          "componentChanges": [
+            {
+              "componentId": "14020136026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020137024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020138025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "359583006",
+          "componentChanges": [
+            {
+              "componentId": "14020228027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020191022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020189025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020190023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020187028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "173918008",
+          "componentChanges": [
+            {
+              "componentId": "14020199024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020201021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020233028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020197021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020200022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889864,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Exploration of ossicular chain of middle ear (procedure)",
+      "commitDate": "2021-08-19T16:07:40Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1083271000202106",
+          "componentChanges": [
+            {
+              "componentId": "1343971000202114",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343981000202111",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343271000202115",
+              "componentType": "DESCRIPTION",
+              "changeType": "DELETE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889865,
+      "user": {
+        "username": "ovage"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/SNOMEDCT-NO/NO4/NO4-36"
+      },
+      "commitComment": "Updating concept Repair of ossicular chain of middle ear (procedure)",
+      "commitDate": "2021-08-19T16:08:11Z",
+      "conceptChanges": [
+        {
+          "conceptId": "1083281000202108",
+          "componentChanges": [
+            {
+              "componentId": "1344001000202118",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "1343991000202113",
+              "componentType": "DESCRIPTION",
+              "componentSubType": "SYNONYM_DESCRIPTION",
+              "changeType": "CREATE"
+            },
+            {
+              "componentId": "12348151000202112",
+              "componentType": "DESCRIPTION",
+              "changeType": "DELETE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889866,
+      "user": {
+        "username": "mharry"
+      },
+      "activityType": "CONTENT_CHANGE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "commitComment": "Updating concept Gastrointestinal endoscope (physical object)",
+      "commitDate": "2021-08-19T16:09:47Z",
+      "conceptChanges": [
+        {
+          "conceptId": "705509004",
+          "componentChanges": [
+            {
+              "componentId": "3d190e93-f7a9-4ae8-8c65-10e007236e9f",
+              "componentType": "OWLAXIOM",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 889867,
+      "user": {
+        "username": "swarren"
+      },
+      "activityType": "PROMOTION",
+      "branch": {
+        "branchPath": "MAIN/CRSJAN22"
+      },
+      "mergeSourceBranch": {
+        "branchPath": "MAIN/CRSJAN22/CRSJAN22-399"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/CRSJAN22"
+      },
+      "commitComment": "swarren performed merge of MAIN/CRSJAN22/CRSJAN22-399 to MAIN/CRSJAN22",
+      "commitDate": "2021-08-19T16:13:45Z"
+    },
+    {
+      "id": 889868,
+      "user": {
+        "username": "mharry"
+      },
+      "activityType": "CLASSIFICATION_SAVE",
+      "branch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "highestPromotedBranch": {
+        "branchPath": "MAIN/QIJAN22/QIJAN22-150"
+      },
+      "commitComment": "Classified ontology.",
+      "commitDate": "2021-08-19T16:16:08Z",
+      "conceptChanges": [
+        {
+          "conceptId": "425937002",
+          "componentChanges": [
+            {
+              "componentId": "14019737020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019738026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019739023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019740020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235155001",
+          "componentChanges": [
+            {
+              "componentId": "14019689020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "31319008",
+          "componentChanges": [
+            {
+              "componentId": "3186327020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019727026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2999860022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "173930002",
+          "componentChanges": [
+            {
+              "componentId": "2989903023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "698322008",
+          "componentChanges": [
+            {
+              "componentId": "5993900027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019831028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "314629004",
+          "componentChanges": [
+            {
+              "componentId": "14019730022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "978253001000132109",
+          "componentChanges": [
+            {
+              "componentId": "6796283023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235153008",
+          "componentChanges": [
+            {
+              "componentId": "14020225029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "288122006",
+          "componentChanges": [
+            {
+              "componentId": "14019924026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019922027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3224851028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "773128008",
+          "componentChanges": [
+            {
+              "componentId": "11502041024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "10581111027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "274378002",
+          "componentChanges": [
+            {
+              "componentId": "14019702022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019701026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019705024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019703028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "1960334027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019704023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "789778002",
+          "componentChanges": [
+            {
+              "componentId": "12103271024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "22558701000132108",
+          "componentChanges": [
+            {
+              "componentId": "6788326024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019840029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "6019008",
+          "componentChanges": [
+            {
+              "componentId": "14020023028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020022022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "246009022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "449106004",
+          "componentChanges": [
+            {
+              "componentId": "14019910025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3811375028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "3811376027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "415527002",
+          "componentChanges": [
+            {
+              "componentId": "14020075021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020076022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "3063009",
+          "componentChanges": [
+            {
+              "componentId": "14019676025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019677023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2545751026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "44380002",
+          "componentChanges": [
+            {
+              "componentId": "14019829021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235147008",
+          "componentChanges": [
+            {
+              "componentId": "14020223020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020224025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "49312027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "61328004",
+          "componentChanges": [
+            {
+              "componentId": "2694683022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019750021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2036911021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019746025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019748029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020069028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14020070027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019747023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019749021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "428758003",
+          "componentChanges": [
+            {
+              "componentId": "14019801023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3227512022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "173822004",
+          "componentChanges": [
+            {
+              "componentId": "14019803021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019802027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "705509004",
+          "componentChanges": [
+            {
+              "componentId": "14020238021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "367535003",
+          "componentChanges": [
+            {
+              "componentId": "14020235024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "13852005",
+          "componentChanges": [
+            {
+              "componentId": "14019622025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019620022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019621021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019624029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "1923128026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019623024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "10077008",
+          "componentChanges": [
+            {
+              "componentId": "2756564026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019718027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019717021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "773129000",
+          "componentChanges": [
+            {
+              "componentId": "14019835021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019836022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "25732003",
+          "componentChanges": [
+            {
+              "componentId": "2999347021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "311774002",
+          "componentChanges": [
+            {
+              "componentId": "3793633023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "2702639026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "348523022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235159007",
+          "componentChanges": [
+            {
+              "componentId": "3186031024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "33250001",
+          "componentChanges": [
+            {
+              "componentId": "14019668027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "118155006",
+          "componentChanges": [
+            {
+              "componentId": "2995408029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "2538741025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019678029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "425672002",
+          "componentChanges": [
+            {
+              "componentId": "14019735028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019733024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019734029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019736027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019731021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019732025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3171557024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "446521004",
+          "componentChanges": [
+            {
+              "componentId": "3797081029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "10613501029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "274379005",
+          "componentChanges": [
+            {
+              "componentId": "14019755027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019756026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019758025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019757024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "698409004",
+          "componentChanges": [
+            {
+              "componentId": "4797745029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "302052009",
+          "componentChanges": [
+            {
+              "componentId": "127228020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019709029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019708021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019710023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "373821009",
+          "componentChanges": [
+            {
+              "componentId": "14019725023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "710293001",
+          "componentChanges": [
+            {
+              "componentId": "6060159027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019920024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "713154003",
+          "componentChanges": [
+            {
+              "componentId": "6459768028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019913028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "446415001",
+          "componentChanges": [
+            {
+              "componentId": "3822322025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14020236020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3820601022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "3820600023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "427459009",
+          "componentChanges": [
+            {
+              "componentId": "14019772023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019771027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019773029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019774024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019770026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "274419001",
+          "componentChanges": [
+            {
+              "componentId": "3219675029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "3007340022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019707027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3007339020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "446745002",
+          "componentChanges": [
+            {
+              "componentId": "3798266026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019894023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "446170008",
+          "componentChanges": [
+            {
+              "componentId": "3805954025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019860021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3805953020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019861020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "307505003",
+          "componentChanges": [
+            {
+              "componentId": "14019714025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "53310009",
+          "componentChanges": [
+            {
+              "componentId": "14019648022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019647028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3001919022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "313170008",
+          "componentChanges": [
+            {
+              "componentId": "14019776021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019775020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "373822002",
+          "componentChanges": [
+            {
+              "componentId": "14019726024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "313172000",
+          "componentChanges": [
+            {
+              "componentId": "14019778022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019777028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "448811007",
+          "componentChanges": [
+            {
+              "componentId": "14019909024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "10613498029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "3811054028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "447977001",
+          "componentChanges": [
+            {
+              "componentId": "14019900023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019899029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019898021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "14869003",
+          "componentChanges": [
+            {
+              "componentId": "14019741024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3186080025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "2998137020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "44441009",
+          "componentChanges": [
+            {
+              "componentId": "14020230025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "235343002",
+          "componentChanges": [
+            {
+              "componentId": "14019728020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019729028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "995108027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "2744327029",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "370350009",
+          "componentChanges": [
+            {
+              "componentId": "14019779025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "12350003",
+          "componentChanges": [
+            {
+              "componentId": "14020219028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "5728008",
+          "componentChanges": [
+            {
+              "componentId": "3002291026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019790024",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "12156426025",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "49870005",
+          "componentChanges": [
+            {
+              "componentId": "3001604023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019744027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3186042026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "11343000",
+          "componentChanges": [
+            {
+              "componentId": "14019791023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019792027",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "1659592023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "392153002",
+          "componentChanges": [
+            {
+              "componentId": "5989635022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "3009233026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019766023",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019765022",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "12188856028",
+              "componentType": "RELATIONSHIP",
+              "changeType": "INACTIVATE"
+            },
+            {
+              "componentId": "14019763026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019764021",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019762020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        },
+        {
+          "conceptId": "287768000",
+          "componentChanges": [
+            {
+              "componentId": "14019713020",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            },
+            {
+              "componentId": "14019712026",
+              "componentType": "RELATIONSHIP",
+              "changeType": "UPDATE"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "last": true,
+  "totalElements": 889867,
+  "totalPages": 8899,
+  "number": 8898,
+  "sort": [
+    {
+      "direction": "ASC",
+      "property": "commitDate",
+      "ignoreCase": false,
+      "nullHandling": "NATIVE",
+      "ascending": true,
+      "descending": false
+    }
+  ],
+  "size": 100,
+  "numberOfElements": 67,
+  "first": false
+}
