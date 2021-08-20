@@ -4,6 +4,7 @@ import org.ihtsdo.otf.traceabilityservice.configuration.Config;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -13,6 +14,7 @@ import static com.google.common.base.Predicates.not;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 @EnableJms
+@EnableAsync
 @EnableSwagger2
 public class Application extends Config {
 
