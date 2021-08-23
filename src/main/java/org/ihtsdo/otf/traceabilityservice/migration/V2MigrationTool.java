@@ -2,6 +2,7 @@ package org.ihtsdo.otf.traceabilityservice.migration;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Iterables;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
@@ -20,14 +21,18 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // Tool for migrating from Traceability Service version 2 to version 3
 @Service
 public class V2MigrationTool {
 
 	public static final ParameterizedTypeReference<V2Page<V2Activity>> V_2_PAGE_PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<>() {};
+	public static final int SAVE_BATCH_SIZE = 500;
 
 	private final ObjectMapper objectMapper;
 
@@ -68,7 +73,7 @@ public class V2MigrationTool {
 							adjustedEndPage = requestedEndPage;
 						}
 					}
-					logger.info("Migrating v2 activity page {} (until {})", body.getNumber(), adjustedEndPage);
+					logger.info("Migrating v2 activity page {} (will stop at page {})", body.getNumber(), adjustedEndPage);
 					readPage(body);
 					keepLoading = body.getNumber() < adjustedEndPage;
 				} else {
@@ -92,22 +97,24 @@ public class V2MigrationTool {
 	}
 
 	public void readPage(final V2Page<V2Activity> v2Activities) {
-		v2Activities.getContent().forEach(v2Activity -> {
+		final List<Activity> v3Activities = v2Activities.getContent().stream()
+				.map(v2Activity -> new Activity(
+						v2Activity.getUser().getUsername(),
+						v2Activity.getBranch().getBranchPath(),
+						v2Activity.getMergeSourceBranch() != null ? v2Activity.getMergeSourceBranch().getBranchPath() : null,
+						v2Activity.getCommitDate(),
+						ActivityType.valueOf(v2Activity.getActivityType()))).collect(Collectors.toList());
+		for (List<Activity> v3ActivityBatch : Iterables.partition(v3Activities, SAVE_BATCH_SIZE)) {
 			if (!stop) {
 				try {
-					repository.save(new Activity(
-							v2Activity.getUser().getUsername(),
-							v2Activity.getBranch().getBranchPath(),
-							v2Activity.getMergeSourceBranch() != null ? v2Activity.getMergeSourceBranch().getBranchPath() : null,
-							v2Activity.getCommitDate(),
-							ActivityType.valueOf(v2Activity.getActivityType())));
-					System.out.print(".");
+					// saveAll() uses "POST _bulk" endpoint which is blocked by AWS security policies using index name prefix.
+					// We are relaxing this policy just during our migration.
+					repository.saveAll(v3ActivityBatch);
 				} catch (Exception e) {
-					logger.error("Failed to convert activity {} on page {}", v2Activity != null ? v2Activity.getId() : null, v2Activities.getNumber(), e);
+					logger.error("Failed to save batch of activities on page {}", v2Activities.getNumber(), e);
 				}
 			}
-		});
-		System.out.println();
+		}
 	}
 
 	public ObjectMapper getObjectMapper() {
