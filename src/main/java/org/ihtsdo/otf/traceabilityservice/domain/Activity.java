@@ -98,6 +98,11 @@ public class Activity {
 		return conceptChanges;
 	}
 
+	public Activity setConceptChanges(Set<ConceptChange> conceptChanges) {
+		this.conceptChanges = conceptChanges;
+		return this;
+	}
+
 	public String getHighestPromotedBranch() {
 		return highestPromotedBranch;
 	}

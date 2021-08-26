@@ -22,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ActivityController {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
 	@Autowired
 	private ActivityRepository activityRepository;
@@ -30,7 +29,8 @@ public class ActivityController {
 	@Autowired
 	private ActivityService activityService;
 
-	private static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").descending();
+	public static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").descending();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
 	@GetMapping(value = "/activities")
 	@ResponseBody

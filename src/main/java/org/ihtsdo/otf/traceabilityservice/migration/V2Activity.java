@@ -77,12 +77,16 @@ public class V2Activity {
 
 	public static final class V2ComponentChange {
 		private String componentId;
+		private String changeType;
 		private String componentType;
 		private String componentSubType;
-		private String changeType;
 
 		public String getComponentId() {
 			return componentId;
+		}
+
+		public String getChangeType() {
+			return changeType;
 		}
 
 		public String getComponentType() {
@@ -91,10 +95,6 @@ public class V2Activity {
 
 		public String getComponentSubType() {
 			return componentSubType;
-		}
-
-		public String getChangeType() {
-			return changeType;
 		}
 	}
 

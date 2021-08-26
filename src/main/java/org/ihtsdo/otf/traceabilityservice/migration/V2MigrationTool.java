@@ -3,13 +3,11 @@ package org.ihtsdo.otf.traceabilityservice.migration;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
-import org.ihtsdo.otf.traceabilityservice.domain.Activity;
-import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
+import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -20,11 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // Tool for migrating from Traceability Service version 2 to version 3
@@ -103,7 +97,9 @@ public class V2MigrationTool {
 						v2Activity.getBranch().getBranchPath(),
 						v2Activity.getMergeSourceBranch() != null ? v2Activity.getMergeSourceBranch().getBranchPath() : null,
 						v2Activity.getCommitDate(),
-						ActivityType.valueOf(v2Activity.getActivityType()))).collect(Collectors.toList());
+						ActivityType.valueOf(v2Activity.getActivityType()))
+						.setConceptChanges(convertChanges(v2Activity.getConceptChanges())))
+				.collect(Collectors.toList());
 		for (List<Activity> v3ActivityBatch : Iterables.partition(v3Activities, SAVE_BATCH_SIZE)) {
 			if (!stop) {
 				try {
@@ -115,6 +111,76 @@ public class V2MigrationTool {
 				}
 			}
 		}
+	}
+
+	private Set<ConceptChange> convertChanges(List<V2Activity.V2ConceptChange> conceptChanges) {
+		if (conceptChanges == null) {
+			return null;
+		}
+		return conceptChanges.stream()
+				.filter(v2ConceptChange -> isLong(v2ConceptChange.getConceptId()))
+				.map(v2ConceptChange -> {
+					final ConceptChange conceptChange = new ConceptChange(Long.parseLong(v2ConceptChange.getConceptId()));
+					for (V2Activity.V2ComponentChange v2Change : v2ConceptChange.getComponentChanges()) {
+						conceptChange.addComponentChange(getComponentChange(v2Change));
+					}
+					return conceptChange;
+				})
+				.collect(Collectors.toSet());
+	}
+
+	private ComponentChange getComponentChange(V2Activity.V2ComponentChange v2Change) {
+
+		ComponentType componentType = null;
+		Long componentSubType = null;
+
+		String v2ComponentType = v2Change.getComponentType();
+		/// V2 = CONCEPT, DESCRIPTION, RELATIONSHIP, OWLAXIOM, REFERENCESETMEMBER
+		if (v2ComponentType != null) {
+			if (v2ComponentType.equals("REFERENCESETMEMBER")) {
+				v2ComponentType = "REFERENCE_SET_MEMBER";
+				// No sub-type information is available for these entries, will have to leave blank
+			} else if (v2ComponentType.equals("OWLAXIOM")) {
+				// 733073007 | OWL axiom reference set (foundation metadata concept) |
+				componentSubType = 733073007L;
+				v2ComponentType = "REFERENCE_SET_MEMBER";
+			}
+			componentType = ComponentType.valueOf(v2ComponentType);
+		}
+
+		// STATED_RELATIONSHIP, INFERRED_RELATIONSHIP, FSN_DESCRIPTION, SYNONYM_DESCRIPTION
+		final String v2ComponentSubType = v2Change.getComponentSubType();
+		if (v2ComponentSubType != null) {
+			switch (v2ComponentSubType) {
+				case "STATED_RELATIONSHIP":
+					// 900000000000010007 | Stated relationship (core metadata concept) |
+					componentSubType = 900000000000010007L;
+					break;
+				case "INFERRED_RELATIONSHIP":
+					// 900000000000011006 | Inferred relationship (core metadata concept) |
+					componentSubType = 900000000000011006L;
+					break;
+				case "FSN_DESCRIPTION":
+					// 900000000000003001 | Fully specified name (core metadata concept) |
+					componentSubType = 900000000000003001L;
+					break;
+				case "SYNONYM_DESCRIPTION":
+					// 900000000000013009 | Synonym (core metadata concept) |
+					componentSubType = 900000000000013009L;
+					break;
+				default:
+					componentSubType = null;
+					break;
+			}
+			// There was no sub-type for text definition in the old V2 code.
+		}
+
+		return new ComponentChange(v2Change.getComponentId(), ChangeType.valueOf(v2Change.getChangeType()),
+				componentType, componentSubType);
+	}
+
+	private boolean isLong(String string) {
+		return string != null && !string.isEmpty() && string.matches("[0-9]+");
 	}
 
 	public ObjectMapper getObjectMapper() {
