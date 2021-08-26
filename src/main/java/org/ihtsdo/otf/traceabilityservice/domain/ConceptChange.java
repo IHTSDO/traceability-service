@@ -9,16 +9,16 @@ import java.util.Set;
 public class ConceptChange {
 
 	@Field(type = FieldType.Keyword)
-	private final Long conceptId;
+	private final String conceptId;
 
 	private final Set<ComponentChange> componentChanges;
 
-	public ConceptChange(long conceptId) {
+	public ConceptChange(String conceptId) {
 		this.conceptId = conceptId;
 		componentChanges = new HashSet<>();
 	}
 
-	public Long getConceptId() {
+	public String getConceptId() {
 		return conceptId;
 	}
 

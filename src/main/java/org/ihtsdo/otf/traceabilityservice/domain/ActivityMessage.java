@@ -82,7 +82,7 @@ public class ActivityMessage {
 
 		private ChangeType changeType;
 		private ComponentType componentType;
-		private Long componentSubType;
+		private String componentSubType;
 		private String componentId;
 		private boolean effectiveTimeNull;
 
@@ -97,7 +97,7 @@ public class ActivityMessage {
 			return componentType;
 		}
 
-		public Long getComponentSubType() {
+		public String getComponentSubType() {
 			return componentSubType;
 		}
 

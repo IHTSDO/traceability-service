@@ -50,12 +50,12 @@ class V2MigrationToolTest extends AbstractTest {
 				"  \"commitDate\" : \"2021-08-19T14:53:45.000+00:00\",\n" +
 				"  \"activityType\" : \"CONTENT_CHANGE\",\n" +
 				"  \"conceptChanges\" : [ {\n" +
-				"    \"conceptId\" : 30641000087103,\n" +
+				"    \"conceptId\" : \"30641000087103\",\n" +
 				"    \"componentChanges\" : [ {\n" +
 				"      \"componentId\" : \"4636190013\",\n" +
 				"      \"changeType\" : \"CREATE\",\n" +
 				"      \"componentType\" : \"DESCRIPTION\",\n" +
-				"      \"componentSubType\" : 900000000000013009\n" +
+				"      \"componentSubType\" : \"900000000000013009\"\n" +
 				"    } ]\n" +
 				"  } ]\n" +
 				"}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(activity));

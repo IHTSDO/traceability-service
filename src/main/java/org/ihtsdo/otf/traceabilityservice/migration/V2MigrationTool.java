@@ -120,7 +120,7 @@ public class V2MigrationTool {
 		return conceptChanges.stream()
 				.filter(v2ConceptChange -> isLong(v2ConceptChange.getConceptId()))
 				.map(v2ConceptChange -> {
-					final ConceptChange conceptChange = new ConceptChange(Long.parseLong(v2ConceptChange.getConceptId()));
+					final ConceptChange conceptChange = new ConceptChange(v2ConceptChange.getConceptId());
 					for (V2Activity.V2ComponentChange v2Change : v2ConceptChange.getComponentChanges()) {
 						conceptChange.addComponentChange(getComponentChange(v2Change));
 					}
@@ -176,7 +176,7 @@ public class V2MigrationTool {
 		}
 
 		return new ComponentChange(v2Change.getComponentId(), ChangeType.valueOf(v2Change.getChangeType()),
-				componentType, componentSubType);
+				componentType, componentSubType != null ? componentSubType.toString() : null);
 	}
 
 	private boolean isLong(String string) {

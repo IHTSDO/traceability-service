@@ -17,12 +17,12 @@ public class ComponentChange {
 	private ComponentType componentType;
 
 	@Field(type = FieldType.Keyword)
-	private Long componentSubType;
+	private String componentSubType;
 
 	public ComponentChange() {
 	}
 
-	public ComponentChange(String componentId, ChangeType changeType, ComponentType componentType, Long componentSubType) {
+	public ComponentChange(String componentId, ChangeType changeType, ComponentType componentType, String componentSubType) {
 		this.componentId = componentId;
 		this.changeType = changeType;
 		this.componentType = componentType;
@@ -41,7 +41,7 @@ public class ComponentChange {
 		return componentType;
 	}
 
-	public Long getComponentSubType() {
+	public String getComponentSubType() {
 		return componentSubType;
 	}
 
