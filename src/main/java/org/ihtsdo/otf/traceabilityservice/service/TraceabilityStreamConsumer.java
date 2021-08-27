@@ -3,8 +3,6 @@ package org.ihtsdo.otf.traceabilityservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import org.elasticsearch.search.sort.FieldSortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
 import org.ihtsdo.otf.traceabilityservice.Application;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
@@ -59,7 +57,7 @@ public class TraceabilityStreamConsumer {
 				final ConceptChange conceptChange = new ConceptChange(conceptId);
 				for (ActivityMessage.ComponentChange componentChange : conceptActivity.getComponentChanges()) {
 					conceptChange.addComponentChange(new ComponentChange(componentChange.getComponentId(), componentChange.getChangeType(),
-							componentChange.getComponentType(), componentChange.getComponentSubType()));
+							componentChange.getComponentType(), componentChange.getComponentSubType(), componentChange.isEffectiveTimeNull()));
 				}
 				activity.addConceptChange(conceptChange);
 			}

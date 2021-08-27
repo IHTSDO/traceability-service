@@ -176,7 +176,7 @@ public class V2MigrationTool {
 		}
 
 		return new ComponentChange(v2Change.getComponentId(), ChangeType.valueOf(v2Change.getChangeType()),
-				componentType, componentSubType != null ? componentSubType.toString() : null);
+				componentType, componentSubType != null ? componentSubType.toString() : null, true);
 	}
 
 	private boolean isLong(String string) {

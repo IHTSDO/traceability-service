@@ -1,0 +1,20 @@
+{
+  "userId": "kkewley",
+  "branchPath": "MAIN/STORMTESTK/STORMTESTK-131",
+  "activityType": "CONTENT_CHANGE",
+  "commitTimestamp": 1630076868660,
+  "changes": [
+    {
+      "conceptId": "890131001",
+      "componentChanges": [
+        {
+          "changeType": "UPDATE",
+          "componentType": "DESCRIPTION",
+          "componentSubType": 900000000000003001,
+          "componentId": "4009229015",
+          "effectiveTimeNull": false
+        }
+      ]
+    }
+  ]
+}

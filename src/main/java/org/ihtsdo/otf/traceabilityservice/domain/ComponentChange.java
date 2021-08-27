@@ -19,14 +19,19 @@ public class ComponentChange {
 	@Field(type = FieldType.Keyword)
 	private String componentSubType;
 
+	@Field(type = FieldType.Boolean)
+	private boolean effectiveTimeNull;
+
 	public ComponentChange() {
 	}
 
-	public ComponentChange(String componentId, ChangeType changeType, ComponentType componentType, String componentSubType) {
+	public ComponentChange(String componentId, ChangeType changeType, ComponentType componentType, String componentSubType, boolean effectiveTimeNull) {
 		this.componentId = componentId;
 		this.changeType = changeType;
 		this.componentType = componentType;
 		this.componentSubType = componentSubType;
+		this.effectiveTimeNull = effectiveTimeNull;
+
 	}
 
 	public String getComponentId() {
@@ -45,16 +50,20 @@ public class ComponentChange {
 		return componentSubType;
 	}
 
+	public boolean isEffectiveTimeNull() {
+		return effectiveTimeNull;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ComponentChange that = (ComponentChange) o;
-		return componentId.equals(that.componentId) && changeType == that.changeType && componentType == that.componentType && Objects.equals(componentSubType, that.componentSubType);
+		return effectiveTimeNull == that.effectiveTimeNull && componentId.equals(that.componentId) && changeType == that.changeType && componentType == that.componentType && Objects.equals(componentSubType, that.componentSubType);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(componentId, changeType, componentType, componentSubType);
+		return Objects.hash(componentId, changeType, componentType, componentSubType, effectiveTimeNull);
 	}
 }
