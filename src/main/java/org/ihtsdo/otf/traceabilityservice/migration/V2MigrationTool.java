@@ -8,6 +8,7 @@ import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -26,7 +27,9 @@ import java.util.stream.Collectors;
 public class V2MigrationTool {
 
 	public static final ParameterizedTypeReference<V2Page<V2Activity>> V_2_PAGE_PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<>() {};
-	public static final int SAVE_BATCH_SIZE = 500;
+
+	@Value("${migration.save-batch-size}")
+	private int saveBatchSize;
 
 	private final ObjectMapper objectMapper;
 
@@ -54,6 +57,7 @@ public class V2MigrationTool {
 		try {
 			boolean keepLoading = true;
 			int page = startPage;
+			logger.info("Starting migration process using save batch size {}...", saveBatchSize);
 			while (!stop && keepLoading) {
 				final Map<String, Object> uriVariables = new HashMap<>();
 				uriVariables.put("page", page++);
@@ -100,7 +104,7 @@ public class V2MigrationTool {
 						ActivityType.valueOf(v2Activity.getActivityType()))
 						.setConceptChanges(convertChanges(v2Activity.getConceptChanges())))
 				.collect(Collectors.toList());
-		for (List<Activity> v3ActivityBatch : Iterables.partition(v3Activities, SAVE_BATCH_SIZE)) {
+		for (List<Activity> v3ActivityBatch : Iterables.partition(v3Activities, saveBatchSize)) {
 			if (!stop) {
 				try {
 					// saveAll() uses "POST _bulk" endpoint which is blocked by AWS security policies using index name prefix.
