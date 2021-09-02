@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // Tool for migrating from Traceability Service version 2 to version 3
 @Service
@@ -107,9 +108,21 @@ public class V2MigrationTool {
 		for (List<Activity> v3ActivityBatch : Iterables.partition(v3Activities, saveBatchSize)) {
 			if (!stop) {
 				try {
-					// saveAll() uses "POST _bulk" endpoint which is blocked by AWS security policies using index name prefix.
-					// We are relaxing this policy just during our migration.
-					repository.saveAll(v3ActivityBatch);
+					long componentChangeCount = v3Activities.stream()
+							.flatMap(activity -> activity.getConceptChanges() != null ? activity.getConceptChanges().stream() : Stream.empty())
+							.mapToLong(change -> change.getComponentChanges().size())
+							.sum();
+					if (componentChangeCount > saveBatchSize * 15L) {
+						logger.info("Component count within this batch is more than 15 times the batch size, saving as 10 parts.");
+						// Pages are unusually large. Split batches further to avoid Elasticsearch request too large error.
+						for (List<Activity> subBatch : Iterables.partition(v3Activities, 10)) {
+							repository.saveAll(subBatch);
+						}
+					} else {
+						// saveAll() uses "POST _bulk" endpoint which is blocked by AWS security policies using index name prefix.
+						// We are relaxing this policy just during our migration.
+						repository.saveAll(v3ActivityBatch);
+					}
 				} catch (Exception e) {
 					logger.error("Failed to save batch of activities on page {}", v2Activities.getNumber(), e);
 				}
