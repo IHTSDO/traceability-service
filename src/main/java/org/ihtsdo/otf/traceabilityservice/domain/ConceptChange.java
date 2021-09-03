@@ -11,7 +11,7 @@ public class ConceptChange {
 	@Field(type = FieldType.Keyword)
 	private final String conceptId;
 
-	private final Set<ComponentChange> componentChanges;
+	private Set<ComponentChange> componentChanges;
 
 	public ConceptChange(String conceptId) {
 		this.conceptId = conceptId;
@@ -28,5 +28,9 @@ public class ConceptChange {
 
 	public Set<ComponentChange> getComponentChanges() {
 		return componentChanges;
+	}
+
+	public void setComponentChanges(Set<ComponentChange> componentChanges) {
+		this.componentChanges = componentChanges;
 	}
 }

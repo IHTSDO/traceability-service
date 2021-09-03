@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -112,23 +109,37 @@ public class V2MigrationTool {
 			if (!stop) {
 				try {
 
-					final List<Activity> largePages = v3ActivityBatch.stream().filter(activity -> {
+					final List<Activity> largePages = new ArrayList<>();
+					final List<Activity> smallPages = new ArrayList<>();
+
+					v3ActivityBatch.forEach(activity -> {
 						final Stream<ConceptChange> conceptChangeStream = activity.getConceptChanges() != null ? activity.getConceptChanges().stream() : Stream.empty();
-						return conceptChangeStream.mapToLong(change -> change.getComponentChanges().size()).sum() > 1000L;
-					}).collect(Collectors.toList());
+						final long pageComponentCount = conceptChangeStream.mapToLong(change -> change.getComponentChanges().size()).sum();
+						if (pageComponentCount > 10_000L) {
+							// Remove relationship changes, most likely inferred relationships that are generated anyway. If stated relationships they are so old it's not that
+							// interesting.
+							logger.info("Activity {} at {} has more than 10K component changes. Stripping out inferred relationships.", activity.getBranch(), activity.getCommitDate());
+							activity.getConceptChanges().forEach(conceptChange -> {
+								final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
+								conceptChange.setComponentChanges(componentChanges.stream()
+										.filter(componentChange -> componentChange.getComponentType() != ComponentType.RELATIONSHIP)
+										.collect(Collectors.toSet()));
+							});
+							largePages.add(activity);
+						} else if (pageComponentCount > 1_000L) {
+							largePages.add(activity);
+						} else {
+							smallPages.add(activity);
+						}
+					});
 
 					if (!largePages.isEmpty()) {
 						logger.info("Saving {} large pages individually..", largePages.size());
 						for (Activity largePage : largePages) {
 							repository.save(largePage);
 						}
-
-						final List<Activity> smallPages = v3ActivityBatch.stream().filter(page -> !largePages.contains(page)).collect(Collectors.toList());
-						if (!smallPages.isEmpty()) {
-							logger.info("Saving remaining {} small pages as batch.", smallPages.size());
-							repository.saveAll(smallPages);
-						}
-					} else {
+					}
+					if (!smallPages.isEmpty()) {
 						// saveAll() uses "POST _bulk" endpoint which is blocked by AWS security policies using index name prefix.
 						// We are relaxing this policy just during our migration.
 						repository.saveAll(v3ActivityBatch);
