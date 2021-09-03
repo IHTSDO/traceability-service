@@ -132,8 +132,10 @@ public class ActivityController {
 	
 	private void makeBrief(Page<Activity> activities) {
 		for (Activity activity : activities.getContent()) {
-			for (ConceptChange conceptChange : activity.getConceptChanges()) {
-				conceptChange.getComponentChanges().clear();
+			if (activity.getConceptChanges() != null) {
+				for (ConceptChange conceptChange : activity.getConceptChanges()) {
+					conceptChange.getComponentChanges().clear();
+				}
 			}
 		}
 	}
