@@ -29,7 +29,7 @@ public class ActivityController {
 	@Autowired
 	private ActivityService activityService;
 
-	public static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").descending();
+	public static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").ascending();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
 	@GetMapping(value = "/activities")

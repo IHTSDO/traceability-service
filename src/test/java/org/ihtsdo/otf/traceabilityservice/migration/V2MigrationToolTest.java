@@ -41,7 +41,7 @@ class V2MigrationToolTest extends AbstractTest {
 		final Page<Activity> byConceptId = activityRepository.findByConceptId(30641000087103L, PageRequest.of(0, 2, ActivityController.COMMIT_DATE_SORT));
 		final List<Activity> content = byConceptId.getContent();
 		assertEquals(2, content.size());
-		final Activity activity = content.get(1);
+		final Activity activity = content.get(0);
 		assertEquals("{\n" +
 				"  \"username\" : \"mbraithwaite\",\n" +
 				"  \"branch\" : \"MAIN/CRSJAN22/CRSJAN22-404\",\n" +
