@@ -17,9 +17,16 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 	Page<Activity> findByBranchAndActivityType(String branch, ActivityType activityType, Pageable page);
 
-	Page<Activity> findByHighestPromotedBranch(String highestPromotedBranch, Pageable pageRequest);
+	Page<Activity> findByHighestPromotedBranchOrBranch(String highestPromotedBranch, String branch, Pageable pageRequest);
 
-	Page<Activity> findByActivityTypeAndHighestPromotedBranch(ActivityType activityType, String highestPromotedBranch, Pageable pageRequest);
+	@Query("{ \"bool\": { \"must\": [ " +
+			"{ \"bool\" : { \"should\" : [" +
+			"  { \"term\" : { \"highestPromotedBranch\" : \"?0\" } }, " +
+			"  { \"term\" : { \"branch\" : \"?1\" } } " +
+			"] }}, " +
+			"{ \"term\" : { \"activityType\" : \"?2\" } } " +
+			"] }}")
+	Page<Activity> findByHighestPromotedBranchOrBranchAndActivityType(String highestPromotedBranch, String branch, ActivityType activityType, Pageable pageRequest);
 
 	@Query("{ \"term\" : { \"conceptChanges.conceptId\" : \"?0\" } }")
 	Page<Activity> findByConceptId(Long conceptId, Pageable pageRequest);

@@ -66,9 +66,9 @@ public class ActivityController {
 			}
 		} else if (onBranch != null) {
 			if (activityType != null) {
-				return activityRepository.findByActivityTypeAndHighestPromotedBranch(activityType, onBranch, page);
+				return activityRepository.findByHighestPromotedBranchOrBranchAndActivityType(onBranch, onBranch, activityType, page);
 			} else {
-				return activityRepository.findByHighestPromotedBranch(onBranch, page);
+				return activityRepository.findByHighestPromotedBranchOrBranch(onBranch, onBranch, page);
 			}
 		} else {
 			if (activityType != null) {

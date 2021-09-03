@@ -52,6 +52,15 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 		final Activity originalCommit = byBranch.getContent().iterator().next();
 		assertEquals(ActivityType.CONTENT_CHANGE, originalCommit.getActivityType());
 		assertEquals("MAIN/STORMTEST2", originalCommit.getHighestPromotedBranch());
+
+		assertEquals(1, activityRepository.findByHighestPromotedBranchOrBranch("MAIN/STORMTEST2/STORMTEST2-243", "MAIN/STORMTEST2/STORMTEST2-243", Pageable.unpaged())
+				.getTotalElements());
+		assertEquals(1, activityRepository.findByHighestPromotedBranchOrBranchAndActivityType("MAIN/STORMTEST2/STORMTEST2-243", "MAIN/STORMTEST2/STORMTEST2-243",
+				ActivityType.CONTENT_CHANGE, Pageable.unpaged()).getTotalElements());
+		assertEquals(1, activityRepository.findByHighestPromotedBranchOrBranchAndActivityType("MAIN/STORMTEST2", "MAIN/STORMTEST2",
+				ActivityType.CONTENT_CHANGE, Pageable.unpaged()).getTotalElements());
+		assertEquals(0, activityRepository.findByHighestPromotedBranchOrBranchAndActivityType("MAIN/STORMTEST2/STORMTEST2-243", "MAIN/STORMTEST2/STORMTEST2-243",
+				ActivityType.CLASSIFICATION_SAVE, Pageable.unpaged()).getTotalElements());
 	}
 
 	@Test
