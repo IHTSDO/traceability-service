@@ -7,6 +7,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Document(indexName = "activity")
@@ -109,5 +110,18 @@ public class Activity {
 
 	public void setHighestPromotedBranch(String highestPromotedBranch) {
 		this.highestPromotedBranch = highestPromotedBranch;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Activity activity = (Activity) o;
+		return branch.equals(activity.branch) && commitDate.equals(activity.commitDate);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(branch, commitDate);
 	}
 }

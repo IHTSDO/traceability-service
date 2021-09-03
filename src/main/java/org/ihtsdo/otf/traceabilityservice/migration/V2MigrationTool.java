@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -108,15 +111,22 @@ public class V2MigrationTool {
 		for (List<Activity> v3ActivityBatch : Iterables.partition(v3Activities, saveBatchSize)) {
 			if (!stop) {
 				try {
-					long componentChangeCount = v3Activities.stream()
-							.flatMap(activity -> activity.getConceptChanges() != null ? activity.getConceptChanges().stream() : Stream.empty())
-							.mapToLong(change -> change.getComponentChanges().size())
-							.sum();
-					if (componentChangeCount > saveBatchSize * 15L) {
-						logger.info("Component count within this batch is more than 15 times the batch size, saving as 10 parts.");
-						// Pages are unusually large. Split batches further to avoid Elasticsearch request too large error.
-						for (List<Activity> subBatch : Iterables.partition(v3Activities, 10)) {
-							repository.saveAll(subBatch);
+
+					final List<Activity> largePages = v3ActivityBatch.stream().filter(activity -> {
+						final Stream<ConceptChange> conceptChangeStream = activity.getConceptChanges() != null ? activity.getConceptChanges().stream() : Stream.empty();
+						return conceptChangeStream.mapToLong(change -> change.getComponentChanges().size()).sum() > 1000L;
+					}).collect(Collectors.toList());
+
+					if (!largePages.isEmpty()) {
+						logger.info("Saving {} large pages individually..", largePages.size());
+						for (Activity largePage : largePages) {
+							repository.save(largePage);
+						}
+
+						final List<Activity> smallPages = v3ActivityBatch.stream().filter(page -> !largePages.contains(page)).collect(Collectors.toList());
+						if (!smallPages.isEmpty()) {
+							logger.info("Saving remaining {} small pages as batch.", smallPages.size());
+							repository.saveAll(smallPages);
 						}
 					} else {
 						// saveAll() uses "POST _bulk" endpoint which is blocked by AWS security policies using index name prefix.
