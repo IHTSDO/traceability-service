@@ -33,6 +33,8 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 
 	Page<Activity> findByActivityTypeAndSourceBranch(ActivityType activityType, String sourceBranch, Pageable page);
 
+	Page<Activity> findByActivityTypeAndBranch(ActivityType activityType, String sourceBranch, Pageable page);
+
 	@Query("{ \"bool\": { \"must\": [ " +
 			"{ \"terms\" : { \"conceptChanges.conceptId\" : ?0 } }, " +
 			"{ \"term\" : { \"activityType\" : \"?1\" } }, " +
