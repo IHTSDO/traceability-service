@@ -15,9 +15,11 @@ public class Activity {
 
 	public static class Fields {
 		private Fields() {}
+		public static final String branch = "branch";
 		public static final String highestPromotedBranch = "highestPromotedBranch";
-		public static final String activityType = "activityType";
 		public static final String commitDate = "commitDate";
+		public static final String promotionDate = "promotionDate";
+		public static final String activityType = "activityType";
 	}
 
 	@Id
@@ -40,6 +42,8 @@ public class Activity {
 	private String highestPromotedBranch;
 
 	private Date commitDate;
+
+	private Date promotionDate;
 
 	@Field(type = FieldType.Keyword)
 	private ActivityType activityType;
@@ -110,6 +114,14 @@ public class Activity {
 
 	public void setHighestPromotedBranch(String highestPromotedBranch) {
 		this.highestPromotedBranch = highestPromotedBranch;
+	}
+
+	public Date getPromotionDate() {
+		return promotionDate;
+	}
+
+	public void setPromotionDate(Date promotionDate) {
+		this.promotionDate = promotionDate;
 	}
 
 	@Override

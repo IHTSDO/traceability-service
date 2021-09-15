@@ -82,6 +82,7 @@ public class TraceabilityStreamConsumer {
 				stream.forEachRemaining(activitySearchHit -> {
 					final Activity activityToUpdate = activitySearchHit.getContent();
 					activityToUpdate.setHighestPromotedBranch(branchPath);
+					activityToUpdate.setPromotionDate(commitTimestamp);
 					toSave.add(activityToUpdate);
 				});
 			}
