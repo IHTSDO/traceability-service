@@ -1,7 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.ihtsdo.otf.rest.client.terminologyserver.SnowstormRestClientFactory;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,12 +150,17 @@ public class ReportService {
 						.flatMap(conceptChange -> conceptChange.getComponentChanges().stream())
 						.forEach(componentChange -> {
 							final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
-							if (componentChange.isEffectiveTimeNull()) {
-								ids.add(componentChange.getComponentId());
-							} else {
-								// new commit may have restored effectiveTime,
-								// remove component id from set because we no longer expect a row in the delta
+
+							if (componentChange.getChangeType() == ChangeType.DELETE) {
 								ids.remove(componentChange.getComponentId());
+							} else {
+								if (componentChange.isEffectiveTimeNull()) {
+									ids.add(componentChange.getComponentId());
+								} else {
+									// new commit may have restored effectiveTime,
+									// remove component id from set because we no longer expect a row in the delta
+									ids.remove(componentChange.getComponentId());
+								}
 							}
 						});
 			});
