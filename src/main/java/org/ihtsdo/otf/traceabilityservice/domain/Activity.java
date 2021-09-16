@@ -41,8 +41,10 @@ public class Activity {
 	@Field(type = FieldType.Keyword)
 	private String highestPromotedBranch;
 
+	@Field(type = FieldType.Long)
 	private Date commitDate;
 
+	@Field(type = FieldType.Long)
 	private Date promotionDate;
 
 	@Field(type = FieldType.Keyword)
@@ -71,8 +73,9 @@ public class Activity {
 		return branchPath.split("/").length;
 	}
 
-	public void addConceptChange(ConceptChange conceptChange) {
+	public Activity addConceptChange(ConceptChange conceptChange) {
 		conceptChanges.add(conceptChange);
+		return this;
 	}
 
 	public String getUsername() {

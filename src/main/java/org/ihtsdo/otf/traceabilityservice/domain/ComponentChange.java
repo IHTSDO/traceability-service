@@ -66,4 +66,15 @@ public class ComponentChange {
 	public int hashCode() {
 		return Objects.hash(componentId, changeType, componentType, componentSubType, effectiveTimeNull);
 	}
+
+	@Override
+	public String toString() {
+		return "ComponentChange{" +
+				"componentId='" + componentId + '\'' +
+				", changeType=" + changeType +
+				", componentType=" + componentType +
+				", componentSubType='" + componentSubType + '\'' +
+				", effectiveTimeNull=" + effectiveTimeNull +
+				'}';
+	}
 }

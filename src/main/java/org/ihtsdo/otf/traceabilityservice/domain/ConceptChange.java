@@ -22,8 +22,9 @@ public class ConceptChange {
 		return conceptId;
 	}
 
-	public void addComponentChange(ComponentChange componentChange) {
+	public ConceptChange addComponentChange(ComponentChange componentChange) {
 		componentChanges.add(componentChange);
+		return this;
 	}
 
 	public Set<ComponentChange> getComponentChanges() {

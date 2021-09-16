@@ -84,6 +84,10 @@ public class ReportService {
 		last commit will have correct flag because it's the rebase commit that happened afterwards
 		 */
 
+	public ChangeSummaryReport createChangeSummaryReport(String branch) {
+		return createChangeSummaryReport(branch, true, true, true);
+	}
+
 	public ChangeSummaryReport createChangeSummaryReport(String branch, boolean includeMadeOnThisBranch, boolean includePromotedToThisBranch, boolean includeRebasedToThisBranch) {
 
 		Map<ComponentType, Set<String>> componentChanges = new EnumMap<>(ComponentType.class);

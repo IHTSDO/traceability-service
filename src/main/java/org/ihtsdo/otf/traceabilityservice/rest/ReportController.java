@@ -21,10 +21,17 @@ public class ReportController {
 	@ApiOperation("Fetch change summary report on a branch since the last promotio (or versioning if a code system branch).")
 	@PostMapping("/change-summary")
 	public ChangeSummaryReport createChangeSummaryReport(
-			@RequestParam @ApiParam(required = true) String branch,
-			@RequestParam @ApiParam(defaultValue = "true") boolean includeMadeOnThisBranch,
-			@RequestParam @ApiParam(defaultValue = "true") boolean includePromotedToThisBranch,
-			@RequestParam @ApiParam(defaultValue = "true") boolean includeRebasedToThisBranch) {
+			@ApiParam(required = true)
+			@RequestParam String branch,
+
+			@ApiParam(defaultValue = "true")
+			@RequestParam(defaultValue = "true") boolean includeMadeOnThisBranch,
+
+			@ApiParam(defaultValue = "true")
+			@RequestParam(defaultValue = "true") boolean includePromotedToThisBranch,
+
+			@ApiParam(defaultValue = "true")
+			@RequestParam(defaultValue = "true") boolean includeRebasedToThisBranch) {
 
 		return reportService.createChangeSummaryReport(branch, includeMadeOnThisBranch, includePromotedToThisBranch, includeRebasedToThisBranch);
 	}
