@@ -91,24 +91,6 @@ public class ReportService {
 
 		Date activityStartDate = getChangeStartDate(branch);
 
-		if (includeMadeOnThisBranch) {
-			// Changes made on this branch
-			final BoolQueryBuilder onThisBranchQuery = boolQuery()
-					.must(termQuery(Activity.Fields.branch, branch))
-					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(rangeQuery(Activity.Fields.commitDate).gte(activityStartDate.getTime()));
-			processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel);
-		}
-
-		if (includePromotedToThisBranch) {
-			// Changes made on child branches, promoted to this one
-			final BoolQueryBuilder onDescendantBranches = boolQuery()
-					.mustNot(termQuery(Activity.Fields.branch, branch))
-					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(rangeQuery(Activity.Fields.promotionDate).gte(activityStartDate.getTime()));
-			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel);
-		}
-
 		if (includeRebasedToThisBranch) {
 			// Changes made on ancestor branches
 			final Deque<String> ancestors = createAncestorDeque(branch);
@@ -132,6 +114,26 @@ public class ReportService {
 				}
 			}
 		}
+
+		if (includePromotedToThisBranch) {
+			// Changes made on child branches, promoted to this one
+			final BoolQueryBuilder onDescendantBranches = boolQuery()
+					.mustNot(termQuery(Activity.Fields.branch, branch))
+					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
+					.must(rangeQuery(Activity.Fields.promotionDate).gte(activityStartDate.getTime()));
+			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel);
+		}
+
+		if (includeMadeOnThisBranch) {
+			// Changes made on this branch
+			final BoolQueryBuilder onThisBranchQuery = boolQuery()
+					.must(termQuery(Activity.Fields.branch, branch))
+					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
+					.must(rangeQuery(Activity.Fields.commitDate).gte(activityStartDate.getTime()));
+			processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel);
+		}
+
+		componentChanges.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 
 		return new ChangeSummaryReport(componentChanges, changesNotAtTaskLevel);
 	}
