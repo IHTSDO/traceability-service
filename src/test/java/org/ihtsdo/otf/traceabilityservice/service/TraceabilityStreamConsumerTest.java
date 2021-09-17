@@ -1,5 +1,7 @@
-package org.ihtsdo.otf.traceabilityservice;
+package org.ihtsdo.otf.traceabilityservice.service;
 
+import org.ihtsdo.otf.traceabilityservice.AbstractTest;
+import org.ihtsdo.otf.traceabilityservice.Concepts;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -26,7 +28,7 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
 		assertEquals(1, conceptChanges.size());
 		final ConceptChange conceptChange = conceptChanges.iterator().next();
-		assertEquals("4195653005", conceptChange.getConceptId().toString());
+		assertEquals("4195653005", conceptChange.getConceptId());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
 		assertEquals(8, componentChanges.size());
 		assertTrue(componentChanges.contains(new ComponentChange("4195653005", ChangeType.CREATE, ComponentType.CONCEPT, null, true)));
@@ -76,7 +78,7 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 		final Set<ConceptChange> conceptChanges = activity.getConceptChanges();
 		assertEquals(1, conceptChanges.size());
 		final ConceptChange conceptChange = conceptChanges.iterator().next();
-		assertEquals("4195653005", conceptChange.getConceptId().toString());
+		assertEquals("4195653005", conceptChange.getConceptId());
 		final Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
 
 		assertEquals(3, componentChanges.size());
@@ -94,6 +96,15 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 		assertEquals(2, activities.size());
 		assertTrue(activities.get(0).getConceptChanges().iterator().next().getComponentChanges().iterator().next().isEffectiveTimeNull());
 		assertFalse(activities.get(1).getConceptChanges().iterator().next().getComponentChanges().iterator().next().isEffectiveTimeNull());
+	}
+
+	@Test
+	void consumeCodeSystemVersionTest() throws IOException, InterruptedException {
+		sendAndReceiveActivity("create-version.json");
+
+		final List<Activity> activities = activityRepository.findByBranch("MAIN", Pageable.unpaged()).getContent();
+		assertEquals(1, activities.size());
+		assertEquals(ActivityType.CREATE_CODE_SYSTEM_VERSION, activities.get(0).getActivityType());
 	}
 
 	// description replacement

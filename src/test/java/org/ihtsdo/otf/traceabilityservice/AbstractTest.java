@@ -43,7 +43,7 @@ public abstract class AbstractTest {
 		activityRepository.deleteAll();
 	}
 
-	List<Activity> sendAndReceiveActivity(String resource) throws IOException, InterruptedException {
+	protected List<Activity> sendAndReceiveActivity(String resource) throws IOException, InterruptedException {
 		long startingActivityCount = activityRepository.count();
 
 		final InputStream resourceAsStream = getClass().getResourceAsStream(resource);
@@ -70,7 +70,7 @@ public abstract class AbstractTest {
 		return activities;
 	}
 
-	void sendMessage(final String message) {
+	protected void sendMessage(final String message) {
 		MessageCreator messageCreator = session -> session.createTextMessage(message);
 		jmsTemplate.send(destinationName, messageCreator);
 	}

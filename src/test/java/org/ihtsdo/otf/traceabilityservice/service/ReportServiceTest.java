@@ -7,7 +7,6 @@ import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 import java.util.*;
 
@@ -136,6 +135,119 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{}",
 				toString(changeSummaryReport.getComponentChanges()));
 	}
+
+	@Test
+	void testCreateConceptThenVersion() {
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+								.addComponentChange(new ComponentChange("110", ChangeType.CREATE, ComponentType.DESCRIPTION, "", true))
+								.addComponentChange(new ComponentChange("a1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("a2", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("120", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+
+		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
+				toString(reportService.createChangeSummaryReport("MAIN").getComponentChanges()));
+
+		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
+
+		assertEquals("{}", toString(reportService.createChangeSummaryReport("MAIN").getComponentChanges()));
+	}
+
+	@Test
+	void testParentActivityBeforeAndAfterVersioning() {
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+								.addComponentChange(new ComponentChange("110", ChangeType.CREATE, ComponentType.DESCRIPTION, "", true))
+								.addComponentChange(new ComponentChange("a1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("a2", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("120", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+
+		final ChangeSummaryReport projectReportBeforeVersioning = reportService.createChangeSummaryReport("MAIN/A");
+		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
+				toString(projectReportBeforeVersioning.getComponentChanges()),
+				"Unversioned content inherited by project.");
+
+		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
+
+		final ChangeSummaryReport projectReportAfterVersioningBeforeRebase = reportService.createChangeSummaryReport("MAIN/A");
+		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
+				toString(projectReportAfterVersioningBeforeRebase.getComponentChanges()),
+				"Content on parent versioned but update not yet rebased into project.");
+
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+
+		final ChangeSummaryReport projectReportAfterVersioningAfterRebase = reportService.createChangeSummaryReport("MAIN/A");
+		assertEquals("{}", toString(projectReportAfterVersioningAfterRebase.getComponentChanges()),
+				"Versioned content rebased into project.");
+	}
+
+	@Test
+	void testParentActivityBeforeAndAfterVersioningWithLocalChange() {
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+								.addComponentChange(new ComponentChange("110", ChangeType.CREATE, ComponentType.DESCRIPTION, "", true))
+								.addComponentChange(new ComponentChange("a1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("a2", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("120", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						),
+				activity("MAIN/A", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+								.addComponentChange(new ComponentChange("210", ChangeType.CREATE, ComponentType.DESCRIPTION, "", true))
+								.addComponentChange(new ComponentChange("b1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("b2", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("220", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+
+		final ChangeSummaryReport projectReportBeforeVersioning = reportService.createChangeSummaryReport("MAIN/A");
+		assertEquals("{CONCEPT=[100, 200], DESCRIPTION=[110, 210], RELATIONSHIP=[120, 220], REFERENCE_SET_MEMBER=[a1, a2, b1, b2]}",
+				toString(projectReportBeforeVersioning.getComponentChanges()),
+				"Unversioned content inherited by project.");
+
+		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
+
+		final ChangeSummaryReport projectReportAfterVersioningBeforeRebase = reportService.createChangeSummaryReport("MAIN/A");
+		assertEquals("{CONCEPT=[100, 200], DESCRIPTION=[110, 210], RELATIONSHIP=[120, 220], REFERENCE_SET_MEMBER=[a1, a2, b1, b2]}",
+				toString(projectReportAfterVersioningBeforeRebase.getComponentChanges()),
+				"Content on parent versioned but update not yet rebased into project.");
+
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+
+		final ChangeSummaryReport projectReportAfterVersioningAfterRebase = reportService.createChangeSummaryReport("MAIN/A");
+		assertEquals("{CONCEPT=[200], DESCRIPTION=[210], RELATIONSHIP=[220], REFERENCE_SET_MEMBER=[b1, b2]}",
+				toString(projectReportAfterVersioningAfterRebase.getComponentChanges()),
+				"Versioned content rebased into project. Unversioned content at project level still visible.");
+	}
+
+	/*
+
+	// TODO Test manually.
+
+		Hard case .
+		concept versioned on MAIN
+		concept changed on MAIN/A
+		concept changed and changed back on MAIN/B
+		A promoted
+		B rebased .. will record correct date flag
+		B promoted
+		.. what's in the log
+		last commit will have correct flag because it's the rebase commit that happened afterwards
+		 */
 
 	private int testTime = 0;
 

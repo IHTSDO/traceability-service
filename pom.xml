@@ -31,17 +31,6 @@
 			<version>1.2.2.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>org.ihtsdo.otf.common</groupId>
-			<artifactId>otf-common</artifactId>
-			<version>5.0.1-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.ihtsdo.otf</groupId>
-					<artifactId>ihtsdo-spring-sso</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
@@ -172,16 +161,4 @@
 			<releases><enabled>false</enabled></releases>
 		</repository>
 	</repositories>
-	<distributionManagement>
-		<repository>
-			<id>ihtsdo-public-nexus</id>
-			<name>IHTSDO Public Nexus Releases</name>
-			<url>https://maven.ihtsdotools.org/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>ihtsdo-public-nexus</id>
-			<name>IHTSDO Public Nexus Snapshots</name>
-			<url>https://maven.ihtsdotools.org/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
