@@ -163,7 +163,8 @@ public class ReportService {
 
 	private Date getLastRebaseDate(String branch) {
 		final Page<Activity> rebases = activityRepository.findByActivityTypeAndBranch(ActivityType.REBASE, branch, MOST_RECENT_COMMIT);
-		return rebases.isEmpty() ? EPOCH_DATE : rebases.getContent().get(0).getCommitDate();
+		// if empty, assume a new branch that is up to date
+		return rebases.isEmpty() ? new Date() : rebases.getContent().get(0).getCommitDate();
 	}
 
 	boolean isCodeSystemBranch(String branch) {

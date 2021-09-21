@@ -16,6 +16,7 @@ public class Activity {
 	public static class Fields {
 		private Fields() {}
 		public static final String branch = "branch";
+		public static final String sourceBranch = "sourceBranch";
 		public static final String highestPromotedBranch = "highestPromotedBranch";
 		public static final String commitDate = "commitDate";
 		public static final String promotionDate = "promotionDate";

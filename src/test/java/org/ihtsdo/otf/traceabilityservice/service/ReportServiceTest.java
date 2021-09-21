@@ -81,9 +81,9 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		final ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1");
+		assertEquals("{}", toString(changeSummaryReport.getComponentChanges()));
+		assertEquals(0, changeSummaryReport.getChangesNotAtTaskLevel().size());
 
-		assertEquals("{}",
-				toString(changeSummaryReport.getComponentChanges()));
 	}
 
 	@Test
@@ -106,9 +106,9 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		final ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1");
-
 		assertEquals("{CONCEPT=[100], RELATIONSHIP=[120]}",
 				toString(changeSummaryReport.getComponentChanges()));
+		assertEquals(0, changeSummaryReport.getChangesNotAtTaskLevel().size());
 	}
 
 	@Test
@@ -131,9 +131,8 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		final ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1");
-
-		assertEquals("{}",
-				toString(changeSummaryReport.getComponentChanges()));
+		assertEquals("{}", toString(changeSummaryReport.getComponentChanges()));
+		assertEquals(0, changeSummaryReport.getChangesNotAtTaskLevel().size());
 	}
 
 	@Test
@@ -149,12 +148,15 @@ class ReportServiceTest extends AbstractTest {
 						)
 		));
 
-		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
-				toString(reportService.createChangeSummaryReport("MAIN").getComponentChanges()));
+		final ChangeSummaryReport reportBeforeVersioning = reportService.createChangeSummaryReport("MAIN");
+		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}", toString(reportBeforeVersioning.getComponentChanges()));
+		assertEquals(1, reportBeforeVersioning.getChangesNotAtTaskLevel().size());
 
 		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
 
-		assertEquals("{}", toString(reportService.createChangeSummaryReport("MAIN").getComponentChanges()));
+		final ChangeSummaryReport reportAfterVersioning = reportService.createChangeSummaryReport("MAIN");
+		assertEquals("{}", toString(reportAfterVersioning.getComponentChanges()));
+		assertEquals(0, reportAfterVersioning.getChangesNotAtTaskLevel().size());
 	}
 
 	@Test
@@ -176,6 +178,7 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
 				toString(projectReportBeforeVersioning.getComponentChanges()),
 				"Unversioned content inherited by project.");
+		assertEquals(1, projectReportBeforeVersioning.getChangesNotAtTaskLevel().size());
 
 		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
 
@@ -183,12 +186,14 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
 				toString(projectReportAfterVersioningBeforeRebase.getComponentChanges()),
 				"Content on parent versioned but update not yet rebased into project.");
+		assertEquals(1, projectReportAfterVersioningBeforeRebase.getChangesNotAtTaskLevel().size());
 
 		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
 
 		final ChangeSummaryReport projectReportAfterVersioningAfterRebase = reportService.createChangeSummaryReport("MAIN/A");
 		assertEquals("{}", toString(projectReportAfterVersioningAfterRebase.getComponentChanges()),
 				"Versioned content rebased into project.");
+		assertEquals(0, projectReportAfterVersioningAfterRebase.getChangesNotAtTaskLevel().size());
 	}
 
 	@Test
@@ -218,6 +223,7 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{CONCEPT=[100, 200], DESCRIPTION=[110, 210], RELATIONSHIP=[120, 220], REFERENCE_SET_MEMBER=[a1, a2, b1, b2]}",
 				toString(projectReportBeforeVersioning.getComponentChanges()),
 				"Unversioned content inherited by project.");
+		assertEquals(2, projectReportBeforeVersioning.getChangesNotAtTaskLevel().size());
 
 		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
 
@@ -225,6 +231,7 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{CONCEPT=[100, 200], DESCRIPTION=[110, 210], RELATIONSHIP=[120, 220], REFERENCE_SET_MEMBER=[a1, a2, b1, b2]}",
 				toString(projectReportAfterVersioningBeforeRebase.getComponentChanges()),
 				"Content on parent versioned but update not yet rebased into project.");
+		assertEquals(2, projectReportAfterVersioningBeforeRebase.getChangesNotAtTaskLevel().size());
 
 		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
 
@@ -232,6 +239,7 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{CONCEPT=[200], DESCRIPTION=[210], RELATIONSHIP=[220], REFERENCE_SET_MEMBER=[b1, b2]}",
 				toString(projectReportAfterVersioningAfterRebase.getComponentChanges()),
 				"Versioned content rebased into project. Unversioned content at project level still visible.");
+		assertEquals(1, projectReportAfterVersioningAfterRebase.getChangesNotAtTaskLevel().size());
 	}
 
 	/*

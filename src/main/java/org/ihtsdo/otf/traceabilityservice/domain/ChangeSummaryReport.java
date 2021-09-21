@@ -21,4 +21,12 @@ public class ChangeSummaryReport {
 	public List<Activity> getChangesNotAtTaskLevel() {
 		return changesNotAtTaskLevel;
 	}
+
+	@Override
+	public String toString() {
+		return "ChangeSummaryReport{" +
+				"componentChanges=" + componentChanges +
+				", changesNotAtTaskLevel=" + changesNotAtTaskLevel +
+				'}';
+	}
 }
