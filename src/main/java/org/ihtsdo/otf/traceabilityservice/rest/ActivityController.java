@@ -48,38 +48,13 @@ public class ActivityController {
 			Pageable page) {
 
 		page = setPageDefaults(page, 1000);
-		Page<Activity> activities = doGetActivities(originalBranch, onBranch, activityType, conceptId, page);
+		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, activityType, conceptId, page);
 		if (brief) {
 			makeBrief(activities);
 		}
 		return activities;
 	}
 
-	private Page<Activity> doGetActivities(String originalBranch, String onBranch, ActivityType activityType, Long conceptId, Pageable page) {
-		if (conceptId != null) {
-			return activityRepository.findByConceptId(conceptId, page);
-		} else if (originalBranch != null) {
-			if (activityType != null) {
-				return activityRepository.findByBranchAndActivityType(originalBranch, activityType, page);
-			} else {
-				return activityRepository.findByBranch(originalBranch, page);
-			}
-		} else if (onBranch != null) {
-			if (activityType != null) {
-				return activityRepository.findByHighestPromotedBranchOrBranchAndActivityType(onBranch, onBranch, activityType, page);
-			} else {
-				return activityRepository.findByHighestPromotedBranchOrBranch(onBranch, onBranch, page);
-			}
-		} else {
-			if (activityType != null) {
-				return activityRepository.findByActivityType(activityType, page);
-			} else {
-				return activityRepository.findAll(page);
-			}
-		}
-	}
-	
-	
 	@PostMapping(value = "/activitiesBulk")
 	@ResponseBody
 	@ApiOperation(value = "Fetch a filtered set of brief activities in bulk.")
