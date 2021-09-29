@@ -55,15 +55,16 @@ public class Activity {
 	private Set<ConceptChange> conceptChanges;
 
 	public Activity() {
+		this.conceptChanges = new HashSet<>();
 	}
 
 	public Activity(String username, String branchPath, String sourceBranch, Date commitTimestamp, ActivityType activityType) {
+		this();
 		this.username = username;
 		this.branch = branchPath;
 		this.branchDepth = getBranchDepth(branchPath);
 		this.sourceBranch = sourceBranch;
 		this.commitDate = commitTimestamp;
-		this.conceptChanges = new HashSet<>();
 		this.activityType = activityType;
 		this.highestPromotedBranch = branchPath;
 	}
