@@ -1,5 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
+import com.google.common.collect.Sets;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
@@ -36,7 +37,7 @@ public class ReportService {
 		Map<ComponentType, Set<String>> componentChanges = new EnumMap<>(ComponentType.class);
 		List<Activity> changesNotAtTaskLevel = new ArrayList<>();
 
-		if (includeRebasedToThisBranch) {
+		if (includeRebasedToThisBranch && !BranchUtil.isCodeSystemBranch(branch)) {
 			// Changes made on ancestor branches
 			final Deque<String> ancestors = createAncestorDeque(branch);
 			String previousLevel = branch;
@@ -44,7 +45,7 @@ public class ReportService {
 				// Select content on this level, promoted before last rebase
 				// Only need to set start date if code system branch = last versioning
 				final String ancestor = ancestors.pop();
-				Date lastRebaseDate = getLastRebaseDate(previousLevel);
+				Date lastRebaseDate = getLastRebaseOrPromotionDate(previousLevel);
 				Date changeStartDate = getChangeStartDate(ancestor, lastRebaseDate);
 
 				// Changes made on ancestor branches, rebased to this one
@@ -158,13 +159,23 @@ public class ReportService {
 		}
 	}
 
-	@Autowired
-	private ActivityRepository activityRepository;
+	private Date getLastRebaseOrPromotionDate(String branch) {
+		final SearchHit<Activity> activitySearchHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder()
+				.withQuery(boolQuery()
+						.should(
+								boolQuery()
+										.must(termQuery(Activity.Fields.branch, branch))
+										.must(termQuery(Activity.Fields.activityType, ActivityType.REBASE)))
+						.should(
+								boolQuery()
+										.must(termQuery(Activity.Fields.sourceBranch, branch))
+										.must(termQuery(Activity.Fields.activityType, ActivityType.PROMOTION)))
+				)
+				.withPageable(MOST_RECENT_COMMIT)
+				.build(), Activity.class);
 
-	private Date getLastRebaseDate(String branch) {
-		final Page<Activity> rebases = activityRepository.findByActivityTypeAndBranch(ActivityType.REBASE, branch, MOST_RECENT_COMMIT);
 		// if empty, assume a new branch that is up to date
-		return rebases.isEmpty() ? new Date() : rebases.getContent().get(0).getCommitDate();
+		return activitySearchHit == null ? new Date() : activitySearchHit.getContent().getCommitDate();
 	}
 
 	Deque<String> createAncestorDeque(String branch) {
