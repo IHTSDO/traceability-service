@@ -65,7 +65,7 @@ public class ReportService {
 				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel);
 
 				previousLevel = ancestor;
-				if (isCodeSystemBranch(ancestor)) {
+				if (BranchUtil.isCodeSystemBranch(ancestor)) {
 					// Stop at any code system level
 					// We don't expect to inherit unversioned content from other code systems.
 					break;
@@ -137,7 +137,7 @@ public class ReportService {
 
 	private Date getChangeStartDate(String branch, Date beforeRebaseDate) {
 		// If Code System branch; use the last version creation date, because versioning sets all the effectiveTimes so delta would be empty at that point.
-		if (isCodeSystemBranch(branch)) {
+		if (BranchUtil.isCodeSystemBranch(branch)) {
 			if (beforeRebaseDate == null) {
 				beforeRebaseDate = new Date();
 			}
@@ -165,10 +165,6 @@ public class ReportService {
 		final Page<Activity> rebases = activityRepository.findByActivityTypeAndBranch(ActivityType.REBASE, branch, MOST_RECENT_COMMIT);
 		// if empty, assume a new branch that is up to date
 		return rebases.isEmpty() ? new Date() : rebases.getContent().get(0).getCommitDate();
-	}
-
-	boolean isCodeSystemBranch(String branch) {
-		return branch.equals("MAIN") || branch.startsWith("SNOMEDCT-", branch.lastIndexOf("/") + 1);
 	}
 
 	Deque<String> createAncestorDeque(String branch) {
