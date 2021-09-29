@@ -49,7 +49,8 @@ public class ActivityController {
 			@RequestParam(required = false) @ApiParam("Find commits by the original branch or highest promoted branch.") String onBranch,
 			@RequestParam(required = false) @ApiParam("Find rebase or promotion commits using the source branch.") String sourceBranch,
 			@RequestParam(required = false) ActivityType activityType,
-			@RequestParam(required = false) @ApiParam("Find content or classification commits that changed a specific concept.") Long conceptId,
+			@RequestParam(required = false) @ApiParam("Find commits that changed a specific concept.") Long conceptId,
+			@RequestParam(required = false) @ApiParam("Find commits that changed a specific component.") Long componentId,
 			@RequestParam(required = false) @ApiParam("Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
 			@RequestParam(required = false, defaultValue = "false") @ApiParam("Brief response without the concept changes.") boolean brief,
 			Pageable page) {
@@ -58,7 +59,7 @@ public class ActivityController {
 
 		Date commitDateDate = getDate(commitDate);
 
-		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, commitDateDate, page);
+		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, componentId, commitDateDate, page);
 		if (brief) {
 			makeBrief(activities);
 		}

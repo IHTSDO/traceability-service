@@ -67,7 +67,9 @@ public class ActivityService {
 		return activityRepository.findBy(conceptIds, activityType, user, page);
 	}
 
-	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, Date commitDate, Pageable page) {
+	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, Long componentId,
+			Date commitDate, Pageable page) {
+
 		final BoolQueryBuilder query = boolQuery();
 
 		if (originalBranch != null && !originalBranch.isEmpty()) {
@@ -88,6 +90,9 @@ public class ActivityService {
 		}
 		if (conceptId != null) {
 			query.must(termQuery(Activity.Fields.conceptChangesConceptId, conceptId));
+		}
+		if (componentId != null) {
+			query.must(termQuery(Activity.Fields.componentChangesComponentId, componentId));
 		}
 		if (commitDate != null) {
 			query.must(termQuery(Activity.Fields.commitDate, commitDate.getTime()));
