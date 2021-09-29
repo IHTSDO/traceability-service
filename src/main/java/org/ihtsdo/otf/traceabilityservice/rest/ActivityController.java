@@ -1,6 +1,7 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.domain.ConceptChange;
@@ -40,15 +41,16 @@ public class ActivityController {
 			"The 'brief' flag will return activities and concept changes but no component changes.\n" +
 			"Note that promotions are recorded against the branch receiving the content.")
 	public Page<Activity> getActivities(
-			@RequestParam(required = false) String originalBranch,
-			@RequestParam(required = false) String onBranch,
+			@RequestParam(required = false) @ApiParam("Find commits by the branch they were originally written to.") String originalBranch,
+			@RequestParam(required = false) @ApiParam("Find commits by the original branch or highest promoted branch.") String onBranch,
+			@RequestParam(required = false) @ApiParam("Find rebase or promotion commits using the source branch.") String sourceBranch,
 			@RequestParam(required = false) ActivityType activityType,
-			@RequestParam(required = false) Long conceptId,
-			@RequestParam(required = false, defaultValue = "false") boolean brief,
+			@RequestParam(required = false) @ApiParam("Find content or classification commits that changed a specific concept.") Long conceptId,
+			@RequestParam(required = false, defaultValue = "false") @ApiParam("Brief response without the concept changes.") boolean brief,
 			Pageable page) {
 
 		page = setPageDefaults(page, 1000);
-		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, activityType, conceptId, page);
+		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, page);
 		if (brief) {
 			makeBrief(activities);
 		}

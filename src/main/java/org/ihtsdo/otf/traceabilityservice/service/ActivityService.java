@@ -68,7 +68,7 @@ public class ActivityService {
 		return activityRepository.findBy(conceptIds, activityType, user, page);
 	}
 
-	public Page<Activity> getActivities(String originalBranch, String onBranch, ActivityType activityType, Long conceptId, Pageable page) {
+	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, Pageable page) {
 		final BoolQueryBuilder query = boolQuery();
 
 		if (originalBranch != null && !originalBranch.isEmpty()) {
@@ -80,6 +80,9 @@ public class ActivityService {
 					.should(termQuery(Activity.Fields.branch, onBranch))
 					// Or
 					.should(termQuery(Activity.Fields.highestPromotedBranch, onBranch)));
+		}
+		if (sourceBranch != null && !sourceBranch.isEmpty()) {
+			query.must(termQuery(Activity.Fields.sourceBranch, sourceBranch));
 		}
 		if (activityType != null) {
 			query.must(termQuery(Activity.Fields.activityType, activityType));
