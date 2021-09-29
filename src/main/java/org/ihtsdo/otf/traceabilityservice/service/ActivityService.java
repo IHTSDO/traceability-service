@@ -1,6 +1,5 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
-import org.elasticsearch.common.Strings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
@@ -13,10 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +67,7 @@ public class ActivityService {
 		return activityRepository.findBy(conceptIds, activityType, user, page);
 	}
 
-	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, Pageable page) {
+	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, Date commitDate, Pageable page) {
 		final BoolQueryBuilder query = boolQuery();
 
 		if (originalBranch != null && !originalBranch.isEmpty()) {
@@ -89,6 +88,9 @@ public class ActivityService {
 		}
 		if (conceptId != null) {
 			query.must(termQuery(Activity.Fields.conceptChangesConceptId, conceptId));
+		}
+		if (commitDate != null) {
+			query.must(termQuery(Activity.Fields.commitDate, commitDate.getTime()));
 		}
 
 		final SearchHits<Activity> search = elasticsearchOperations.search(new NativeSearchQueryBuilder().withQuery(query).withPageable(page).build(), Activity.class);

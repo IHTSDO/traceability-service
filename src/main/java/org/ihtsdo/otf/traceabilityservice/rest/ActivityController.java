@@ -1,5 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
@@ -17,8 +18,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,15 +50,37 @@ public class ActivityController {
 			@RequestParam(required = false) @ApiParam("Find rebase or promotion commits using the source branch.") String sourceBranch,
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) @ApiParam("Find content or classification commits that changed a specific concept.") Long conceptId,
+			@RequestParam(required = false) @ApiParam("Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
 			@RequestParam(required = false, defaultValue = "false") @ApiParam("Brief response without the concept changes.") boolean brief,
 			Pageable page) {
 
 		page = setPageDefaults(page, 1000);
-		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, page);
+
+		Date commitDateDate = getDate(commitDate);
+
+		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, commitDateDate, page);
 		if (brief) {
 			makeBrief(activities);
 		}
 		return activities;
+	}
+
+	private Date getDate(String commitDate) {
+		if (commitDate != null && !commitDate.isEmpty()) {
+			if (commitDate.matches("\\d*")) {
+				return new Date(Long.parseLong(commitDate));
+			} else {
+				final StdDateFormat df = new StdDateFormat();
+				df.setTimeZone(TimeZone.getTimeZone("UTC"));
+				try {
+					commitDate = commitDate.replace(" ", "+");
+					return df.parse(commitDate);
+				} catch (ParseException e) {
+					throw new IllegalArgumentException("Bad date format. Try URL encoding. " + e.getMessage() + ".", e);
+				}
+			}
+		}
+		return null;
 	}
 
 	@PostMapping(value = "/activitiesBulk")
