@@ -31,7 +31,8 @@ public class ConceptChange {
 		return componentChanges;
 	}
 
-	public void setComponentChanges(Set<ComponentChange> componentChanges) {
+	public ConceptChange setComponentChanges(Set<ComponentChange> componentChanges) {
 		this.componentChanges = componentChanges;
+		return this;
 	}
 }

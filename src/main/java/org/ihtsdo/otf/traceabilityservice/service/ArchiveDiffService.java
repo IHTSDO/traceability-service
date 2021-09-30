@@ -63,17 +63,9 @@ public class ArchiveDiffService {
 				while ((line = reader.readLine()) != null) {
 					columns = line.split("\\t");
 					id = columns[0];
-					if (id.contains("-")) {
-						componentChangesMap.computeIfAbsent(ComponentType.REFERENCE_SET_MEMBER, type -> new HashSet<>()).add(id);
-					} else {
-						int partitionId = Integer.parseInt(id.substring(id.length() - 2, id.length() - 1));
-						if (partitionId == 0) {
-							componentChangesMap.computeIfAbsent(ComponentType.CONCEPT, type -> new HashSet<>()).add(id);
-						} else if (partitionId == 1) {
-							componentChangesMap.computeIfAbsent(ComponentType.DESCRIPTION, type -> new HashSet<>()).add(id);
-						} else if (partitionId == 2) {
-							componentChangesMap.computeIfAbsent(ComponentType.RELATIONSHIP, type -> new HashSet<>()).add(id);
-						}
+					ComponentType componentType = ComponentIdUtil.getComponentType(id);
+					if (componentType != null) {
+						componentChangesMap.computeIfAbsent(componentType, type -> new HashSet<>()).add(id);
 					}
 				}
 			}
