@@ -67,7 +67,7 @@ public class ActivityService {
 		return activityRepository.findBy(conceptIds, activityType, user, page);
 	}
 
-	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, Long componentId,
+	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, String componentId,
 			Date commitDate, Pageable page) {
 
 		final BoolQueryBuilder query = boolQuery();
