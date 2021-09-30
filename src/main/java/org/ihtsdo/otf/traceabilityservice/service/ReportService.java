@@ -56,13 +56,13 @@ public class ReportService {
 										.must(termQuery(Activity.Fields.branch, ancestor))
 										.must(rangeQuery(Activity.Fields.commitDate)
 												.gt(changeStartDate.getTime())
-												.lt(lastRebaseDate.getTime())))
+												.lte(lastRebaseDate.getTime())))
 								// Changes promoted to ancestor
 								.should(boolQuery()
 										.must(termQuery(Activity.Fields.highestPromotedBranch, ancestor))
 										.must(rangeQuery(Activity.Fields.promotionDate)
 												.gt(changeStartDate.getTime())
-												.lt(lastRebaseDate.getTime())));
+												.lte(lastRebaseDate.getTime())));
 				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel);
 
 				previousLevel = ancestor;
