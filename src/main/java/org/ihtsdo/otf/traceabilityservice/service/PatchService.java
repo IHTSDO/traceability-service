@@ -20,6 +20,8 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 public class PatchService {
 
 	public static final String ROOT_CONCEPT = "138875005";
+	public static final String HISTORY_PATCH_USERNAME = "history-patch";
+
 	@Autowired
 	private ElasticsearchOperations elasticsearchOperations;
 
@@ -33,7 +35,7 @@ public class PatchService {
 
 		Date patchCommitDate = latestCommit != null ? latestCommit.getContent().getCommitDate() : new Date();
 
-		activityRepository.save(new Activity("history-patch", branch, null, patchCommitDate, ActivityType.CONTENT_CHANGE).addConceptChange(new ConceptChange(ROOT_CONCEPT)
+		activityRepository.save(new Activity(HISTORY_PATCH_USERNAME, branch, null, patchCommitDate, ActivityType.CONTENT_CHANGE).addConceptChange(new ConceptChange(ROOT_CONCEPT)
 				.setComponentChanges(getComponentChanges(componentsWithEffectiveTime, componentsWithoutEffectiveTime))));
 
 		return null;

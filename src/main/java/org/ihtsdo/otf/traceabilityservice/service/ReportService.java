@@ -111,7 +111,9 @@ public class ReportService {
 				.build(), Activity.class)) {
 			stream.forEachRemaining(hit -> {
 				final Activity activity = hit.getContent();
-				if (activity.getActivityType() == ActivityType.CONTENT_CHANGE && activity.getBranchDepth() != 3) {
+				if (activity.getActivityType() == ActivityType.CONTENT_CHANGE && activity.getBranchDepth() != 3 &&
+						!PatchService.HISTORY_PATCH_USERNAME.equals(activity.getUsername())) {
+
 					changesNotAtTaskLevel.add(activity);
 				}
 				activity.getConceptChanges().stream()
