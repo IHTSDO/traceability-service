@@ -1,11 +1,8 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
-import com.google.common.collect.Sets;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
-import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -38,15 +35,15 @@ public class ReportService {
 		List<Activity> changesNotAtTaskLevel = new ArrayList<>();
 
 		if (includeRebasedToThisBranch && !BranchUtil.isCodeSystemBranch(branch)) {
-			// Changes made on ancestor branches
+			// Changes made on ancestor branches, starting with the parent branch and working up.
 			final Deque<String> ancestors = createAncestorDeque(branch);
 			String previousLevel = branch;
 			while (!ancestors.isEmpty()) {
 				// Select content on this level, promoted before last rebase
-				// Only need to set start date if code system branch = last versioning
+				// Only need to set start date if code system branch using last version commit
 				final String ancestor = ancestors.pop();
-				Date lastRebaseDate = getLastRebaseOrPromotionDate(previousLevel);
-				Date changeStartDate = getChangeStartDate(ancestor, lastRebaseDate);
+				Date previousLevelBaseDate = getBaseDateUsingBestGuess(previousLevel);
+				Date lastVersionOrEpoch = getLastVersionDateOrEpoch(ancestor, previousLevelBaseDate);
 
 				// Changes made on ancestor branches, rebased to this one
 				final BoolQueryBuilder onAncestorBranch =
@@ -55,14 +52,14 @@ public class ReportService {
 								.should(boolQuery()
 										.must(termQuery(Activity.Fields.branch, ancestor))
 										.must(rangeQuery(Activity.Fields.commitDate)
-												.gt(changeStartDate.getTime())
-												.lte(lastRebaseDate.getTime())))
+												.gt(lastVersionOrEpoch.getTime())
+												.lte(previousLevelBaseDate.getTime())))
 								// Changes promoted to ancestor
 								.should(boolQuery()
 										.must(termQuery(Activity.Fields.highestPromotedBranch, ancestor))
 										.must(rangeQuery(Activity.Fields.promotionDate)
-												.gt(changeStartDate.getTime())
-												.lte(lastRebaseDate.getTime())));
+												.gt(lastVersionOrEpoch.getTime())
+												.lte(previousLevelBaseDate.getTime())));
 				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel);
 
 				previousLevel = ancestor;
@@ -74,25 +71,31 @@ public class ReportService {
 			}
 		}
 
-		Date changeStartDate = getChangeStartDate(branch);
-
+		Date lastVersionOrEpoch = getLastVersionDateOrEpoch(branch, new Date());
 		if (includePromotedToThisBranch) {
 			// Changes made on child branches, promoted to this one
 			// Unlike rebase; We don't need to lookup the last promotion activity here
-			// because the service keeps track of what has promoted and when
+			// because the service keeps track of what was promoted and when.
 			final BoolQueryBuilder onDescendantBranches = boolQuery()
 					.mustNot(termQuery(Activity.Fields.branch, branch))
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(rangeQuery(Activity.Fields.promotionDate).gte(changeStartDate.getTime()));
+					.must(rangeQuery(Activity.Fields.promotionDate).gt(lastVersionOrEpoch.getTime()));
 			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel);
 		}
 
 		if (includeMadeOnThisBranch) {
+			Date startDate;
+			if (BranchUtil.isCodeSystemBranch(branch)) {
+				startDate = getLastVersionDateOrEpoch(branch, new Date());
+			} else {
+				startDate = getLastPromotionDate(branch);// This used in case highestPromotedBranch is not set correctly. This happens for some rebase merge changes.
+			}
+			System.out.println("startDate " + startDate);
 			// Changes made on this branch
 			final BoolQueryBuilder onThisBranchQuery = boolQuery()
 					.must(termQuery(Activity.Fields.branch, branch))
-					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(rangeQuery(Activity.Fields.commitDate).gte(changeStartDate.getTime()));
+					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))// This means not promoted yet
+					.must(rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
 			processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel);
 		}
 
@@ -132,50 +135,64 @@ public class ReportService {
 		}
 	}
 
-	private Date getChangeStartDate(String branch) {
-		return getChangeStartDate(branch, null);
-	}
-
-	private Date getChangeStartDate(String branch, Date beforeRebaseDate) {
+	private Date getLastVersionDateOrEpoch(String branch, Date before) {
 		// If Code System branch; use the last version creation date, because versioning sets all the effectiveTimes so delta would be empty at that point.
 		if (BranchUtil.isCodeSystemBranch(branch)) {
-			if (beforeRebaseDate == null) {
-				beforeRebaseDate = new Date();
-			}
-
 			final BoolQueryBuilder query = boolQuery()
 					.must(termQuery(Activity.Fields.activityType, ActivityType.CREATE_CODE_SYSTEM_VERSION))
 					.must(termQuery(Activity.Fields.branch, branch))
-					.must(rangeQuery(Activity.Fields.commitDate).lt(beforeRebaseDate.getTime()));
+					.must(rangeQuery(Activity.Fields.commitDate).lt(before.getTime()));
 			final SearchHit<Activity> activityHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder().withQuery(query).build()
 					.addSort(Sort.by(Activity.Fields.commitDate).descending()), Activity.class);
 			if (activityHit != null) {
 				return activityHit.getContent().getCommitDate();
-			} else {
-				return EPOCH_DATE;
 			}
+		}
+		return EPOCH_DATE;
+	}
+
+	private Date getBaseDateUsingBestGuess(String branch) {
+		final SearchHit<Activity> activitySearchHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder()
+			.withQuery(boolQuery()
+					.should(
+							boolQuery()
+									.must(termQuery(Activity.Fields.branch, branch))
+									.must(termQuery(Activity.Fields.activityType, ActivityType.REBASE)))
+					.should(
+							boolQuery()
+									.must(termQuery(Activity.Fields.sourceBranch, branch))
+									.must(termQuery(Activity.Fields.activityType, ActivityType.PROMOTION)))
+			)
+			.withPageable(MOST_RECENT_COMMIT)
+			.build(), Activity.class);
+
+		if (activitySearchHit != null) {
+			return activitySearchHit.getContent().getCommitDate();
 		} else {
-			return EPOCH_DATE;
+			// Select first commit on the branch
+			final SearchHit<Activity> firstCommitSearchHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder()
+					.withQuery(termQuery(Activity.Fields.branch, branch))
+					.withPageable(MOST_RECENT_COMMIT)
+					.build(), Activity.class);
+			if (firstCommitSearchHit != null) {
+				return firstCommitSearchHit.getContent().getCommitDate();
+			} else {
+				return new Date();
+			}
 		}
 	}
 
-	private Date getLastRebaseOrPromotionDate(String branch) {
+	private Date getLastPromotionDate(String branch) {
 		final SearchHit<Activity> activitySearchHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder()
 				.withQuery(boolQuery()
-						.should(
-								boolQuery()
-										.must(termQuery(Activity.Fields.branch, branch))
-										.must(termQuery(Activity.Fields.activityType, ActivityType.REBASE)))
-						.should(
-								boolQuery()
-										.must(termQuery(Activity.Fields.sourceBranch, branch))
-										.must(termQuery(Activity.Fields.activityType, ActivityType.PROMOTION)))
+						.must(termQuery(Activity.Fields.sourceBranch, branch))
+						.must(termQuery(Activity.Fields.activityType, ActivityType.PROMOTION))
 				)
 				.withPageable(MOST_RECENT_COMMIT)
 				.build(), Activity.class);
 
-		// if empty, assume a new branch that is up to date
-		return activitySearchHit == null ? new Date() : activitySearchHit.getContent().getCommitDate();
+		// if never promoted use epoch
+		return activitySearchHit == null ? EPOCH_DATE : activitySearchHit.getContent().getCommitDate();
 	}
 
 	Deque<String> createAncestorDeque(String branch) {
