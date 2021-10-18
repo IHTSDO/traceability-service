@@ -68,7 +68,7 @@ public class TraceabilityStreamConsumer {
 
 		if (activityType == ActivityType.PROMOTION) {
 			// Move activities on the source branch up to the parent
-			final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE);
+			final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE, ActivityType.REBASE);
 
 			List<Activity> toSave = new ArrayList<>();
 
