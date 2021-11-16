@@ -5,10 +5,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Document(indexName = "activity")
 public class Activity {
@@ -143,4 +140,16 @@ public class Activity {
 	public int hashCode() {
 		return Objects.hash(branch, commitDate);
 	}
+
+	@Override
+	public String toString() {
+		return new StringJoiner(", ", Activity.class.getSimpleName() + "[", "]").add("id='" + id + "'")
+				.add("username='" + username + "'").add("branch='" + branch + "'")
+				.add("sourceBranch='" + sourceBranch + "'").add("highestPromotedBranch='" + highestPromotedBranch + "'")
+				.add("commitDate=" + (commitDate == null ? null : commitDate.getTime())).add("promotionDate=" + (promotionDate == null ? null: promotionDate.getTime()))
+				.add("activityType=" + activityType)
+				.add("total conceptChanges=" + conceptChanges.size()).toString();
+	}
 }
+
+

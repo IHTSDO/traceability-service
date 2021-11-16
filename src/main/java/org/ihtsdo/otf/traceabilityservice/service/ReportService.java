@@ -2,6 +2,8 @@ package org.ihtsdo.otf.traceabilityservice.service;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,6 +26,8 @@ public class ReportService {
 
 	@Autowired
 	private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
 
 	public ChangeSummaryReport createChangeSummaryReport(String branch) {
 		return createChangeSummaryReport(branch, true, true, true);
@@ -72,6 +76,7 @@ public class ReportService {
 		}
 
 		Date lastVersionOrEpoch = getLastVersionDateOrEpoch(branch, new Date());
+		LOGGER.info("Last version date {} ({}) on branch {}", lastVersionOrEpoch.getTime(), lastVersionOrEpoch, branch);
 		if (includePromotedToThisBranch) {
 			// Changes made on child branches, promoted to this one
 			// Unlike rebase; We don't need to lookup the last promotion activity here
@@ -90,7 +95,7 @@ public class ReportService {
 			} else {
 				startDate = getLastPromotionDate(branch);// This used in case highestPromotedBranch is not set correctly. This happens for some rebase merge changes.
 			}
-			System.out.println("startDate " + startDate);
+			LOGGER.debug("startDate {}", startDate);
 			// Changes made on this branch
 			final BoolQueryBuilder onThisBranchQuery = boolQuery()
 					.must(termQuery(Activity.Fields.branch, branch))

@@ -28,10 +28,10 @@ public class V3Point1MigrationTool {
 	private static final HashSet<ActivityType> CONTENT_CHANGE_OR_CLASSIFICATION = Sets.newHashSet(ActivityType.CONTENT_CHANGE, ActivityType.CLASSIFICATION_SAVE);
 
 	@Autowired
-	private ElasticsearchOperations elasticsearchOperations;
+	ElasticsearchOperations elasticsearchOperations;
 
 	@Autowired
-	private ActivityRepository activityRepository;
+	ActivityRepository activityRepository;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -125,7 +125,7 @@ public class V3Point1MigrationTool {
 		logger.info("Populating promotion dates completed.");
 	}
 
-	private Map<String, List<Date>> getBranchPromotionDates(String branch, Date searchBackStartDate) {
+	Map<String, List<Date>> getBranchPromotionDates(String branch, Date searchBackStartDate) {
 		final BoolQueryBuilder query = boolQuery()
 				.must(prefixQuery(Activity.Fields.sourceBranch, branch))
 				.must(termQuery(Activity.Fields.activityType, ActivityType.PROMOTION))
@@ -147,11 +147,11 @@ public class V3Point1MigrationTool {
 		return branchPromotionDates;
 	}
 
-	private Date getPromotionDate(String branch, Date after, Map<String, List<Date>> branchPromotionDates) {
+	Date getPromotionDate(String branch, Date after, Map<String, List<Date>> branchPromotionDates) {
 		return branchPromotionDates.getOrDefault(branch, Collections.emptyList()).stream().filter(date -> date.after(after)).findFirst().orElse(null);
 	}
 
-	private String getParentBranch(String branch) {
+	String getParentBranch(String branch) {
 		return branch.substring(0, branch.lastIndexOf("/"));
 	}
 
