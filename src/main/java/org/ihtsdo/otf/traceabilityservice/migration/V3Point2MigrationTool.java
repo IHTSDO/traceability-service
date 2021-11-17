@@ -20,18 +20,38 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * This is to apply data fixes caused by FRI-305.
+ * Issues: Rebase activities with content changes are not promoted as shown below:
+ * e.g Content changes for ICD1120-420 task have been promoted to project ICD1120 and MAIN however
+ * the rebase activity below is not and the highestPromotedBranch is still pointing to itself.
+ * Before fix:
+ * "branch" : "MAIN/ICD1120/ICD1120-420",
+ * "branchDepth" : 3,
+ * "sourceBranch" : "MAIN/ICD1120",
+ * "highestPromotedBranch" : "MAIN/ICD1120/ICD1120-420",
+ * "commitDate" : 1635518961063,
+ * "activityType" : "REBASE"
+ *
+ *
+ * After fix:
+ * "branch" : "MAIN/ICD1120/ICD1120-420",
+ * "branchDepth" : 3,
+ * "sourceBranch" : "MAIN/ICD1120",
+ * "highestPromotedBranch" : "MAIN",
+ * "commitDate" : 1635518961063,
+ * "promotionDate" : 1635754059687,
+ * "activityType" : "REBASE"
  *
  */
 
 @Service
-public class V3Point2MigrationTool extends  V3Point1MigrationTool {
+public class V3Point2MigrationTool extends V3Point1MigrationTool {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Value("${migration.save-batch-size}")
 	private int saveBatchSize;
 
-	private boolean dryRun = false;
+	private final boolean dryRun = false;
 
 	@Override
 	public void start() {
