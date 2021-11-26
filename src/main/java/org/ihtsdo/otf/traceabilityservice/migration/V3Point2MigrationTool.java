@@ -137,6 +137,7 @@ public class V3Point2MigrationTool extends V3Point1MigrationTool {
 			}
 			logger.info("Rebase activities promotion completed on {}", branch);
 		}
+		logger.info("Rebase activities promotions are completed for all code system branches");
 	}
 
 	private List<Activity> getRebaseActivitiesNotPromoted(String codeSystemPath, Date lastVersion) {
