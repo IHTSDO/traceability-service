@@ -1,8 +1,7 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.ihtsdo.otf.traceabilityservice.domain.Activity;
-import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
+import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
@@ -24,6 +22,7 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
 public class ActivityService {
+	public static final int MAX_SIZE_FOR_PER_CONCEPT_RETRIEVAL = 10;
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityService.class);
 
 	private final ActivityRepository activityRepository;
@@ -100,5 +99,46 @@ public class ActivityService {
 
 		final SearchHits<Activity> search = elasticsearchOperations.search(new NativeSearchQueryBuilder().withQuery(query).withPageable(page).build(), Activity.class);
 		return new PageImpl<>(search.stream().map(SearchHit::getContent).collect(Collectors.toList()), page, search.getTotalHits());
+	}
+
+	/**
+	 * To avoid blowing buffer limits retrieving documents with huge numbers of rows, we will recover
+	 * just the top level detail on a per concept basis, and then use the fact that only one concept
+	 * has been requested to allow us to repopulate the detail (conceptChanges)
+	 */
+	public Page<Activity> findSummaryBy(List<Long> conceptIds, ActivityType activityType, Pageable page) {
+		//An RF2 import could create an activity with hundreds of thousands of concept changes.
+		//TOOD Investigate re-doing the mapping using nester and inner_hits to only return the rows we're interested in
+		//So we'll just recover the summary and populate the particular concept we're interested in for now
+		Map<Integer, Activity> activitiesMap = new HashMap<>();
+		for (Long conceptId : conceptIds) {
+			NativeSearchQuery query = getActivityQuery(conceptId, activityType);
+			SearchHits<Activity> results = elasticsearchOperations.search(query, Activity.class);
+			results.get().forEach(hit -> {
+				Activity activity = hit.getContent();
+				//Have we seen this activity before?  Add this concept in any event
+				if (activitiesMap.containsKey(activity.hashCode())) {
+					activity = activitiesMap.get(activity.hashCode());
+				}
+				activity.getConceptChanges().add(new ConceptChange(conceptId.toString()));
+				activitiesMap.put(activity.hashCode(), activity);
+			});
+		}
+		List<Activity> activities = new ArrayList<>(activitiesMap.values());
+		final int start = (int)page.getOffset();
+		final int end = Math.min((start + page.getPageSize()), activities.size());
+		return new PageImpl<>(activities.subList(start, end), page, activities.size());
+	}
+
+	private NativeSearchQuery getActivityQuery(Long conceptId, ActivityType activityType) {
+		SourceFilter sourceFilter = new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChanges});
+		final BoolQueryBuilder clauses = boolQuery()
+				.must(termQuery(Activity.Fields.conceptChangesConceptId, conceptId))
+				.must(termQuery(Activity.Fields.activityType, activityType));
+
+		return new NativeSearchQueryBuilder().withQuery(
+				new BoolQueryBuilder().must(clauses))
+				.withSourceFilter(sourceFilter)
+				.build();
 	}
 }

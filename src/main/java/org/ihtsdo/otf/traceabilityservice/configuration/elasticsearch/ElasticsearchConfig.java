@@ -76,6 +76,7 @@ public class ElasticsearchConfig {
 		if (awsRequestSigning != null && awsRequestSigning) {
 			restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.addInterceptorLast(awsInterceptor("es")));
 		}
+		
 		return new RestHighLevelClient(restClientBuilder);
 	}
 
@@ -111,7 +112,6 @@ public class ElasticsearchConfig {
 		return elasticsearchConverter;
 	}
 
-//	@Bean(name = { "elasticsearchOperations", "elasticsearchTemplate"})
 	@Bean
 	public ElasticsearchOperations elasticsearchTemplate() {
 		return new ElasticsearchRestTemplate(elasticsearchRestClient(), elasticsearchConverter());

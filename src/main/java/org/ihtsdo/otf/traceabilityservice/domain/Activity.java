@@ -18,6 +18,7 @@ public class Activity {
 		public static final String commitDate = "commitDate";
 		public static final String promotionDate = "promotionDate";
 		public static final String activityType = "activityType";
+		public static final String conceptChanges = "conceptChanges";
 		public static final String conceptChangesConceptId = "conceptChanges.conceptId";
 		public static final String componentChangesComponentId = "conceptChanges.componentChanges.componentId";
 	}

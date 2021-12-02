@@ -22,7 +22,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,7 +63,7 @@ public class ActivityController {
 
 		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, componentId, commitDateDate, page);
 		if (brief) {
-			makeBrief(activities);
+			makeBrief(null, activities);
 		}
 		return activities;
 	}
@@ -90,12 +92,21 @@ public class ActivityController {
 	public Page<Activity> getActivitiesBulk(
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) String user,
+			@RequestParam(required = false, defaultValue = "false") Boolean summary,
 			@RequestBody List<Long> conceptIds,
 			Pageable page) {
-		LOGGER.info("Finding activities in bulk.");
+		LOGGER.info("Finding " + activityType + " activities for " + conceptIds.size() + " concepts.");
 		page = setPageDefaults(page, 1000);
-		Page<Activity> activities = activityService.findBy(conceptIds, activityType, user, page);
-		makeBrief(activities);
+		Page<Activity> activities;
+		if (summary && conceptIds.size() <= ActivityService.MAX_SIZE_FOR_PER_CONCEPT_RETRIEVAL) {
+			if (user != null || activityType == null) {
+				throw new IllegalArgumentException("Summaries must be run for a given activityType and cannot be filtered by user");
+			}
+			activities = activityService.findSummaryBy(conceptIds, activityType, page);
+		} else {
+			activities = activityService.findBy(conceptIds, activityType, user, page);
+			makeBrief(conceptIds, activities);
+		}
 		return activities;
 	}
 
@@ -136,8 +147,15 @@ public class ActivityController {
 		return page;
 	}
 	
-	private void makeBrief(Page<Activity> activities) {
+	private void makeBrief(List<Long> conceptIds, Page<Activity> activities) {
 		for (Activity activity : activities.getContent()) {
+			if (conceptIds != null) {
+				Set<ConceptChange> relevantChanges = activity.getConceptChanges().stream()
+						.filter(change -> conceptIds.contains(Long.parseLong(change.getConceptId())))
+						.collect(Collectors.toSet());
+				activity.setConceptChanges(relevantChanges);
+			}
+			
 			if (activity.getConceptChanges() != null) {
 				for (ConceptChange conceptChange : activity.getConceptChanges()) {
 					conceptChange.getComponentChanges().clear();
