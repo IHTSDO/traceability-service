@@ -75,8 +75,8 @@ public class ReportService {
 			}
 		}
 
-		Date lastVersionOrEpoch = getLastVersionDateOrEpoch(branch, new Date());
-		LOGGER.info("Last version date {} ({}) on branch {}", lastVersionOrEpoch.getTime(), lastVersionOrEpoch, branch);
+		Date lastVersionDate = getLastVersionDateOrEpoch(getCodeSystemBranch(branch), new Date());
+		LOGGER.info("Last version date is {} ({}) on branch {}", lastVersionDate.getTime(), lastVersionDate, branch);
 		if (includePromotedToThisBranch) {
 			// Changes made on child branches, promoted to this one
 			// Unlike rebase; We don't need to lookup the last promotion activity here
@@ -84,7 +84,7 @@ public class ReportService {
 			final BoolQueryBuilder onDescendantBranches = boolQuery()
 					.mustNot(termQuery(Activity.Fields.branch, branch))
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(rangeQuery(Activity.Fields.promotionDate).gt(lastVersionOrEpoch.getTime()));
+					.must(rangeQuery(Activity.Fields.promotionDate).gt(lastVersionDate.getTime()));
 			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel);
 		}
 
@@ -140,6 +140,19 @@ public class ReportService {
 						});
 			});
 		}
+	}
+
+	private String getCodeSystemBranch(String branch) {
+		final Deque<String> ancestors = createAncestorDeque(branch);
+		String codeSystemBranch = branch;
+		while (!ancestors.isEmpty()) {
+			final String ancestor = ancestors.pop();
+			if (BranchUtil.isCodeSystemBranch(ancestor)) {
+				codeSystemBranch = ancestor;
+				break;
+			}
+		}
+		return codeSystemBranch;
 	}
 
 	private Date getLastVersionDateOrEpoch(String branch, Date before) {
