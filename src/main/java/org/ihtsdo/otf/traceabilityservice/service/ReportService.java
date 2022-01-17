@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHitsIterator;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class ReportService {
 
 		Map<ComponentType, Set<String>> componentChanges = new EnumMap<>(ComponentType.class);
 		List<Activity> changesNotAtTaskLevel = new ArrayList<>();
+		Map<String, String> componentToConceptIdMap = new HashMap<>();
 
 		if (includeRebasedToThisBranch && !BranchUtil.isCodeSystemBranch(branch)) {
 			// Changes made on ancestor branches, starting with the parent branch and working up.
@@ -64,7 +66,7 @@ public class ReportService {
 										.must(rangeQuery(Activity.Fields.promotionDate)
 												.gt(lastVersionOrEpoch.getTime())
 												.lte(previousLevelBaseDate.getTime())));
-				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel);
+				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 
 				previousLevel = ancestor;
 				if (BranchUtil.isCodeSystemBranch(ancestor)) {
@@ -75,17 +77,17 @@ public class ReportService {
 			}
 		}
 
-		Date lastVersionDate = getLastVersionDateOrEpoch(getCodeSystemBranch(branch), new Date());
-		LOGGER.info("Last version date is {} ({}) on branch {}", lastVersionDate.getTime(), lastVersionDate, branch);
 		if (includePromotedToThisBranch) {
 			// Changes made on child branches, promoted to this one
 			// Unlike rebase; We don't need to lookup the last promotion activity here
 			// because the service keeps track of what was promoted and when.
+			Date lastVersionDate = getLastVersionDateOrEpoch(getCodeSystemBranch(branch), new Date());
+			LOGGER.info("Last version date is {} ({}) on branch {}", lastVersionDate.getTime(), lastVersionDate, branch);
 			final BoolQueryBuilder onDescendantBranches = boolQuery()
 					.mustNot(termQuery(Activity.Fields.branch, branch))
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
 					.must(rangeQuery(Activity.Fields.promotionDate).gt(lastVersionDate.getTime()));
-			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel);
+			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
 
 		if (includeMadeOnThisBranch) {
@@ -101,43 +103,47 @@ public class ReportService {
 					.must(termQuery(Activity.Fields.branch, branch))
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))// This means not promoted yet
 					.must(rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
-			processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel);
+			processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
 
 		componentChanges.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 
-		return new ChangeSummaryReport(componentChanges, changesNotAtTaskLevel);
+		ChangeSummaryReport changeSummaryReport = new ChangeSummaryReport(componentChanges, changesNotAtTaskLevel);
+		changeSummaryReport.setComponentToConceptIdMap(componentToConceptIdMap);
+		return changeSummaryReport;
 	}
 
-	private void processCommits(BoolQueryBuilder selection, Map<ComponentType, Set<String>> componentChanges, List<Activity> changesNotAtTaskLevel) {
-		try (SearchHitsIterator<Activity> stream = elasticsearchRestTemplate.searchForStream(new NativeSearchQueryBuilder()
-				.withQuery(selection)
+	private void processCommits(BoolQueryBuilder selection, Map<ComponentType, Set<String>> componentChanges,
+							List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptMap) {
+		NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(selection)
 				.withPageable(PageRequest.of(0, 10_000, Sort.by(Activity.Fields.promotionDate, Activity.Fields.commitDate)))
-				.build(), Activity.class)) {
+				.build();
+		try (SearchHitsIterator<Activity> stream = elasticsearchRestTemplate.searchForStream(query, Activity.class)) {
 			stream.forEachRemaining(hit -> {
 				final Activity activity = hit.getContent();
-				if (activity.getActivityType() == ActivityType.CONTENT_CHANGE && activity.getBranchDepth() != 3 &&
-						!PatchService.HISTORY_PATCH_USERNAME.equals(activity.getUsername())) {
+				if (activity.getActivityType() == ActivityType.CONTENT_CHANGE && activity.getBranchDepth() != 3 && !PatchService.HISTORY_PATCH_USERNAME.equals(activity.getUsername())) {
 
 					changesNotAtTaskLevel.add(activity);
 				}
-				activity.getConceptChanges().stream()
-						.flatMap(conceptChange -> conceptChange.getComponentChanges().stream())
-						.forEach(componentChange -> {
-							final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
+				activity.getConceptChanges().stream().forEach(conceptChange -> {
+					final String conceptId = conceptChange.getConceptId();
+					conceptChange.getComponentChanges().forEach(componentChange -> {
+						final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
 
-							if (componentChange.getChangeType() == ChangeType.DELETE) {
-								ids.remove(componentChange.getComponentId());
+						if (componentChange.getChangeType() == ChangeType.DELETE) {
+							ids.remove(componentChange.getComponentId());
+						} else {
+							if (componentChange.isEffectiveTimeNull()) {
+								ids.add(componentChange.getComponentId());
 							} else {
-								if (componentChange.isEffectiveTimeNull()) {
-									ids.add(componentChange.getComponentId());
-								} else {
-									// new commit may have restored effectiveTime,
-									// remove component id from set because we no longer expect a row in the delta
-									ids.remove(componentChange.getComponentId());
-								}
+								// new commit may have restored effectiveTime,
+								// remove component id from set because we no longer expect a row in the delta
+								ids.remove(componentChange.getComponentId());
 							}
-						});
+						}
+						ids.stream().forEach(componentId -> componentToConceptMap.put(componentId, conceptId));
+					});
+				});
 			});
 		}
 	}
