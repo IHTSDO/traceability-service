@@ -135,13 +135,13 @@ public class ReportService {
 						} else {
 							if (componentChange.isEffectiveTimeNull()) {
 								ids.add(componentChange.getComponentId());
+								componentToConceptMap.put(componentChange.getComponentId(), conceptId);
 							} else {
 								// new commit may have restored effectiveTime,
 								// remove component id from set because we no longer expect a row in the delta
 								ids.remove(componentChange.getComponentId());
 							}
 						}
-						ids.stream().forEach(componentId -> componentToConceptMap.put(componentId, conceptId));
 					});
 				});
 			});

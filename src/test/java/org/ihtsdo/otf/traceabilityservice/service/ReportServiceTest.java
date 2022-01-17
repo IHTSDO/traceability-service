@@ -65,6 +65,11 @@ class ReportServiceTest extends AbstractTest {
 
 		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
 				toString(changeSummaryReport.getComponentChanges()));
+		Map<String, String> componentToConceptIdMap = changeSummaryReport.getComponentToConceptIdMap();
+		assertNotNull(componentToConceptIdMap);
+		changeSummaryReport.getComponentChanges().values().stream().flatMap(Collection::stream).forEach(componentId -> {
+			assertEquals("100", componentToConceptIdMap.get(componentId));
+		});
 	}
 
 	@Test
