@@ -7,9 +7,14 @@ import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHitsIterator;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import java.util.*;
 
+import static org.elasticsearch.index.query.QueryBuilders.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReportServiceTest extends AbstractTest {
@@ -19,6 +24,9 @@ class ReportServiceTest extends AbstractTest {
 
 	@Autowired
 	private ActivityRepository activityRepository;
+
+	@Autowired
+	private ElasticsearchOperations elasticsearchOperations;
 
 	@AfterEach
 	void after() {
@@ -245,6 +253,81 @@ class ReportServiceTest extends AbstractTest {
 				toString(projectReportAfterVersioningAfterRebase.getComponentChanges()),
 				"Versioned content rebased into project. Unversioned content at project level still visible.");
 		assertEquals(1, projectReportAfterVersioningAfterRebase.getChangesNotAtTaskLevel().size());
+	}
+
+	@Test
+	void testPromotionSummaryReport() {
+		// Create a concept on a task
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/task1", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true)))
+		));
+		// Promote to project
+		promoteActivities("MAIN/A/task1", "MAIN/A");
+		activityRepository.save(activity("MAIN/A", "MAIN/A/task1", ActivityType.PROMOTION));
+
+		// Versioning on MAIN
+		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
+
+		// Rebase project A with MAIN
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+
+		// Run summary report on project
+		final ChangeSummaryReport projectReportAfterVersioningAfterRebase = reportService.createChangeSummaryReport("MAIN/A", false, true, false);
+		// Changes should be found
+		assertEquals("{CONCEPT=[100]}", toString(projectReportAfterVersioningAfterRebase.getComponentChanges()));
+
+		// Promote project to MAIN
+		promoteActivities("MAIN/A", "MAIN");
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.PROMOTION));
+
+		// Run summary report on MAIN
+		final ChangeSummaryReport reportOnMain = reportService.createChangeSummaryReport("MAIN", false, true, false);
+		// Changes should be found
+		assertEquals("{CONCEPT=[100]}", toString(reportOnMain.getComponentChanges()));
+
+		// Create another task and promote to project A
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/task2", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true)))
+		));
+
+		// Promote to project
+		promoteActivities("MAIN/A/task2", "MAIN/A");
+		activityRepository.save(activity("MAIN/A", "MAIN/A/task2", ActivityType.PROMOTION));
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+
+		final ChangeSummaryReport promotionReportOnProject = reportService.createChangeSummaryReport("MAIN/A", false, true, false);
+		// Promotion changes should be found in project
+		assertEquals("{CONCEPT=[200]}", toString(promotionReportOnProject.getComponentChanges()));
+
+		final ChangeSummaryReport rebaseReportOnProject = reportService.createChangeSummaryReport("MAIN/A", false, false, true);
+		// Previous promoted changes to MAIN should be found in the rebase report
+		assertEquals("{CONCEPT=[100]}", toString(rebaseReportOnProject.getComponentChanges()));
+	}
+
+	private void promoteActivities(String task, String project) {
+		// Move activities on the source branch up to the parent
+		final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE, ActivityType.REBASE);
+
+		List<Activity> toSave = new ArrayList<>();
+		try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeSearchQueryBuilder()
+				.withQuery(boolQuery()
+						.must(termQuery(Activity.Fields.highestPromotedBranch, task))
+						.must(termsQuery(Activity.Fields.activityType, contentActivityTypes)))
+				.withPageable(PageRequest.of(0, 1_000)).build(), Activity.class)) {
+			stream.forEachRemaining(activitySearchHit -> {
+				final Activity activityToUpdate = activitySearchHit.getContent();
+				activityToUpdate.setHighestPromotedBranch(project);
+				activityToUpdate.setPromotionDate(new Date());
+				toSave.add(activityToUpdate);
+			});
+			if (!toSave.isEmpty()) {
+				toSave.forEach(activityRepository::save);
+			}
+		}
 	}
 
 	/*

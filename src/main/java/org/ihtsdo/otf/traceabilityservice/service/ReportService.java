@@ -81,22 +81,17 @@ public class ReportService {
 			// Changes made on child branches, promoted to this one
 			// Unlike rebase; We don't need to lookup the last promotion activity here
 			// because the service keeps track of what was promoted and when.
-			Date lastVersionDate = getLastVersionDateOrEpoch(getCodeSystemBranch(branch), new Date());
-			LOGGER.info("Last version date is {} ({}) on branch {}", lastVersionDate.getTime(), lastVersionDate, branch);
+			Date startDate = getStartDate(branch);
+			LOGGER.info("select promotion activities after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
 			final BoolQueryBuilder onDescendantBranches = boolQuery()
 					.mustNot(termQuery(Activity.Fields.branch, branch))
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(rangeQuery(Activity.Fields.promotionDate).gt(lastVersionDate.getTime()));
+					.must(rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
 			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
 
 		if (includeMadeOnThisBranch) {
-			Date startDate;
-			if (BranchUtil.isCodeSystemBranch(branch)) {
-				startDate = getLastVersionDateOrEpoch(branch, new Date());
-			} else {
-				startDate = getLastPromotionDate(branch);// This used in case highestPromotedBranch is not set correctly. This happens for some rebase merge changes.
-			}
+			Date startDate = getStartDate(branch);
 			LOGGER.debug("startDate {}", startDate);
 			// Changes made on this branch
 			final BoolQueryBuilder onThisBranchQuery = boolQuery()
@@ -111,6 +106,16 @@ public class ReportService {
 		ChangeSummaryReport changeSummaryReport = new ChangeSummaryReport(componentChanges, changesNotAtTaskLevel);
 		changeSummaryReport.setComponentToConceptIdMap(componentToConceptIdMap);
 		return changeSummaryReport;
+	}
+
+	private Date getStartDate(String branch) {
+		Date startDate;
+		if (BranchUtil.isCodeSystemBranch(branch)) {
+			startDate = getLastVersionDateOrEpoch(branch, new Date());
+		} else {
+			startDate = getLastPromotionDate(branch);// This used in case highestPromotedBranch is not set correctly. This happens for some rebase merge changes.
+		}
+		return startDate;
 	}
 
 	private void processCommits(BoolQueryBuilder selection, Map<ComponentType, Set<String>> componentChanges,
