@@ -308,6 +308,68 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{CONCEPT=[100]}", toString(rebaseReportOnProject.getComponentChanges()));
 	}
 
+
+	@Test
+	void testRebaseSummaryReport() {
+		// Create a concept on a task1
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/task1", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true)))
+		));
+
+		// Promote task 1 to project
+		promoteActivities("MAIN/A/task1", "MAIN/A");
+		activityRepository.save(activity("MAIN/A", "MAIN/A/task1", ActivityType.PROMOTION));
+
+		// Promote project A to MAIN
+		promoteActivities("MAIN/A", "MAIN");
+		activityRepository.save(activity("MAIN", "MAIN/A", ActivityType.PROMOTION));
+
+		// Rebase project
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+
+		// Create task2
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/task2", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true)))
+		));
+
+		// Promote task 2 to project
+		promoteActivities("MAIN/A/task2", "MAIN/A");
+		activityRepository.save(activity("MAIN/A", "MAIN/A/task2", ActivityType.PROMOTION));
+
+		// Create task 3
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/task3", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("300")
+								.addComponentChange(new ComponentChange("300", ChangeType.CREATE, ComponentType.CONCEPT, "", true)))
+		));
+
+		// Run summary report for rebase only
+		final ChangeSummaryReport rebaseReportOnTaskBeforeVersioning = reportService.createChangeSummaryReport("MAIN/A/task3", false, false, true);
+		// Previous promoted changes to MAIN and MAIN/A should be found in the rebase report
+		assertEquals("{CONCEPT=[100, 200]}", toString(rebaseReportOnTaskBeforeVersioning.getComponentChanges()));
+
+		// Versioning on MAIN
+		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
+
+		// Before rebasing
+		final ChangeSummaryReport rebaseReportOnTaskAfterVersioning = reportService.createChangeSummaryReport("MAIN/A/task3", false, false, true);
+		// Only changes promoted MAIN/A after versioning should be found in the rebase report
+		assertEquals("{CONCEPT=[100, 200]}", toString(rebaseReportOnTaskAfterVersioning.getComponentChanges()));
+
+
+		// After rebasing MAIN
+		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
+		activityRepository.save(activity("MAIN/A/task3", "MAIN/A", ActivityType.REBASE));
+
+		final ChangeSummaryReport reportOnTaskAfterVersioningAndRebasing = reportService.createChangeSummaryReport("MAIN/A/task3", false, false, true);
+		// Only changes promoted MAIN/A and not versioned should in the rebase report
+		assertEquals("{CONCEPT=[200]}", toString(reportOnTaskAfterVersioningAndRebasing.getComponentChanges()));
+	}
+
 	private void promoteActivities(String task, String project) {
 		// Move activities on the source branch up to the parent
 		final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE, ActivityType.REBASE);

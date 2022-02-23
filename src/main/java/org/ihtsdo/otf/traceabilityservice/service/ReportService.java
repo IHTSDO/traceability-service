@@ -49,8 +49,7 @@ public class ReportService {
 				// Only need to set start date if code system branch using last version commit
 				final String ancestor = ancestors.pop();
 				Date previousLevelBaseDate = getBaseDateUsingBestGuess(previousLevel);
-				Date lastVersionOrEpoch = getLastVersionDateOrEpoch(ancestor, previousLevelBaseDate);
-
+				Date startDate = getStartDate(ancestor, previousLevelBaseDate);
 				// Changes made on ancestor branches, rebased to this one
 				final BoolQueryBuilder onAncestorBranch =
 						boolQuery()
@@ -58,13 +57,13 @@ public class ReportService {
 								.should(boolQuery()
 										.must(termQuery(Activity.Fields.branch, ancestor))
 										.must(rangeQuery(Activity.Fields.commitDate)
-												.gt(lastVersionOrEpoch.getTime())
+												.gt(startDate.getTime())
 												.lte(previousLevelBaseDate.getTime())))
 								// Changes promoted to ancestor
 								.should(boolQuery()
 										.must(termQuery(Activity.Fields.highestPromotedBranch, ancestor))
 										.must(rangeQuery(Activity.Fields.promotionDate)
-												.gt(lastVersionOrEpoch.getTime())
+												.gt(startDate.getTime())
 												.lte(previousLevelBaseDate.getTime())));
 				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 
@@ -81,7 +80,7 @@ public class ReportService {
 			// Changes made on child branches, promoted to this one
 			// Unlike rebase; We don't need to lookup the last promotion activity here
 			// because the service keeps track of what was promoted and when.
-			Date startDate = getStartDate(branch);
+			Date startDate = getStartDate(branch, new Date());
 			LOGGER.info("select promotion activities after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
 			final BoolQueryBuilder onDescendantBranches = boolQuery()
 					.mustNot(termQuery(Activity.Fields.branch, branch))
@@ -91,7 +90,7 @@ public class ReportService {
 		}
 
 		if (includeMadeOnThisBranch) {
-			Date startDate = getStartDate(branch);
+			Date startDate = getStartDate(branch, new Date());
 			LOGGER.debug("startDate {}", startDate);
 			// Changes made on this branch
 			final BoolQueryBuilder onThisBranchQuery = boolQuery()
@@ -108,15 +107,17 @@ public class ReportService {
 		return changeSummaryReport;
 	}
 
-	private Date getStartDate(String branch) {
+	private Date getStartDate(String branch, Date previousLevelBaseDate) {
 		Date startDate;
 		if (BranchUtil.isCodeSystemBranch(branch)) {
-			startDate = getLastVersionDateOrEpoch(branch, new Date());
+			startDate = getLastVersionDateOrEpoch(branch, previousLevelBaseDate);
 		} else {
-			startDate = getLastPromotionDate(branch);// This used in case highestPromotedBranch is not set correctly. This happens for some rebase merge changes.
+			// Changes after last promotion date should be selected on current branch. Changes promoted before will be part of ancestor branch.
+			startDate = getLastPromotionDate(branch);
 		}
 		return startDate;
 	}
+
 
 	private void processCommits(BoolQueryBuilder selection, Map<ComponentType, Set<String>> componentChanges,
 							List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptMap) {
@@ -130,7 +131,7 @@ public class ReportService {
 
 					changesNotAtTaskLevel.add(activity);
 				}
-				activity.getConceptChanges().stream().forEach(conceptChange -> {
+				activity.getConceptChanges().forEach(conceptChange -> {
 					final String conceptId = conceptChange.getConceptId();
 					conceptChange.getComponentChanges().forEach(componentChange -> {
 						final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
@@ -151,19 +152,6 @@ public class ReportService {
 				});
 			});
 		}
-	}
-
-	private String getCodeSystemBranch(String branch) {
-		final Deque<String> ancestors = createAncestorDeque(branch);
-		String codeSystemBranch = branch;
-		while (!ancestors.isEmpty()) {
-			final String ancestor = ancestors.pop();
-			if (BranchUtil.isCodeSystemBranch(ancestor)) {
-				codeSystemBranch = ancestor;
-				break;
-			}
-		}
-		return codeSystemBranch;
 	}
 
 	private Date getLastVersionDateOrEpoch(String branch, Date before) {
