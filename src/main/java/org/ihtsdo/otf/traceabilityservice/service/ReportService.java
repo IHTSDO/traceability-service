@@ -122,7 +122,8 @@ public class ReportService {
 	private void processCommits(BoolQueryBuilder selection, Map<ComponentType, Set<String>> componentChanges,
 							List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptMap) {
 		NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(selection)
-				.withPageable(PageRequest.of(0, 10_000, Sort.by(Activity.Fields.promotionDate, Activity.Fields.commitDate)))
+				// Use 1000 instead of 10_000 because each activity doc containing all changes which can be very large
+				.withPageable(PageRequest.of(0, 1_000, Sort.by(Activity.Fields.promotionDate, Activity.Fields.commitDate)))
 				.build();
 		try (SearchHitsIterator<Activity> stream = elasticsearchRestTemplate.searchForStream(query, Activity.class)) {
 			stream.forEachRemaining(hit -> {
