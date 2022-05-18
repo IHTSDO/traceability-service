@@ -1,6 +1,8 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
+import org.apache.activemq.filter.function.regexMatchFunction;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.slf4j.Logger;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 @Component
 public class ActivityService {
@@ -67,7 +71,7 @@ public class ActivityService {
 	}
 
 	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, String componentId,
-			Date commitDate, Pageable page) {
+			Date commitDate, Date fromDate, Date toDate, boolean intOnly, Pageable page) {
 
 		final BoolQueryBuilder query = boolQuery();
 
@@ -96,10 +100,27 @@ public class ActivityService {
 		if (commitDate != null) {
 			query.must(termQuery(Activity.Fields.commitDate, commitDate.getTime()));
 		}
+		
+		if (fromDate != null || toDate != null) {
+			RangeQueryBuilder rangeQuery = rangeQuery(Activity.Fields.commitDate);
+			if (fromDate != null) {
+				rangeQuery.from(fromDate.getTime());
+			}
+			
+			if (toDate != null) {
+				rangeQuery.to(toDate.getTime());
+			}
+			query.must(rangeQuery);
+		}
+		
+		if (intOnly == true) {
+			query.mustNot(regexpQuery(Activity.Fields.branch, ".*SNOMEDCT-.*"));
+		}
 
 		final SearchHits<Activity> search = elasticsearchOperations.search(new NativeSearchQueryBuilder().withQuery(query).withPageable(page).build(), Activity.class);
 		return new PageImpl<>(search.stream().map(SearchHit::getContent).collect(Collectors.toList()), page, search.getTotalHits());
 	}
+
 
 	/**
 	 * To avoid blowing buffer limits retrieving documents with huge numbers of rows, we will recover

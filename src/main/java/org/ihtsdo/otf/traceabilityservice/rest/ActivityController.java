@@ -54,16 +54,28 @@ public class ActivityController {
 			@RequestParam(required = false) @ApiParam("Find commits that changed a specific concept.") Long conceptId,
 			@RequestParam(required = false) @ApiParam("Find commits that changed a specific component.") String componentId,
 			@RequestParam(required = false) @ApiParam("Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
+			@RequestParam(required = false) @ApiParam("Find commits after specified date. The format returned by the API can be used or epoch milliseconds.") String commitFromDate,
+			@RequestParam(required = false) @ApiParam("Find commits before specifed date. The format returned by the API can be used or epoch milliseconds.") String commitToDate,
+			@RequestParam(required = false, defaultValue = "false") @ApiParam("Ignore changes made on non-International CodeSystems") boolean intOnly,
 			@RequestParam(required = false, defaultValue = "false") @ApiParam("Brief response without the concept changes.") boolean brief,
+			@RequestParam(required = false, defaultValue = "false") @ApiParam("Briefest response without any concept details") boolean summaryOnly,
 			Pageable page) {
 
 		page = setPageDefaults(page, 1000);
 
 		Date commitDateDate = getDate(commitDate);
+		Date commitFromDateDate = getDate(commitFromDate);
+		Date commitToDateDate = getDate(commitToDate);
 
-		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, componentId, commitDateDate, page);
-		if (brief) {
-			makeBrief(null, activities);
+		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, componentId, commitDateDate, commitFromDateDate, commitToDateDate, intOnly, page);
+		if (brief || summaryOnly) {
+			if (summaryOnly) {
+				for (Activity activity : activities.getContent()) {
+					activity.setConceptChanges(null);
+				}
+			} else {
+				makeBrief(null, activities);
+			}
 		}
 		return activities;
 	}
@@ -163,4 +175,5 @@ public class ActivityController {
 			}
 		}
 	}
+	
 }
