@@ -370,6 +370,42 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{CONCEPT=[200]}", toString(reportOnTaskAfterVersioningAndRebasing.getComponentChanges()));
 	}
 
+	@Test
+	void testChangeMadeDirectlyOnCodeSystemBranch() throws InterruptedException {
+		// Create refset member on CodeSystem branch
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/SNOMEDCT-A", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("a1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true)))
+		));
+
+		// Create a task on project and delete the member
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/SNOMEDCT-A/project/task", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("a1", ChangeType.DELETE, ComponentType.REFERENCE_SET_MEMBER, "", true)))
+		));
+
+		// Promote task to project and to CodeSystemBranch
+		promoteActivities("MAIN/SNOMEDCT-A/project/task", "MAIN/SNOMEDCT-A/project");
+		promoteActivities("MAIN/SNOMEDCT-A/project", "MAIN/SNOMEDCT-A");
+
+		// Run report on project and the refset member should be deleted.
+		ChangeSummaryReport projectReport = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-A/project");
+		assertTrue(projectReport.getComponentChanges().isEmpty());
+
+		// Add the same component back on the codeSystem branch again
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/SNOMEDCT-A", null, ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("a1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true)))
+		));
+
+		projectReport = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-A/project");
+		assertFalse(projectReport.getComponentChanges().isEmpty());
+		assertEquals("{REFERENCE_SET_MEMBER=[a1]}", toString(projectReport.getComponentChanges()));
+	}
+
 	private void promoteActivities(String task, String project) {
 		// Move activities on the source branch up to the parent
 		final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE, ActivityType.REBASE);

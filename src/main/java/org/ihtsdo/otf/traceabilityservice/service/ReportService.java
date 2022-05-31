@@ -129,7 +129,6 @@ public class ReportService {
 			stream.forEachRemaining(hit -> {
 				final Activity activity = hit.getContent();
 				if (activity.getActivityType() == ActivityType.CONTENT_CHANGE && activity.getBranchDepth() != 3 && !PatchService.HISTORY_PATCH_USERNAME.equals(activity.getUsername())) {
-
 					changesNotAtTaskLevel.add(activity);
 				}
 				activity.getConceptChanges().forEach(conceptChange -> {
@@ -139,6 +138,7 @@ public class ReportService {
 
 						if (componentChange.getChangeType() == ChangeType.DELETE) {
 							ids.remove(componentChange.getComponentId());
+							componentToConceptMap.remove(componentChange.getComponentId());
 						} else {
 							if (componentChange.isEffectiveTimeNull()) {
 								ids.add(componentChange.getComponentId());
@@ -147,6 +147,7 @@ public class ReportService {
 								// new commit may have restored effectiveTime,
 								// remove component id from set because we no longer expect a row in the delta
 								ids.remove(componentChange.getComponentId());
+								componentToConceptMap.remove(componentChange.getComponentId());
 							}
 						}
 					});

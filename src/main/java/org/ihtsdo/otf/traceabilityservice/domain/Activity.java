@@ -66,6 +66,10 @@ public class Activity {
 		this.commitDate = commitTimestamp;
 		this.activityType = activityType;
 		this.highestPromotedBranch = branchPath;
+		// Set the promotion date using commitDate for codeSystem level branch to avoid sorting issue related null promotionDate.
+		if (this.branchDepth == 1) {
+			promotionDate = this.commitDate;
+		}
 	}
 
 	// Get branch depth relative to code system, relies on "SNOMEDCT-XX" code system naming convention.
