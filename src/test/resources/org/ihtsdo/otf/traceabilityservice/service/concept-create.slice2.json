@@ -1,0 +1,49 @@
+{
+  "userId": "mri",
+  "branchPath": "MAIN/STORMTEST2/STORMTEST2-007",
+  "activityType": "CONTENT_CHANGE",
+  "commitTimestamp": 1628715946589,
+  "changeListComplete" : false,
+  "changes": [
+    {
+      "conceptId": "124195653005",
+      "componentChanges": [
+        {
+          "changeType": "CREATE",
+          "componentType": "REFERENCE_SET_MEMBER",
+          "componentSubType": 733073007,
+          "componentId": "12c3a1d55-2822-4577-98ea-0c286ae75b2d",
+          "effectiveTimeNull": true
+        },
+        {
+          "changeType": "CREATE",
+          "componentType": "REFERENCE_SET_MEMBER",
+          "componentSubType": 900000000000508004,
+          "componentId": "12fe9249-e532-4e34-b1c1-a12bb5fbfb66",
+          "effectiveTimeNull": true
+        },
+        {
+          "changeType": "CREATE",
+          "componentType": "REFERENCE_SET_MEMBER",
+          "componentSubType": 900000000000509007,
+          "componentId": "12918c72-ac79-4617-8ad1-cad4347831d0",
+          "effectiveTimeNull": true
+        },
+        {
+          "changeType": "CREATE",
+          "componentType": "REFERENCE_SET_MEMBER",
+          "componentSubType": 900000000000508004,
+          "componentId": "12ee3da1-08fe-4ca7-827f-252c74d4aec5",
+          "effectiveTimeNull": true
+        },
+        {
+          "changeType": "CREATE",
+          "componentType": "REFERENCE_SET_MEMBER",
+          "componentSubType": 900000000000509007,
+          "componentId": "128cf3f2-fedb-4a07-ba40-cd00f26c86b5",
+          "effectiveTimeNull": true
+        }
+      ]
+    }
+  ]
+}

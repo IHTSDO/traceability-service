@@ -11,6 +11,8 @@ public class ActivityMessage {
 	private Long commitTimestamp;
 	private List<ConceptActivity> changes;
 
+	private boolean changeListComplete = true;
+
 	public ActivityMessage() {
 	}
 
@@ -38,6 +40,10 @@ public class ActivityMessage {
 		return changes;
 	}
 
+	public boolean isChangeListComplete() {
+		return changeListComplete;
+	}
+
 	@Override
 	public String toString() {
 		return "Activity{" +
@@ -45,6 +51,7 @@ public class ActivityMessage {
 				", branchPath='" + branchPath + '\'' +
 				", commitTimestamp=" + commitTimestamp +
 				", changes=" + changes +
+				", changeListComplete=" + changeListComplete +
 				'}';
 	}
 

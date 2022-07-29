@@ -59,4 +59,6 @@ public interface ActivityRepository extends PagingAndSortingRepository<Activity,
 			"] } }")
 	Page<Activity> findBy(List<Long> conceptIds, Pageable page);
 
+	Page<Activity> findByBranchAndActivityTypeAndCommitDate(String branch, ActivityType activityType, String commitDate, Pageable page);
+
 }

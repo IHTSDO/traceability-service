@@ -9,7 +9,9 @@ import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitsIterator;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -47,14 +49,32 @@ public class TraceabilityStreamConsumer {
 
 		final ActivityType activityType = activityMessage.getActivityType();
 		final String mergeSourceBranch = activityMessage.getSourceBranch();
-		final Activity activity = new Activity(username, branchPath, mergeSourceBranch, commitTimestamp, activityType);
+		final boolean isChangeListComplete = activityMessage.isChangeListComplete();
+
+		Activity activity = new Activity(username, branchPath, mergeSourceBranch, commitTimestamp, activityType);
+		if (!isChangeListComplete) {
+			// In this case a large amount of concept changes is sliced and queued in multiple messages for the same activity.
+			// Try to locate that activity to add the current concept changes to it.
+			Page<Activity> activities = activityRepository.findByBranchAndActivityTypeAndCommitDate
+					(branchPath, activityType, String.valueOf(activityMessage.getCommitTimestamp()), Pageable.unpaged());
+			List<Activity> content = activities.getContent();
+			if (content.size() !=0) {
+				activity = content.get(0);
+			}
+		}
 
 		final List<ActivityMessage.ConceptActivity> changes = activityMessage.getChanges();
 		if (changes != null) {
 			for (ActivityMessage.ConceptActivity conceptActivity : changes) {
 				final String conceptId = conceptActivity.getConceptId();
+				ConceptChange conceptChange = activity.getConceptChanges().stream()
+						.filter(cc -> conceptId.equals(conceptId))
+						.findFirst()
+						.orElse(null);
+				if (conceptChange == null) {
+					conceptChange = new ConceptChange(conceptId);
+				}
 
-				final ConceptChange conceptChange = new ConceptChange(conceptId);
 				for (ActivityMessage.ComponentChange componentChange : conceptActivity.getComponentChanges()) {
 					conceptChange.addComponentChange(new ComponentChange(componentChange.getComponentId(), componentChange.getChangeType(),
 							componentChange.getComponentType(), componentChange.getComponentSubType(), componentChange.isEffectiveTimeNull()));

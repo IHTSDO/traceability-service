@@ -107,6 +107,34 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 		assertEquals(ActivityType.CREATE_CODE_SYSTEM_VERSION, activities.get(0).getActivityType());
 	}
 
+	@Test
+	void consumeSlicedConceptChangesAndEnsureTheyGetGroupedInOneActivity() throws IOException, InterruptedException {
+		List<Activity> activities = sendAndReceiveActivity("concept-create.slice1.json");
+
+		assertEquals(1, activities.size());
+		Activity activity = activities.get(0);
+		assertEquals("mri", activity.getUsername());
+		assertEquals("MAIN/STORMTEST2/STORMTEST2-007", activity.getBranch());
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		Set<ConceptChange> conceptChanges = activity.getConceptChanges();
+		assertEquals(1, conceptChanges.size());
+		ConceptChange conceptChange = conceptChanges.iterator().next();
+		Set<ComponentChange> componentChanges = conceptChange.getComponentChanges();
+		assertEquals(3, componentChanges.size());
+
+		activities = sendAndReceiveActivity("concept-create.slice2.json");
+		assertEquals(1, activities.size());
+		activity = activities.get(0);
+		assertEquals("mri", activity.getUsername());
+		assertEquals("MAIN/STORMTEST2/STORMTEST2-007", activity.getBranch());
+		assertEquals(ActivityType.CONTENT_CHANGE, activity.getActivityType());
+		conceptChanges = activity.getConceptChanges();
+		assertEquals(1, conceptChanges.size());
+		conceptChange = conceptChanges.iterator().next();
+		componentChanges = conceptChange.getComponentChanges();
+		assertEquals(8, componentChanges.size());
+	}
+
 	// description replacement
 	// description reactivation
 	// concept inactivation

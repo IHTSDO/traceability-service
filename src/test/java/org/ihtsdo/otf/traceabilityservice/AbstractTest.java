@@ -44,7 +44,7 @@ public abstract class AbstractTest {
 	}
 
 	protected List<Activity> sendAndReceiveActivity(String resource) throws IOException, InterruptedException {
-		long startingActivityCount = activityRepository.count();
+		final long startingActivityCount = resource.contains("slice")? 0 : activityRepository.count();
 
 		final InputStream resourceAsStream = getClass().getResourceAsStream(resource);
 		assertNotNull(resourceAsStream);
@@ -53,7 +53,8 @@ public abstract class AbstractTest {
 
 		int timeoutSeconds = 10;
 		int waitedSeconds = 0;
-		while (activityRepository.count() != startingActivityCount + 1 && waitedSeconds < timeoutSeconds) {
+		while ( (activityRepository.count() != startingActivityCount + 1 || resource.contains("slice"))
+				&& waitedSeconds < timeoutSeconds) {
 			Thread.sleep(1000);
 			waitedSeconds++;
 		}
