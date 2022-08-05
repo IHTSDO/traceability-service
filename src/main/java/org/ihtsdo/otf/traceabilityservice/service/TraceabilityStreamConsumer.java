@@ -57,7 +57,7 @@ public class TraceabilityStreamConsumer {
 				final ConceptChange conceptChange = new ConceptChange(conceptId);
 				for (ActivityMessage.ComponentChange componentChange : conceptActivity.getComponentChanges()) {
 					conceptChange.addComponentChange(new ComponentChange(componentChange.getComponentId(), componentChange.getChangeType(),
-							componentChange.getComponentType(), componentChange.getComponentSubType(), componentChange.isEffectiveTimeNull()));
+							componentChange.getComponentType(), componentChange.getComponentSubType(), componentChange.isEffectiveTimeNull(), componentChange.isSuperseded()));
 				}
 				activity.addConceptChange(conceptChange);
 			}

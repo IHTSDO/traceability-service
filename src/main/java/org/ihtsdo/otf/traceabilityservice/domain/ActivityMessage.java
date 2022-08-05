@@ -85,6 +85,7 @@ public class ActivityMessage {
 		private String componentSubType;
 		private String componentId;
 		private boolean effectiveTimeNull;
+		private boolean superseded;
 
 		public ComponentChange() {
 		}
@@ -107,6 +108,10 @@ public class ActivityMessage {
 
 		public boolean isEffectiveTimeNull() {
 			return effectiveTimeNull;
+		}
+
+		public boolean isSuperseded() {
+			return superseded;
 		}
 
 		@Override

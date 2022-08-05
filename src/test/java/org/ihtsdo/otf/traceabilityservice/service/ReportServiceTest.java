@@ -371,7 +371,7 @@ class ReportServiceTest extends AbstractTest {
 	}
 
 	@Test
-	void testChangeMadeDirectlyOnCodeSystemBranch() throws InterruptedException {
+	void testChangeMadeDirectlyOnCodeSystemBranch() {
 		// Create refset member on CodeSystem branch
 		activityRepository.saveAll(Lists.newArrayList(
 				activity("MAIN/SNOMEDCT-A", null, ActivityType.CONTENT_CHANGE)
@@ -404,6 +404,51 @@ class ReportServiceTest extends AbstractTest {
 		projectReport = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-A/project");
 		assertFalse(projectReport.getComponentChanges().isEmpty());
 		assertEquals("{REFERENCE_SET_MEMBER=[a1]}", toString(projectReport.getComponentChanges()));
+	}
+
+	@Test
+	void testReportWithSupersededChanges() {
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("110", ChangeType.UPDATE, ComponentType.DESCRIPTION, "", true))
+						),
+				activity("MAIN/B", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("110", ChangeType.DELETE, ComponentType.DESCRIPTION, "", true))
+						)
+		));
+
+		promoteActivities("MAIN/A", "MAIN");
+
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/B", "MAIN", ActivityType.REBASE)
+						// If the MAIN version is chosen during merge, it will log the component change on the target branch as superseded during the rebase
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("110", ChangeType.DELETE, ComponentType.DESCRIPTION, "", true, true))
+						)
+		));
+
+		// Report changes on MAIN/B only now should be empty as superseded.
+		ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/B", true, true, false);
+		assertEquals("{}", toString(changeSummaryReport.getComponentChanges()));
+		assertEquals(0, changeSummaryReport.getComponentChanges().size());
+
+		// Report on MAIN should have changes promoted from MAIN/A
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN");
+		assertEquals("{DESCRIPTION=[110]}", toString(changeSummaryReport.getComponentChanges()));
+		assertEquals(1, changeSummaryReport.getComponentChanges().size());
+
+		// Run summary report on MAIN/B should have contain changes rebased from MAIN
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/B");
+		assertEquals("{DESCRIPTION=[110]}", toString(changeSummaryReport.getComponentChanges()));
+		assertEquals(1, changeSummaryReport.getComponentChanges().size());
+
+		// The report on MAIN should have no change after promoting MAIN/B
+		promoteActivities("MAIN/B", "MAIN");
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN");
+		assertEquals("{DESCRIPTION=[110]}", toString(changeSummaryReport.getComponentChanges()));
+		assertEquals(1, changeSummaryReport.getComponentChanges().size());
 	}
 
 	private void promoteActivities(String task, String project) {

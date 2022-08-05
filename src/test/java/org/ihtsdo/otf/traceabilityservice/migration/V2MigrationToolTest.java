@@ -56,7 +56,8 @@ class V2MigrationToolTest extends AbstractTest {
 				"      \"changeType\" : \"CREATE\",\n" +
 				"      \"componentType\" : \"DESCRIPTION\",\n" +
 				"      \"componentSubType\" : \"900000000000013009\",\n" +
-				"      \"effectiveTimeNull\" : true\n" +
+				"      \"effectiveTimeNull\" : true,\n" +
+				"      \"superseded\" : false\n" +
 				"    } ]\n" +
 				"  } ]\n" +
 				"}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(activity));
