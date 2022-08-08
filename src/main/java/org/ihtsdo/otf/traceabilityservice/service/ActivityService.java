@@ -1,6 +1,5 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
-import org.apache.activemq.filter.function.regexMatchFunction;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;

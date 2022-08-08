@@ -63,6 +63,11 @@ public class ComponentChange {
 		return effectiveTimeNull;
 	}
 
+	// Add this for JSON serialization to work
+	public Boolean getSuperseded() {
+		return this.superseded;
+	}
+
 	public boolean isSuperseded() {
 		return Boolean.TRUE == superseded;
 	}
@@ -90,8 +95,7 @@ public class ComponentChange {
 				", componentSubType='" + componentSubType + '\'' +
 				", effectiveTimeNull=" + effectiveTimeNull);
 		if (isSuperseded()) {
-			builder.append(", superseded=");
-			builder.append(isSuperseded());
+			builder.append(", superseded=true");
 		}
 		builder.append("}");
 		return builder.toString();

@@ -165,15 +165,17 @@ public class ReportService {
 				}
 				changeByComponentId.put(change.getComponentId(), change);
 			}
-			changeByComponentId.values().stream().filter(c -> !c.isSuperseded()).forEach(componentChange -> {
-				final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
-				if (!componentChange.isEffectiveTimeNull() || componentChange.getChangeType() == ChangeType.DELETE) {
-					// new commit may have restored effectiveTime or component change is deleted.
-					// remove component id from set because we no longer expect a row in the delta
-					ids.remove(componentChange.getComponentId());
-					componentToConceptMap.remove(componentChange.getComponentId());
-				} else {
-					ids.add(componentChange.getComponentId());
+			changeByComponentId.values().forEach(componentChange -> {
+				if (!componentChange.isSuperseded()) {
+					final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
+					if (!componentChange.isEffectiveTimeNull() || componentChange.getChangeType() == ChangeType.DELETE) {
+						// new commit may have restored effectiveTime or component change is deleted.
+						// remove component id from set because we no longer expect a row in the delta
+						ids.remove(componentChange.getComponentId());
+						componentToConceptMap.remove(componentChange.getComponentId());
+					} else {
+						ids.add(componentChange.getComponentId());
+					}
 				}
 			});
 		});
