@@ -102,7 +102,9 @@ public class ReportService {
 		componentChanges.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 
 		ChangeSummaryReport changeSummaryReport = new ChangeSummaryReport(componentChanges, changesNotAtTaskLevel);
-		changeSummaryReport.setComponentToConceptIdMap(componentToConceptIdMap);
+		if (!componentChanges.isEmpty()) {
+			changeSummaryReport.setComponentToConceptIdMap(componentToConceptIdMap);
+		}
 		return changeSummaryReport;
 	}
 
@@ -139,10 +141,9 @@ public class ReportService {
 				// Collect changes stack for a given branch to work out superseded changes
 				Stack<ComponentChange> changes = changeStack.computeIfAbsent(activity.getBranch(), stack -> new Stack<>());
 				activity.getConceptChanges().forEach(conceptChange -> {
-					final String conceptId = conceptChange.getConceptId();
 					conceptChange.getComponentChanges().forEach(componentChange -> {
 						changes.add(componentChange);
-						componentToConceptMap.put(componentChange.getComponentId(), conceptId);
+						componentToConceptMap.put(componentChange.getComponentId(), conceptChange.getConceptId());
 					});
 				});
 			});
