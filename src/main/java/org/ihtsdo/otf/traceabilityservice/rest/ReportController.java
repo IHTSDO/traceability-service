@@ -31,6 +31,8 @@ public class ReportController {
 			@ApiParam(required = true)
 			@RequestParam String branch,
 
+			@RequestParam(required = false) Long contentHeadTimestamp,
+
 			@ApiParam(defaultValue = "true")
 			@RequestParam(defaultValue = "true") boolean includeMadeOnThisBranch,
 
@@ -40,7 +42,7 @@ public class ReportController {
 			@ApiParam(defaultValue = "true")
 			@RequestParam(defaultValue = "true") boolean includeRebasedToThisBranch) {
 
-		return reportService.createChangeSummaryReport(branch, includeMadeOnThisBranch, includePromotedToThisBranch, includeRebasedToThisBranch);
+		return reportService.createChangeSummaryReport(branch, contentHeadTimestamp, includeMadeOnThisBranch, includePromotedToThisBranch, includeRebasedToThisBranch);
 	}
 
 	@ApiOperation(value = "Branch change summary verses delta archive diff.",

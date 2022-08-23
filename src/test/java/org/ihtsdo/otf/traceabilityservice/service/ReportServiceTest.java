@@ -274,7 +274,7 @@ class ReportServiceTest extends AbstractTest {
 		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
 
 		// Run summary report on project
-		final ChangeSummaryReport projectReportAfterVersioningAfterRebase = reportService.createChangeSummaryReport("MAIN/A", false, true, false);
+		final ChangeSummaryReport projectReportAfterVersioningAfterRebase = reportService.createChangeSummaryReport("MAIN/A", null, false, true, false);
 		// Changes should be found
 		assertEquals("{CONCEPT=[100]}", toString(projectReportAfterVersioningAfterRebase.getComponentChanges()));
 
@@ -283,7 +283,7 @@ class ReportServiceTest extends AbstractTest {
 		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.PROMOTION));
 
 		// Run summary report on MAIN
-		final ChangeSummaryReport reportOnMain = reportService.createChangeSummaryReport("MAIN", false, true, false);
+		final ChangeSummaryReport reportOnMain = reportService.createChangeSummaryReport("MAIN", null, false, true, false);
 		// Changes should be found
 		assertEquals("{CONCEPT=[100]}", toString(reportOnMain.getComponentChanges()));
 
@@ -299,11 +299,11 @@ class ReportServiceTest extends AbstractTest {
 		activityRepository.save(activity("MAIN/A", "MAIN/A/task2", ActivityType.PROMOTION));
 		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
 
-		final ChangeSummaryReport promotionReportOnProject = reportService.createChangeSummaryReport("MAIN/A", false, true, false);
+		final ChangeSummaryReport promotionReportOnProject = reportService.createChangeSummaryReport("MAIN/A", null, false, true, false);
 		// Promotion changes should be found in project
 		assertEquals("{CONCEPT=[200]}", toString(promotionReportOnProject.getComponentChanges()));
 
-		final ChangeSummaryReport rebaseReportOnProject = reportService.createChangeSummaryReport("MAIN/A", false, false, true);
+		final ChangeSummaryReport rebaseReportOnProject = reportService.createChangeSummaryReport("MAIN/A", null, false, false, true);
 		// Previous promoted changes to MAIN should be found in the rebase report
 		assertEquals("{CONCEPT=[100]}", toString(rebaseReportOnProject.getComponentChanges()));
 	}
@@ -348,7 +348,7 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		// Run summary report for rebase only
-		final ChangeSummaryReport rebaseReportOnTaskBeforeVersioning = reportService.createChangeSummaryReport("MAIN/A/task3", false, false, true);
+		final ChangeSummaryReport rebaseReportOnTaskBeforeVersioning = reportService.createChangeSummaryReport("MAIN/A/task3", null, false, false, true);
 		// Previous promoted changes to MAIN and MAIN/A should be found in the rebase report
 		assertEquals("{CONCEPT=[100, 200]}", toString(rebaseReportOnTaskBeforeVersioning.getComponentChanges()));
 
@@ -356,7 +356,7 @@ class ReportServiceTest extends AbstractTest {
 		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
 
 		// Before rebasing
-		final ChangeSummaryReport rebaseReportOnTaskAfterVersioning = reportService.createChangeSummaryReport("MAIN/A/task3", false, false, true);
+		final ChangeSummaryReport rebaseReportOnTaskAfterVersioning = reportService.createChangeSummaryReport("MAIN/A/task3", null, false, false, true);
 		// Only changes promoted MAIN/A after versioning should be found in the rebase report
 		assertEquals("{CONCEPT=[100, 200]}", toString(rebaseReportOnTaskAfterVersioning.getComponentChanges()));
 
@@ -365,7 +365,7 @@ class ReportServiceTest extends AbstractTest {
 		activityRepository.save(activity("MAIN/A", "MAIN", ActivityType.REBASE));
 		activityRepository.save(activity("MAIN/A/task3", "MAIN/A", ActivityType.REBASE));
 
-		final ChangeSummaryReport reportOnTaskAfterVersioningAndRebasing = reportService.createChangeSummaryReport("MAIN/A/task3", false, false, true);
+		final ChangeSummaryReport reportOnTaskAfterVersioningAndRebasing = reportService.createChangeSummaryReport("MAIN/A/task3", null, false, false, true);
 		// Only changes promoted MAIN/A and not versioned should in the rebase report
 		assertEquals("{CONCEPT=[200]}", toString(reportOnTaskAfterVersioningAndRebasing.getComponentChanges()));
 	}
@@ -430,7 +430,7 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		// Report changes on MAIN/B only now should be empty as superseded.
-		ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/B", true, true, false);
+		ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/B", null, true, true, false);
 		assertEquals("{}", toString(changeSummaryReport.getComponentChanges()));
 		assertEquals(0, changeSummaryReport.getComponentChanges().size());
 

@@ -30,10 +30,10 @@ public class ReportService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
 
 	public ChangeSummaryReport createChangeSummaryReport(String branch) {
-		return createChangeSummaryReport(branch, true, true, true);
+		return createChangeSummaryReport(branch, null, true, true, true);
 	}
 
-	public ChangeSummaryReport createChangeSummaryReport(String branch, boolean includeMadeOnThisBranch, boolean includePromotedToThisBranch, boolean includeRebasedToThisBranch) {
+	public ChangeSummaryReport createChangeSummaryReport(String branch, Long contentHeadTimestamp, boolean includeMadeOnThisBranch, boolean includePromotedToThisBranch, boolean includeRebasedToThisBranch) {
 
 		Map<ComponentType, Set<String>> componentChanges = new EnumMap<>(ComponentType.class);
 		List<Activity> changesNotAtTaskLevel = new ArrayList<>();
@@ -57,13 +57,13 @@ public class ReportService {
 										.must(termQuery(Activity.Fields.branch, ancestor))
 										.must(rangeQuery(Activity.Fields.commitDate)
 												.gt(startDate.getTime())
-												.lte(previousLevelBaseDate.getTime())))
+												.lte(contentHeadTimestamp != null ? contentHeadTimestamp : previousLevelBaseDate.getTime())))
 								// Changes promoted to ancestor
 								.should(boolQuery()
 										.must(termQuery(Activity.Fields.highestPromotedBranch, ancestor))
 										.must(rangeQuery(Activity.Fields.promotionDate)
 												.gt(startDate.getTime())
-												.lte(previousLevelBaseDate.getTime())));
+												.lte(contentHeadTimestamp != null ? contentHeadTimestamp : previousLevelBaseDate.getTime())));
 				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 
 				previousLevel = ancestor;
@@ -84,7 +84,8 @@ public class ReportService {
 			final BoolQueryBuilder onDescendantBranches = boolQuery()
 					.mustNot(termQuery(Activity.Fields.branch, branch))
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
+					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
+														: rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
 			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
 
@@ -95,7 +96,9 @@ public class ReportService {
 			final BoolQueryBuilder onThisBranchQuery = boolQuery()
 					.must(termQuery(Activity.Fields.branch, branch))
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))// This means not promoted yet
-					.must(rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
+					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
+														: rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
+
 			processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
 
