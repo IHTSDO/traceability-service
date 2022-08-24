@@ -81,6 +81,43 @@ class ReportServiceTest extends AbstractTest {
 	}
 
 	@Test
+	void testSummaryReportWithTimeCutOff() {
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/A-1", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+								.addComponentChange(new ComponentChange("110", ChangeType.CREATE, ComponentType.DESCRIPTION, "", true))
+								.addComponentChange(new ComponentChange("a1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("a2", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("120", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+
+		final long firstTimeCutOff = System.currentTimeMillis();
+
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/A-1", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+								.addComponentChange(new ComponentChange("210", ChangeType.CREATE, ComponentType.DESCRIPTION, "", true))
+								.addComponentChange(new ComponentChange("b1", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("b2", ChangeType.CREATE, ComponentType.REFERENCE_SET_MEMBER, "", true))
+								.addComponentChange(new ComponentChange("220", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+
+		final long secondTimeCutOff = System.currentTimeMillis();
+
+		ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", firstTimeCutOff, true, false, false);
+		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
+				toString(changeSummaryReport.getComponentChanges()));
+
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", secondTimeCutOff, true, false, false);
+		assertEquals("{CONCEPT=[100, 200], DESCRIPTION=[110, 210], RELATIONSHIP=[120, 220], REFERENCE_SET_MEMBER=[a1, a2, b1, b2]}",
+				toString(changeSummaryReport.getComponentChanges()));
+	}
+
+	@Test
 	void testUpdateRevertReleasedComponent() {
 		activityRepository.saveAll(Lists.newArrayList(
 				activity("MAIN/A/A-1", "", ActivityType.CONTENT_CHANGE)
