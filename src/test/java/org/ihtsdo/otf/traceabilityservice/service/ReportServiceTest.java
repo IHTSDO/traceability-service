@@ -75,9 +75,7 @@ class ReportServiceTest extends AbstractTest {
 				toString(changeSummaryReport.getComponentChanges()));
 		Map<String, String> componentToConceptIdMap = changeSummaryReport.getComponentToConceptIdMap();
 		assertNotNull(componentToConceptIdMap);
-		changeSummaryReport.getComponentChanges().values().stream().flatMap(Collection::stream).forEach(componentId -> {
-			assertEquals("100", componentToConceptIdMap.get(componentId));
-		});
+		changeSummaryReport.getComponentChanges().values().stream().flatMap(Collection::stream).forEach(componentId -> assertEquals("100", componentToConceptIdMap.get(componentId)));
 	}
 
 	@Test
@@ -510,20 +508,30 @@ class ReportServiceTest extends AbstractTest {
 		}
 	}
 
-	/*
+	@Test
+	void testSummaryReportOnProjectWithConflictChanges() {
+		// Create a relationship on project during classification save
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A", null, ActivityType.CLASSIFICATION_SAVE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("R1", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true)))
+		));
 
-	// TODO Test manually.
+		// Create a task on project and delete the relationship
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/TaskA", null, ActivityType.CLASSIFICATION_SAVE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("R1", ChangeType.DELETE, ComponentType.RELATIONSHIP, "", true)))
+		));
 
-		Hard case .
-		concept versioned on MAIN
-		concept changed on MAIN/A
-		concept changed and changed back on MAIN/B
-		A promoted
-		B rebased .. will record correct date flag
-		B promoted
-		.. what's in the log
-		last commit will have correct flag because it's the rebase commit that happened afterwards
-		 */
+		// Promote task to project
+		promoteActivities("MAIN/A/TaskA", "MAIN/A");
+
+		// Run report on project and the relationship should be deleted.
+		ChangeSummaryReport projectReport = reportService.createChangeSummaryReport("MAIN/A");
+		assertTrue(projectReport.getComponentChanges().isEmpty());
+	}
+
 
 	private int testTime = 0;
 

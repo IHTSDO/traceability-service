@@ -34,11 +34,54 @@ public class ReportService {
 	}
 
 	public ChangeSummaryReport createChangeSummaryReport(String branch, Long contentHeadTimestamp, boolean includeMadeOnThisBranch, boolean includePromotedToThisBranch, boolean includeRebasedToThisBranch) {
-
 		Map<ComponentType, Set<String>> componentChanges = new EnumMap<>(ComponentType.class);
 		List<Activity> changesNotAtTaskLevel = new ArrayList<>();
 		Map<String, String> componentToConceptIdMap = new HashMap<>();
 
+		processChangesRebasedToBranch(branch, contentHeadTimestamp, includeRebasedToThisBranch, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
+
+		Date startDate = getStartDate(branch, new Date());
+		LOGGER.info("select activities after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
+		if (contentHeadTimestamp != null) {
+			LOGGER.info("select activities with cut off time {} ({}) on branch {}", contentHeadTimestamp, new Date(contentHeadTimestamp), branch);
+		}
+		if (includePromotedToThisBranch && includeMadeOnThisBranch) {
+			// Changes made on a branch will have the highestPromotedBranch set to itself initially
+			// Process changes promoted and made on project together to avoid false positive due to conflict changes
+			// e.g relationship created on project during classification save but deleted by a task promoted to project
+			final BoolQueryBuilder query = boolQuery()
+					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
+					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
+							: rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
+			processCommits(query, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
+		} else if (includePromotedToThisBranch) {
+				// Changes made on child branches, promoted to this one only
+				final BoolQueryBuilder onDescendantBranches = boolQuery()
+						.mustNot(termQuery(Activity.Fields.branch, branch))
+						.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
+						.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
+								: rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
+				processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
+		} else if (includeMadeOnThisBranch) {
+				// Changes made on this branch only
+				final BoolQueryBuilder onThisBranchQuery = boolQuery()
+						.must(termQuery(Activity.Fields.branch, branch))
+						.must(termQuery(Activity.Fields.highestPromotedBranch, branch))// This means not promoted yet
+						.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
+								: rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
+				processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
+		}
+
+		componentChanges.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+
+		ChangeSummaryReport changeSummaryReport = new ChangeSummaryReport(componentChanges, changesNotAtTaskLevel);
+		if (!componentChanges.isEmpty()) {
+			changeSummaryReport.setComponentToConceptIdMap(componentToConceptIdMap);
+		}
+		return changeSummaryReport;
+	}
+
+	private void processChangesRebasedToBranch(String branch, Long contentHeadTimestamp, boolean includeRebasedToThisBranch, Map<ComponentType, Set<String>> componentChanges, List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptIdMap) {
 		if (includeRebasedToThisBranch && !BranchUtil.isCodeSystemBranch(branch)) {
 			// Changes made on ancestor branches, starting with the parent branch and working up.
 			final Deque<String> ancestors = createAncestorDeque(branch);
@@ -74,41 +117,6 @@ public class ReportService {
 				}
 			}
 		}
-
-		if (includePromotedToThisBranch) {
-			// Changes made on child branches, promoted to this one
-			// Unlike rebase; We don't need to lookup the last promotion activity here
-			// because the service keeps track of what was promoted and when.
-			Date startDate = getStartDate(branch, new Date());
-			LOGGER.info("select promotion activities after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
-			final BoolQueryBuilder onDescendantBranches = boolQuery()
-					.mustNot(termQuery(Activity.Fields.branch, branch))
-					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
-														: rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
-			processCommits(onDescendantBranches, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
-		}
-
-		if (includeMadeOnThisBranch) {
-			Date startDate = getStartDate(branch, new Date());
-			LOGGER.debug("startDate {}", startDate);
-			// Changes made on this branch
-			final BoolQueryBuilder onThisBranchQuery = boolQuery()
-					.must(termQuery(Activity.Fields.branch, branch))
-					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))// This means not promoted yet
-					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
-														: rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
-
-			processCommits(onThisBranchQuery, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
-		}
-
-		componentChanges.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-
-		ChangeSummaryReport changeSummaryReport = new ChangeSummaryReport(componentChanges, changesNotAtTaskLevel);
-		if (!componentChanges.isEmpty()) {
-			changeSummaryReport.setComponentToConceptIdMap(componentToConceptIdMap);
-		}
-		return changeSummaryReport;
 	}
 
 	private Date getStartDate(String branch, Date previousLevelBaseDate) {
@@ -143,12 +151,10 @@ public class ReportService {
 				}
 				// Collect changes stack for a given branch to work out superseded changes
 				Stack<ComponentChange> changes = changeStack.computeIfAbsent(activity.getBranch(), stack -> new Stack<>());
-				activity.getConceptChanges().forEach(conceptChange -> {
-					conceptChange.getComponentChanges().forEach(componentChange -> {
-						changes.add(componentChange);
-						componentToConceptMap.put(componentChange.getComponentId(), conceptChange.getConceptId());
-					});
-				});
+				activity.getConceptChanges().forEach(conceptChange -> conceptChange.getComponentChanges().forEach(componentChange -> {
+					changes.add(componentChange);
+					componentToConceptMap.put(componentChange.getComponentId(), conceptChange.getConceptId());
+				}));
 			});
 		}
 		// Process remaining change stack
