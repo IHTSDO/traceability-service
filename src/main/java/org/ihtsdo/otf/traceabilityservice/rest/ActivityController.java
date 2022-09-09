@@ -50,6 +50,7 @@ public class ActivityController {
 			@RequestParam(required = false) @ApiParam("Find commits by the branch they were originally written to.") String originalBranch,
 			@RequestParam(required = false) @ApiParam("Find commits by the original branch or highest promoted branch.") String onBranch,
 			@RequestParam(required = false) @ApiParam("Find rebase or promotion commits using the source branch.") String sourceBranch,
+			@RequestParam(required = false) @ApiParam("Find commits originally made on any branch starting with this prefix.") String branchPrefix,
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) @ApiParam("Find commits that changed a specific concept.") Long conceptId,
 			@RequestParam(required = false) @ApiParam("Find commits that changed a specific component.") String componentId,
@@ -67,7 +68,7 @@ public class ActivityController {
 		Date commitFromDateDate = getDate(commitFromDate);
 		Date commitToDateDate = getDate(commitToDate);
 
-		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, activityType, conceptId, componentId, commitDateDate, commitFromDateDate, commitToDateDate, intOnly, page);
+		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, branchPrefix, activityType, conceptId, componentId, commitDateDate, commitFromDateDate, commitToDateDate, intOnly, page);
 		if (brief || summaryOnly) {
 			if (summaryOnly) {
 				for (Activity activity : activities.getContent()) {

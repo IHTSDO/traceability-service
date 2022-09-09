@@ -19,9 +19,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
+import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Component
 public class ActivityService {
@@ -69,7 +70,7 @@ public class ActivityService {
 		return activityRepository.findBy(conceptIds, activityType, user, page);
 	}
 
-	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, ActivityType activityType, Long conceptId, String componentId,
+	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, String branchPrefix, ActivityType activityType, Long conceptId, String componentId,
 			Date commitDate, Date fromDate, Date toDate, boolean intOnly, Pageable page) {
 
 		final BoolQueryBuilder query = boolQuery();
@@ -86,6 +87,9 @@ public class ActivityService {
 		}
 		if (sourceBranch != null && !sourceBranch.isEmpty()) {
 			query.must(termQuery(Activity.Fields.sourceBranch, sourceBranch));
+		}
+		if (branchPrefix != null && !branchPrefix.isEmpty()) {
+			query.must(prefixQuery(Activity.Fields.branch, branchPrefix));
 		}
 		if (activityType != null) {
 			query.must(termQuery(Activity.Fields.activityType, activityType));
