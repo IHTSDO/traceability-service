@@ -15,6 +15,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
@@ -130,65 +131,63 @@ public class ReportService {
 		return startDate;
 	}
 
-
 	private void processCommits(BoolQueryBuilder selection, Map<ComponentType, Set<String>> componentChanges,
-							List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptMap) {
+	                            List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptMap) {
 		NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(selection)
 				// Use 1000 instead of 10_000 because each activity doc containing all changes which can be very large
-				.withPageable(PageRequest.of(0, 1_000, Sort.by(Activity.Fields.promotionDate, Activity.Fields.commitDate)))
+				// Sort by descending order to discard superseded changes
+				.withPageable(PageRequest.of(0, 1_000, Sort.by(Sort.Direction.DESC, Activity.Fields.promotionDate, Activity.Fields.commitDate)))
 				.build();
-		Map<String, Stack<ComponentChange>> changeStack = new HashMap<>();
+		final Set<String> processedComponents = new HashSet<>();
+		final Map<String, Set<String>> supersededChangeComponentToPaths = new HashMap<>();
 		try (SearchHitsIterator<Activity> stream = elasticsearchRestTemplate.searchForStream(query, Activity.class)) {
 			stream.forEachRemaining(hit -> {
 				final Activity activity = hit.getContent();
 				if (activity.getActivityType() == ActivityType.CONTENT_CHANGE && activity.getBranchDepth() != 3 && !PatchService.HISTORY_PATCH_USERNAME.equals(activity.getUsername())) {
 					changesNotAtTaskLevel.add(activity);
 				}
-				// Branch locking during promotion makes sure that activities from different branches can not be promoted at the same time.
-				if (!changeStack.isEmpty() && !changeStack.containsKey(activity.getBranch())) {
-					processChangeStack(componentChanges, componentToConceptMap, changeStack.values());
-					changeStack.clear();
-				}
-				// Collect changes stack for a given branch to work out superseded changes
-				Stack<ComponentChange> changes = changeStack.computeIfAbsent(activity.getBranch(), stack -> new Stack<>());
-				activity.getConceptChanges().forEach(conceptChange -> conceptChange.getComponentChanges().forEach(componentChange -> {
-					changes.add(componentChange);
-					componentToConceptMap.put(componentChange.getComponentId(), conceptChange.getConceptId());
-				}));
+				activity.getConceptChanges().forEach(conceptChange -> {
+					final String conceptId = conceptChange.getConceptId();
+					conceptChange.getComponentChanges().forEach(componentChange -> {
+						if (componentChange.isSuperseded()) {
+							supersededChangeComponentToPaths.computeIfAbsent(componentChange.getComponentId(), values -> new HashSet<>()).add(activity.getBranch());
+						}
+						if (!processedComponents.contains(componentChange.getComponentId()) &&
+								!superseded(supersededChangeComponentToPaths, componentChange.getComponentId(), activity.getBranch())) {
+							processedComponents.add(componentChange.getComponentId());
+							final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
+							if (componentChange.getChangeType() == ChangeType.DELETE) {
+								ids.remove(componentChange.getComponentId());
+								componentToConceptMap.remove(componentChange.getComponentId());
+							} else {
+								if (componentChange.isEffectiveTimeNull()) {
+									ids.add(componentChange.getComponentId());
+									componentToConceptMap.put(componentChange.getComponentId(), conceptId);
+								} else {
+									// new commit may have restored effectiveTime,
+									// remove component id from set because we no longer expect a row in the delta
+									ids.remove(componentChange.getComponentId());
+									componentToConceptMap.remove(componentChange.getComponentId());
+								}
+							}
+						}
+					});
+				});
 			});
-		}
-		// Process remaining change stack
-		if (!changeStack.isEmpty()) {
-			processChangeStack(componentChanges, componentToConceptMap, changeStack.values());
-			changeStack.clear();
 		}
 	}
 
-	private void processChangeStack(Map<ComponentType, Set<String>> componentChanges, Map<String, String> componentToConceptMap, Collection<Stack<ComponentChange>> changeStacks) {
-		Map<String, ComponentChange> changeByComponentId = new HashMap<>();
-		changeStacks.forEach(stack -> {
-			while (!stack.isEmpty()) {
-				ComponentChange change = stack.pop();
-				// Only keep the most recent change from stack
-				if (changeByComponentId.containsKey(change.getComponentId())) {
-					continue;
-				}
-				changeByComponentId.put(change.getComponentId(), change);
+	private boolean superseded(Map<String, Set<String>> supersededChangesByComponent, String componentId, String branch) {
+		if (!supersededChangesByComponent.containsKey(componentId)) {
+			return false;
+		}
+		Set<String> branches = supersededChangesByComponent.getOrDefault(componentId, Collections.emptySet());
+		for (String branchPath : branches) {
+			if (branchPath.equals(branch) || branch.startsWith(branchPath)) {
+				return true;
 			}
-			changeByComponentId.values().forEach(componentChange -> {
-				if (!componentChange.isSuperseded()) {
-					final Set<String> ids = componentChanges.computeIfAbsent(componentChange.getComponentType(), type -> new HashSet<>());
-					if (!componentChange.isEffectiveTimeNull() || componentChange.getChangeType() == ChangeType.DELETE) {
-						// new commit may have restored effectiveTime or component change is deleted.
-						// remove component id from set because we no longer expect a row in the delta
-						ids.remove(componentChange.getComponentId());
-						componentToConceptMap.remove(componentChange.getComponentId());
-					} else {
-						ids.add(componentChange.getComponentId());
-					}
-				}
-			});
-		});
+		}
+		return false;
 	}
 
 	private Date getLastVersionDateOrEpoch(String branch, Date before) {
