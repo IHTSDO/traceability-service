@@ -48,6 +48,7 @@ class V2MigrationToolTest extends AbstractTest {
 				"  \"branchDepth\" : 3,\n" +
 				"  \"highestPromotedBranch\" : \"MAIN/CRSJAN22/CRSJAN22-404\",\n" +
 				"  \"commitDate\" : \"2021-08-19T14:53:45.000+00:00\",\n" +
+				"  \"promotionDate\" : \"2021-08-19T14:53:45.000+00:00\",\n" +
 				"  \"activityType\" : \"CONTENT_CHANGE\",\n" +
 				"  \"conceptChanges\" : [ {\n" +
 				"    \"conceptId\" : \"30641000087103\",\n" +
@@ -56,8 +57,7 @@ class V2MigrationToolTest extends AbstractTest {
 				"      \"changeType\" : \"CREATE\",\n" +
 				"      \"componentType\" : \"DESCRIPTION\",\n" +
 				"      \"componentSubType\" : \"900000000000013009\",\n" +
-				"      \"effectiveTimeNull\" : true,\n" +
-				"      \"superseded\" : false\n" +
+				"      \"effectiveTimeNull\" : true\n" +
 				"    } ]\n" +
 				"  } ]\n" +
 				"}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(activity));
