@@ -3,4 +3,4 @@ target
 *.log
 *.iml
 logs
-/application*.properties
+application-*.properties
