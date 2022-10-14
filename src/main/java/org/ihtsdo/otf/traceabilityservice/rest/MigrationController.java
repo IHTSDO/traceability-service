@@ -2,9 +2,7 @@ package org.ihtsdo.otf.traceabilityservice.rest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.ihtsdo.otf.traceabilityservice.migration.V2MigrationTool;
-import org.ihtsdo.otf.traceabilityservice.migration.V3Point1MigrationTool;
-import org.ihtsdo.otf.traceabilityservice.migration.V3Point2MigrationTool;
+import org.ihtsdo.otf.traceabilityservice.migration.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,6 +25,12 @@ public class MigrationController {
 
 	@Autowired
 	private V3Point2MigrationTool v3Point2MigrationTool;
+
+	@Autowired
+	private V3Point5MigrationTool v3Point5MigrationTool;
+
+	@Autowired
+	private TraceabilityDataSimulator simulator;
 
 	@Value("${migration.password}")
 	private String migrationPassword;
@@ -74,6 +78,24 @@ public class MigrationController {
 		v3Point2MigrationTool.start();
 	}
 
+	@ApiOperation(value = "Migrate store from 3.3.x to 3.5.x.",
+			notes = "This splits large traceability documents into smaller batches to reduce memory usage and improve search performance")
+	@PostMapping(value = "/start-3.5", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void startThreePointFiveMigration(@RequestParam String migrationPassword) {
+		checkMigrationPassword(migrationPassword);
+		v3Point5MigrationTool.start();
+	}
+
+
+	@ApiOperation(value = "To simulate test data",
+			notes = "This splits large traceability documents into smaller batches to reduce memory usage and improve search performance")
+	@PostMapping(value = "/simulate", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public void generateSimulateData(@RequestParam String migrationPassword, @RequestParam int total, @RequestParam String branch) {
+		checkMigrationPassword(migrationPassword);
+		simulator.generateData(total, branch);
+	}
 
 	private void checkMigrationPassword(String migrationPassword) {
 		if (!this.migrationPassword.equals(migrationPassword)) {

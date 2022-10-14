@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.*;
+import java.time.Duration;
+import java.time.Instant;
+
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,7 +69,7 @@ public class ActivityController {
 		Date commitDateDate = getDate(commitDate);
 		Date commitFromDateDate = getDate(commitFromDate);
 		Date commitToDateDate = getDate(commitToDate);
-
+		Instant start = Instant.now();
 		ActivitySearchRequest searchRequest = new ActivitySearchRequest();
 		searchRequest.setOriginalBranch(originalBranch);
 		searchRequest.setOnBranch(onBranch);
@@ -81,7 +84,10 @@ public class ActivityController {
 		searchRequest.setIntOnly(intOnly);
 		searchRequest.setBrief(brief);
 		searchRequest.setSummaryOnly(summaryOnly);
-		return activityService.getActivities(searchRequest, page);
+		Page<Activity> activities = activityService.getActivities(searchRequest, page);
+		Instant end = Instant.now();
+		LOGGER.debug("Time taken in millis = " + Duration.between(start, end).toMillis());
+		return activities;
 	}
 	private Date getDate(String commitDate) {
 		if (commitDate != null && !commitDate.isEmpty()) {

@@ -23,15 +23,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.data</groupId>
+			<groupId>org.snomed.otf</groupId>
 			<artifactId>spring-data-elasticsearch</artifactId>
-			<version>4.1.5</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.elasticsearch</groupId>
-					<artifactId>jna</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>4.1.16-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
