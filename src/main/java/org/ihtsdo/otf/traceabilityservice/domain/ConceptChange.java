@@ -11,6 +11,7 @@ public class ConceptChange {
 	@Field(type = FieldType.Keyword)
 	private final String conceptId;
 
+	@Field(type = FieldType.Object)
 	private Set<ComponentChange> componentChanges;
 
 	public ConceptChange(String conceptId) {

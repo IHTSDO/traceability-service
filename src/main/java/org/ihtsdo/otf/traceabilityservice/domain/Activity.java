@@ -52,6 +52,7 @@ public class Activity {
 	@Field(type = FieldType.Keyword)
 	private ActivityType activityType;
 
+	@Field(type = FieldType.Object)
 	private Set<ConceptChange> conceptChanges;
 
 	public Activity() {
