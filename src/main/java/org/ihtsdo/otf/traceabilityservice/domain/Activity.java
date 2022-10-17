@@ -135,6 +135,11 @@ public class Activity {
 		this.promotionDate = promotionDate;
 	}
 
+
+	public String getId() {
+		return this.id;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
