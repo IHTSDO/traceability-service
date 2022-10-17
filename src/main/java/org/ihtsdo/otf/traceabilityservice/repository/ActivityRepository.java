@@ -9,7 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface ActivityRepository extends PagingAndSortingRepository<Activity, Long> {
+public interface ActivityRepository extends PagingAndSortingRepository<Activity, String> {
 
 	Page<Activity> findByActivityType(ActivityType activityType, Pageable pageRequest);
 
