@@ -131,7 +131,7 @@ public class ActivityController {
 
 	@GetMapping(value="/activities/{activityId}")
 	public Activity getActivity(@PathVariable String activityId) {
-		return activityRepository.findById(ControllerHelper.parseLong(activityId)).orElse(null);
+		return activityRepository.findById(activityId).orElse(null);
 	}
 
 	@PostMapping(value = "/activities/branches/last")
