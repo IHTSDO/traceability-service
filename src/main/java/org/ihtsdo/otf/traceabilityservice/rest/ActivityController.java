@@ -65,7 +65,6 @@ public class ActivityController {
 		} else {
 			page = setPageDefaults(page, 100);
 		}
-
 		Date commitDateDate = getDate(commitDate);
 		Date commitFromDateDate = getDate(commitFromDate);
 		Date commitToDateDate = getDate(commitToDate);

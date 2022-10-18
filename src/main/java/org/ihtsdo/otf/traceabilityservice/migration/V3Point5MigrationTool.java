@@ -39,17 +39,17 @@ public class V3Point5MigrationTool {
 	@Autowired
 	private ActivityRepository activityRepository;
 
-	private static final int MAX_CONCEPT_CHANGES = 1000;
+	private static final int MAX_CONCEPT_CHANGES = 250;
 
-	private static final int MAX_COMPONENT_CHANGES = 10_000;
+	private static final int MAX_COMPONENT_CHANGES = 1000;
 
-	private static final int SIZE_TO_CHECK_BY_COMPONENT = 30_000;
+	private static final int SIZE_TO_CHECK_BY_COMPONENT = 10_000;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V3Point5MigrationTool.class);
 
 	private static final boolean DRY_RUN = false;
 
-	private static final boolean REPORT_ONLY = true;
+	private static final boolean REPORT_ONLY = false;
 
 	public void start() {
 		Instant start = Instant.now();
@@ -161,7 +161,7 @@ public class V3Point5MigrationTool {
 	private Page<Activity> findLargeActivitiesByComponentChanges(int maxComponentChanges) {
 		RequestOptions.Builder requestOptions = constructRequestOptions();
 		final BoolQueryBuilder query = boolQuery();
-		String scriptString = "doc['conceptChanges.componentChanges.componentId'].length > params['total']";
+		String scriptString = "doc['conceptChanges.componentChanges.componentId'].length >= params['total']";
 		Map<String, Object> params = new HashMap<>();
 		params.put("total", maxComponentChanges);
 		Script script = new Script(ScriptType.INLINE, "painless", scriptString, params);
