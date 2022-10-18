@@ -4,7 +4,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
-import org.ihtsdo.otf.traceabilityservice.rest.ActivitySearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
