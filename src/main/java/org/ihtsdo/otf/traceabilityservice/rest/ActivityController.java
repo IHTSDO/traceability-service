@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
-import org.ihtsdo.otf.traceabilityservice.domain.ConceptChange;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.service.ActivityService;
 import org.slf4j.Logger;
@@ -18,14 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.groups.Default;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,8 +32,6 @@ public class ActivityController {
 
 	public static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").ascending();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
-
-	private static final int MAX_PAGE_SIZE = 100;
 
 	@GetMapping(value = "/activities")
 	@ResponseBody
@@ -65,25 +56,32 @@ public class ActivityController {
 			@RequestParam(required = false, defaultValue = "false") @ApiParam("Briefest response without any concept details") boolean summaryOnly,
 			Pageable page) {
 
-		page = setPageDefaults(page, MAX_PAGE_SIZE);
+		if (brief || summaryOnly) {
+			page = setPageDefaults(page, 1000);
+		} else {
+			page = setPageDefaults(page, 100);
+		}
 
 		Date commitDateDate = getDate(commitDate);
 		Date commitFromDateDate = getDate(commitFromDate);
 		Date commitToDateDate = getDate(commitToDate);
 
-		final Page<Activity> activities = activityService.getActivities(originalBranch, onBranch, sourceBranch, branchPrefix, activityType, conceptId, componentId, commitDateDate, commitFromDateDate, commitToDateDate, intOnly, page);
-		if (brief || summaryOnly) {
-			if (summaryOnly) {
-				for (Activity activity : activities.getContent()) {
-					activity.setConceptChanges(null);
-				}
-			} else {
-				makeBrief(null, activities);
-			}
-		}
-		return activities;
+		ActivitySearchRequest searchRequest = new ActivitySearchRequest();
+		searchRequest.setOriginalBranch(originalBranch);
+		searchRequest.setOnBranch(onBranch);
+		searchRequest.setSourceBranch(sourceBranch);
+		searchRequest.setBranchPrefix(branchPrefix);
+		searchRequest.setActivityType(activityType);
+		searchRequest.setConceptId(conceptId);
+		searchRequest.setComponentId(componentId);
+		searchRequest.setCommitDate(commitDateDate);
+		searchRequest.setFromDate(commitFromDateDate);
+		searchRequest.setToDate(commitToDateDate);
+		searchRequest.setIntOnly(intOnly);
+		searchRequest.setBrief(brief);
+		searchRequest.setSummaryOnly(summaryOnly);
+		return activityService.getActivities(searchRequest, page);
 	}
-
 	private Date getDate(String commitDate) {
 		if (commitDate != null && !commitDate.isEmpty()) {
 			if (commitDate.matches("\\d*")) {
@@ -112,7 +110,7 @@ public class ActivityController {
 			@RequestBody List<Long> conceptIds,
 			Pageable page) {
 		LOGGER.info("Finding " + activityType + " activities for " + conceptIds.size() + " concepts.");
-		page = setPageDefaults(page, MAX_PAGE_SIZE);
+		page = setPageDefaults(page, 1000);
 		Page<Activity> activities;
 		if (summary && conceptIds.size() <= ActivityService.MAX_SIZE_FOR_PER_CONCEPT_RETRIEVAL) {
 			if (user != null || activityType == null) {
@@ -120,15 +118,15 @@ public class ActivityController {
 			}
 			activities = activityService.findSummaryBy(conceptIds, activityType, page);
 		} else {
-			activities = activityService.findBy(conceptIds, activityType, user, page);
-			makeBrief(conceptIds, activities);
+			activities = activityService.findBriefInfoOnlyBy(conceptIds, activityType, user, page);
 		}
 		return activities;
 	}
 
 	@GetMapping(value="/activities/promotions")
 	public Page<Activity> getPromotions(@RequestParam String sourceBranch, Pageable page) {
-		page = setPageDefaults(page, MAX_PAGE_SIZE);
+		// Promotion doesn't log component changes so the page size 1000 is fine.
+		page = setPageDefaults(page, 1000);
 		return activityRepository.findByActivityTypeAndSourceBranch(ActivityType.PROMOTION, sourceBranch, page);
 	}
 
@@ -155,30 +153,11 @@ public class ActivityController {
 		if (page == null) {
 			page = PageRequest.of(0, maxSize, COMMIT_DATE_SORT);
 		} else {
-			int pageSize = page.getPageSize() == 0 ? MAX_PAGE_SIZE : page.getPageSize();
-			page = PageRequest.of(page.getPageNumber(), Math.min(pageSize, maxSize), page.getSort());
+			page = PageRequest.of(page.getPageNumber(), Math.min(page.getPageSize(), maxSize), page.getSort());
 		}
 		if (page.getSort() == Sort.unsorted()) {
 			page = PageRequest.of(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
 		}
 		return page;
 	}
-	
-	private void makeBrief(List<Long> conceptIds, Page<Activity> activities) {
-		for (Activity activity : activities.getContent()) {
-			if (conceptIds != null) {
-				Set<ConceptChange> relevantChanges = activity.getConceptChanges().stream()
-						.filter(change -> conceptIds.contains(Long.parseLong(change.getConceptId())))
-						.collect(Collectors.toSet());
-				activity.setConceptChanges(relevantChanges);
-			}
-			
-			if (activity.getConceptChanges() != null) {
-				for (ConceptChange conceptChange : activity.getConceptChanges()) {
-					conceptChange.getComponentChanges().clear();
-				}
-			}
-		}
-	}
-	
 }
