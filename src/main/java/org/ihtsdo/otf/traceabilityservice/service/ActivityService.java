@@ -4,6 +4,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
+import org.ihtsdo.otf.traceabilityservice.rest.ActivitySearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -18,11 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
-import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
-import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Component
 public class ActivityService {
@@ -70,58 +67,69 @@ public class ActivityService {
 		return activityRepository.findBy(conceptIds, activityType, user, page);
 	}
 
-	public Page<Activity> getActivities(String originalBranch, String onBranch, String sourceBranch, String branchPrefix, ActivityType activityType, Long conceptId, String componentId,
-			Date commitDate, Date fromDate, Date toDate, boolean intOnly, Pageable page) {
+	public Page<Activity> getActivities(ActivitySearchRequest request, Pageable page) {
 
 		final BoolQueryBuilder query = boolQuery();
 
-		if (originalBranch != null && !originalBranch.isEmpty()) {
-			query.must(termQuery(Activity.Fields.branch, originalBranch));
+		if (request.getOriginalBranch() != null && !request.getOriginalBranch().isEmpty()) {
+			query.must(termQuery(Activity.Fields.branch, request.getOriginalBranch()));
 		}
-		if (onBranch != null && !onBranch.isEmpty()) {
+		if (request.getOnBranch() != null && !request.getOnBranch().isEmpty()) {
 			query.must(boolQuery()// One of these conditions must be true:
 					// Either
-					.should(termQuery(Activity.Fields.branch, onBranch))
+					.should(termQuery(Activity.Fields.branch, request.getOnBranch()))
 					// Or
-					.should(termQuery(Activity.Fields.highestPromotedBranch, onBranch)));
+					.should(termQuery(Activity.Fields.highestPromotedBranch, request.getOnBranch())));
 		}
-		if (sourceBranch != null && !sourceBranch.isEmpty()) {
-			query.must(termQuery(Activity.Fields.sourceBranch, sourceBranch));
+		if (request.getSourceBranch() != null && !request.getSourceBranch().isEmpty()) {
+			query.must(termQuery(Activity.Fields.sourceBranch, request.getSourceBranch()));
 		}
-		if (branchPrefix != null && !branchPrefix.isEmpty()) {
-			query.must(prefixQuery(Activity.Fields.branch, branchPrefix));
+		if (request.getBranchPrefix() != null && !request.getBranchPrefix().isEmpty()) {
+			query.must(prefixQuery(Activity.Fields.branch, request.getBranchPrefix()));
 		}
-		if (activityType != null) {
-			query.must(termQuery(Activity.Fields.activityType, activityType));
+		if (request.getActivityType() != null) {
+			query.must(termQuery(Activity.Fields.activityType, request.getActivityType()));
 		}
-		if (conceptId != null) {
-			query.must(termQuery(Activity.Fields.conceptChangesConceptId, conceptId));
+		if (request.getConceptId() != null) {
+			query.must(termQuery(Activity.Fields.conceptChangesConceptId, request.getConceptId()));
 		}
-		if (componentId != null) {
-			query.must(termQuery(Activity.Fields.componentChangesComponentId, componentId));
+		if (request.getComponentId() != null) {
+			query.must(termQuery(Activity.Fields.componentChangesComponentId, request.getComponentId()));
 		}
-		if (commitDate != null) {
-			query.must(termQuery(Activity.Fields.commitDate, commitDate.getTime()));
+		if (request.getCommitDate() != null) {
+			query.must(termQuery(Activity.Fields.commitDate, request.getCommitDate().getTime()));
 		}
 		
-		if (fromDate != null || toDate != null) {
+		if (request.getFromDate() != null || request.getToDate() != null) {
 			RangeQueryBuilder rangeQuery = rangeQuery(Activity.Fields.commitDate);
-			if (fromDate != null) {
-				rangeQuery.from(fromDate.getTime());
+			if (request.getFromDate() != null) {
+				rangeQuery.from(request.getFromDate().getTime());
 			}
 			
-			if (toDate != null) {
-				rangeQuery.to(toDate.getTime());
+			if (request.getToDate() != null) {
+				rangeQuery.to(request.getToDate().getTime());
 			}
 			query.must(rangeQuery);
 		}
 		
-		if (intOnly == true) {
+		if (request.isIntOnly()) {
 			query.mustNot(regexpQuery(Activity.Fields.branch, ".*SNOMEDCT-.*"));
 		}
 
-		final SearchHits<Activity> search = elasticsearchOperations.search(new NativeSearchQueryBuilder().withQuery(query).withPageable(page).build(), Activity.class);
-		return new PageImpl<>(search.stream().map(SearchHit::getContent).collect(Collectors.toList()), page, search.getTotalHits());
+		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder().withQuery(query);
+		if (request.isSummaryOnly()) {
+			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChanges}));
+		} else if (request.isBrief()) {
+			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChangesComponentChanges}));
+		}
+
+		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
+
+		Page<Activity> results = new PageImpl<>(search.stream().map(SearchHit::getContent).collect(Collectors.toList()), page, search.getTotalHits());
+		if (!request.isBrief() && !request.isSummaryOnly()) {
+			filterResultsBy(request.getConceptId(), request.getComponentId(), results);
+		}
+		return results;
 	}
 
 
@@ -131,9 +139,6 @@ public class ActivityService {
 	 * has been requested to allow us to repopulate the detail (conceptChanges)
 	 */
 	public Page<Activity> findSummaryBy(List<Long> conceptIds, ActivityType activityType, Pageable page) {
-		//An RF2 import could create an activity with hundreds of thousands of concept changes.
-		//TOOD Investigate re-doing the mapping using nester and inner_hits to only return the rows we're interested in
-		//So we'll just recover the summary and populate the particular concept we're interested in for now
 		Map<Integer, Activity> activitiesMap = new HashMap<>();
 		for (Long conceptId : conceptIds) {
 			NativeSearchQuery query = getActivityQuery(conceptId, activityType);
@@ -164,5 +169,59 @@ public class ActivityService {
 				new BoolQueryBuilder().must(clauses))
 				.withSourceFilter(sourceFilter)
 				.build();
+	}
+
+	private void filterResultsBy(Long conceptId, String componentId, Page<Activity> activities) {
+		for (Activity activity : activities.getContent()) {
+			if (conceptId != null) {
+				Set<ConceptChange> relevantChanges = activity.getConceptChanges().stream()
+						.filter(change -> conceptId.equals(Long.parseLong(change.getConceptId())))
+						.collect(Collectors.toSet());
+				activity.setConceptChanges(relevantChanges);
+			}
+			if (activity.getConceptChanges() != null && componentId != null) {
+				Set<ConceptChange> conceptChanges = new HashSet<>();
+				for (ConceptChange conceptChange : activity.getConceptChanges()) {
+					Set<ComponentChange> componentChanges = conceptChange.getComponentChanges().stream()
+							.filter(componentChange -> componentId.equals(componentChange.getComponentId()))
+							.collect(Collectors.toSet());
+					if (!componentChanges.isEmpty()) {
+						conceptChange.setComponentChanges(componentChanges);
+						conceptChanges.add(conceptChange);
+					}
+				}
+				activity.setConceptChanges(conceptChanges);
+			}
+		}
+	}
+
+	public Page<Activity> findBriefInfoOnlyBy(List<Long> conceptIds, ActivityType activityType, String user, Pageable page) {
+		final BoolQueryBuilder query = boolQuery();
+		if (conceptIds != null && !conceptIds.isEmpty()) {
+			query.must(termsQuery(Activity.Fields.conceptChangesConceptId, conceptIds));
+		}
+		if (activityType != null) {
+			query.must(termQuery(Activity.Fields.activityType, activityType));
+		}
+		if (user != null && !user.isEmpty()) {
+			query.must(termQuery(Activity.Fields.username, user));
+		}
+		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder().withQuery(query);
+		queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChangesComponentChanges}));
+
+		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
+
+		Page<Activity> results = new PageImpl<>(search.stream().map(SearchHit::getContent).collect(Collectors.toList()), page, search.getTotalHits());
+
+		// Filter out concept ids not relevant
+		for (Activity activity : results.getContent()) {
+			if (conceptIds != null) {
+				Set<ConceptChange> relevantChanges = activity.getConceptChanges().stream()
+						.filter(change -> conceptIds.contains(Long.parseLong(change.getConceptId())))
+						.collect(Collectors.toSet());
+				activity.setConceptChanges(relevantChanges);
+			}
+		}
+		return results;
 	}
 }

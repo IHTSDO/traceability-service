@@ -12,6 +12,7 @@ public class Activity {
 
 	public static class Fields {
 		private Fields() {}
+		public static final String username = "username";
 		public static final String branch = "branch";
 		public static final String sourceBranch = "sourceBranch";
 		public static final String highestPromotedBranch = "highestPromotedBranch";
@@ -20,6 +21,8 @@ public class Activity {
 		public static final String activityType = "activityType";
 		public static final String conceptChanges = "conceptChanges";
 		public static final String conceptChangesConceptId = "conceptChanges.conceptId";
+
+		public static final String conceptChangesComponentChanges = "conceptChanges.componentChanges";
 		public static final String componentChangesComponentId = "conceptChanges.componentChanges.componentId";
 		public static final String componentChangesSuperseded = "conceptChanges.componentChanges.superseded";
 	}
