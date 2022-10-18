@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.groups.Default;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class ActivityController {
 	public static final Sort COMMIT_DATE_SORT = Sort.by("commitDate").ascending();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
+	private static final int MAX_PAGE_SIZE = 100;
+
 	@GetMapping(value = "/activities")
 	@ResponseBody
 	@ApiOperation(value = "Fetch activities.", notes = "Fetch authoring activities by 'originalBranch' (the branch the activity originated on), " +
@@ -56,13 +59,13 @@ public class ActivityController {
 			@RequestParam(required = false) @ApiParam("Find commits that changed a specific component.") String componentId,
 			@RequestParam(required = false) @ApiParam("Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
 			@RequestParam(required = false) @ApiParam("Find commits after specified date. The format returned by the API can be used or epoch milliseconds.") String commitFromDate,
-			@RequestParam(required = false) @ApiParam("Find commits before specifed date. The format returned by the API can be used or epoch milliseconds.") String commitToDate,
+			@RequestParam(required = false) @ApiParam("Find commits before specified date. The format returned by the API can be used or epoch milliseconds.") String commitToDate,
 			@RequestParam(required = false, defaultValue = "false") @ApiParam("Ignore changes made on non-International CodeSystems") boolean intOnly,
 			@RequestParam(required = false, defaultValue = "false") @ApiParam("Brief response without the concept changes.") boolean brief,
 			@RequestParam(required = false, defaultValue = "false") @ApiParam("Briefest response without any concept details") boolean summaryOnly,
 			Pageable page) {
 
-		page = setPageDefaults(page, 1000);
+		page = setPageDefaults(page, MAX_PAGE_SIZE);
 
 		Date commitDateDate = getDate(commitDate);
 		Date commitFromDateDate = getDate(commitFromDate);
@@ -109,7 +112,7 @@ public class ActivityController {
 			@RequestBody List<Long> conceptIds,
 			Pageable page) {
 		LOGGER.info("Finding " + activityType + " activities for " + conceptIds.size() + " concepts.");
-		page = setPageDefaults(page, 1000);
+		page = setPageDefaults(page, MAX_PAGE_SIZE);
 		Page<Activity> activities;
 		if (summary && conceptIds.size() <= ActivityService.MAX_SIZE_FOR_PER_CONCEPT_RETRIEVAL) {
 			if (user != null || activityType == null) {
@@ -125,7 +128,7 @@ public class ActivityController {
 
 	@GetMapping(value="/activities/promotions")
 	public Page<Activity> getPromotions(@RequestParam String sourceBranch, Pageable page) {
-		page = setPageDefaults(page, 100);
+		page = setPageDefaults(page, MAX_PAGE_SIZE);
 		return activityRepository.findByActivityTypeAndSourceBranch(ActivityType.PROMOTION, sourceBranch, page);
 	}
 
@@ -152,7 +155,8 @@ public class ActivityController {
 		if (page == null) {
 			page = PageRequest.of(0, maxSize, COMMIT_DATE_SORT);
 		} else {
-			page = PageRequest.of(page.getPageNumber(), Math.min(page.getPageSize(), maxSize), page.getSort());
+			int pageSize = page.getPageSize() == 0 ? MAX_PAGE_SIZE : page.getPageSize();
+			page = PageRequest.of(page.getPageNumber(), Math.min(pageSize, maxSize), page.getSort());
 		}
 		if (page.getSort() == Sort.unsorted()) {
 			page = PageRequest.of(page.getPageNumber(), page.getPageSize(), COMMIT_DATE_SORT);
