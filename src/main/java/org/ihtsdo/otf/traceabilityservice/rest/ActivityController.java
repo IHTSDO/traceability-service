@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
+import org.ihtsdo.otf.traceabilityservice.service.ActivitySearchRequest;
 import org.ihtsdo.otf.traceabilityservice.service.ActivityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

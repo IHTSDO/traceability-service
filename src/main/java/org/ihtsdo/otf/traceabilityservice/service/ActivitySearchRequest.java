@@ -1,9 +1,8 @@
-package org.ihtsdo.otf.traceabilityservice.rest;
+package org.ihtsdo.otf.traceabilityservice.service;
 
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 
 import java.util.Date;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 public class ActivitySearchRequest {
@@ -133,10 +132,10 @@ public class ActivitySearchRequest {
                 .add("fromDate=" + fromDate)
                 .add("toDate=" + toDate)
                 .add("intOnly=" + intOnly)
+                .add("brief=" + brief)
+                .add("summaryOnly=" + summaryOnly)
                 .toString();
     }
-
-   
 
     public void setSummaryOnly(boolean summaryOnly) {
         this.summaryOnly = summaryOnly;
