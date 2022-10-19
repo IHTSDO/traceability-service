@@ -24,7 +24,7 @@ import java.util.*;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ActivityController {
-
+	public static final int MAX_BULK_SIZE = 100;
 	@Autowired
 	private ActivityRepository activityRepository;
 
@@ -110,18 +110,12 @@ public class ActivityController {
 			@RequestParam(required = false, defaultValue = "false") Boolean summary,
 			@RequestBody List<Long> conceptIds,
 			Pageable page) {
-		LOGGER.info("Finding " + activityType + " activities for " + conceptIds.size() + " concepts.");
-		page = setPageDefaults(page, 1000);
-		Page<Activity> activities;
-		if (summary && conceptIds.size() <= ActivityService.MAX_SIZE_FOR_PER_CONCEPT_RETRIEVAL) {
-			if (user != null || activityType == null) {
-				throw new IllegalArgumentException("Summaries must be run for a given activityType and cannot be filtered by user");
-			}
-			activities = activityService.findSummaryBy(conceptIds, activityType, page);
-		} else {
-			activities = activityService.findBriefInfoOnlyBy(conceptIds, activityType, user, page);
+		LOGGER.info("Finding {} activities for {} concepts", activityType, conceptIds.size());
+		if (conceptIds.size() > MAX_BULK_SIZE) {
+			throw new IllegalArgumentException(String.format("%d concept ids exceed the maximum size of %d", conceptIds.size(), MAX_BULK_SIZE));
 		}
-		return activities;
+		page = setPageDefaults(page, 100);
+		return activityService.findActivitiesBy(conceptIds, activityType, user, summary.booleanValue(), page);
 	}
 
 	@GetMapping(value="/activities/promotions")
