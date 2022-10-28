@@ -100,4 +100,10 @@ public class ComponentChange {
 		builder.append("}");
 		return builder.toString();
 	}
+
+	public void superseded(boolean superseded) {
+		if (superseded) {
+			this.superseded = Boolean.TRUE;
+		}
+	}
 }

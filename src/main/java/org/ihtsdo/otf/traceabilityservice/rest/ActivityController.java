@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
+import org.ihtsdo.otf.traceabilityservice.domain.ComponentChange;
+import org.ihtsdo.otf.traceabilityservice.domain.ConceptChange;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.ihtsdo.otf.traceabilityservice.service.ActivitySearchRequest;
 import org.ihtsdo.otf.traceabilityservice.service.ActivityService;
@@ -132,7 +134,7 @@ public class ActivityController {
 
 	@PostMapping(value = "/activities/branches/last")
 	@ApiOperation(value = "Fetch the latest activity on multiple branches.")
-	public List<Activity> getLastModifiedOnBranches (@RequestBody List<String> branches) {
+	public List<Activity> getLastModifiedOnBranches(@RequestBody List<String> branches) {
 		List<Activity> activities = new ArrayList<>();
 		final PageRequest sortedPage = PageRequest.of(0, 1, COMMIT_DATE_SORT.descending());
 		for (String branch : branches) {
@@ -142,6 +144,34 @@ public class ActivityController {
 			}
 		}
 		return activities;
+	}
+
+
+	@PutMapping(value = "/activities/{activityId}")
+	@ApiOperation(value = "Update a component change as superseded for a rebase change only")
+	public Activity updateComponentChange (@PathVariable String activityId, @RequestParam String componentId) {
+		Activity activity = activityRepository.findById(activityId).orElse(null);
+		if (activity == null) {
+			throw new IllegalArgumentException(String.format("No activity found with id %s", activityId));
+		}
+		if (activity.getActivityType() != ActivityType.REBASE) {
+			throw new IllegalStateException(String.format("This API can ony apply to REBASE activity type but got %s", activity.getActivityType()));
+		}
+		boolean isComponentFound = false;
+		for (ConceptChange conceptChange : activity.getConceptChanges()) {
+			for (ComponentChange componentChange : conceptChange.getComponentChanges()) {
+				if (componentChange.getComponentId().equals(componentId)) {
+					componentChange.superseded(true);
+					isComponentFound = true;
+					LOGGER.info("Update component change {}", componentChange);
+					break;
+				}
+			}
+		}
+		if (!isComponentFound) {
+			throw new IllegalArgumentException(String.format("No component change found with id %s", componentId));
+		}
+		return activityRepository.save(activity);
 	}
 
 	private Pageable setPageDefaults(Pageable page, int maxSize) {
