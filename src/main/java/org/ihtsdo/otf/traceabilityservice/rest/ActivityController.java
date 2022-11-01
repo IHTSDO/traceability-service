@@ -147,9 +147,9 @@ public class ActivityController {
 	}
 
 
-	@PutMapping(value = "/activities/{activityId}")
+	@PutMapping(value = "/activities/{activityId}/{componentId}/superseded")
 	@ApiOperation(value = "Update a component change as superseded for a rebase change only")
-	public Activity updateComponentChange (@PathVariable String activityId, @RequestParam String componentId) {
+	public Activity makeComponentChangeSuperseded (@PathVariable String activityId, @PathVariable String componentId) {
 		Activity activity = activityRepository.findById(activityId).orElse(null);
 		if (activity == null) {
 			throw new IllegalArgumentException(String.format("No activity found with id %s", activityId));
@@ -170,6 +170,37 @@ public class ActivityController {
 		}
 		if (!isComponentFound) {
 			throw new IllegalArgumentException(String.format("No component change found with id %s", componentId));
+		}
+		return activityRepository.save(activity);
+	}
+
+	@PutMapping(value = "/activities/{activityId}/{conceptId}")
+	@ApiOperation(value = "Add a superseded component change to a rebase activity")
+	public Activity addSupersededChange (@PathVariable String activityId, @PathVariable String conceptId, @RequestBody ComponentChange supersededComponentChange) {
+		Activity activity = activityRepository.findById(activityId).orElse(null);
+		if (activity == null) {
+			throw new IllegalArgumentException(String.format("No activity found with id %s", activityId));
+		}
+		if (activity.getActivityType() != ActivityType.REBASE) {
+			throw new IllegalStateException(String.format("This API can ony apply to REBASE activity type but got %s", activity.getActivityType()));
+		}
+		boolean existingConceptChangeFound = false;
+		if (!supersededComponentChange.isSuperseded()) {
+			supersededComponentChange.superseded(true);
+		}
+		for (ConceptChange conceptChange: activity.getConceptChanges()) {
+			if (conceptChange.getConceptId().equals(conceptId)) {
+				conceptChange.addComponentChange(supersededComponentChange);
+				LOGGER.info("Added {} to existing concept change", supersededComponentChange);
+				existingConceptChangeFound = true;
+				break;
+			}
+		}
+		if (!existingConceptChangeFound) {
+			ConceptChange conceptChange = new ConceptChange(conceptId);
+			conceptChange.addComponentChange(supersededComponentChange);
+			activity.addConceptChange(conceptChange);
+			LOGGER.info("Added concept change {}", supersededComponentChange);
 		}
 		return activityRepository.save(activity);
 	}
