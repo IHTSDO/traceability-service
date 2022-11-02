@@ -86,6 +86,10 @@ public class Activity {
 		return this;
 	}
 
+	public String getId() {
+		return this.id;
+	}
+
 	public String getUsername() {
 		return username;
 	}

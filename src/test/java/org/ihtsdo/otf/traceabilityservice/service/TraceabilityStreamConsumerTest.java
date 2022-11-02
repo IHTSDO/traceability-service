@@ -21,6 +21,7 @@ class TraceabilityStreamConsumerTest extends AbstractTest {
 
 		assertEquals(1, activities.size());
 		Activity activity = activities.get(0);
+		assertNotNull(activity.getId());
 		assertEquals("kkewley", activity.getUsername());
 		assertEquals("MAIN/STORMTEST2/STORMTEST2-243", activity.getBranch());
 		assertEquals(3, activity.getBranchDepth());
