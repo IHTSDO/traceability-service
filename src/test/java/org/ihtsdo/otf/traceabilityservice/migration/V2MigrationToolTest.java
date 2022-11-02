@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,6 +42,11 @@ class V2MigrationToolTest extends AbstractTest {
 		final List<Activity> content = byConceptId.getContent();
 		assertEquals(2, content.size());
 		final Activity activity = content.get(0);
+		// Remove id from JSON before compare result because the value is created at runtime.
+		String activityJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(activity);
+		Map<String, Object> objectJsonMap = objectMapper.readValue(activityJson, new TypeReference<>() {});
+		objectJsonMap.remove("id");
+
 		assertEquals("{\n" +
 				"  \"username\" : \"mbraithwaite\",\n" +
 				"  \"branch\" : \"MAIN/CRSJAN22/CRSJAN22-404\",\n" +
@@ -60,7 +65,7 @@ class V2MigrationToolTest extends AbstractTest {
 				"      \"effectiveTimeNull\" : true\n" +
 				"    } ]\n" +
 				"  } ]\n" +
-				"}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(activity));
+				"}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectJsonMap));
 	}
 
 }
