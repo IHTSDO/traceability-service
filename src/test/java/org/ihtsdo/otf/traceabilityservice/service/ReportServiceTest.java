@@ -12,6 +12,8 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitsIterator;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -37,8 +39,8 @@ class ReportServiceTest extends AbstractTest {
 	void testCreateAncestorDeque() {
 		final Deque<String> ancestors = reportService.createAncestorDeque("MAIN/PROJECTA/PROJECTA-1");
 		assertEquals(2, ancestors.size());
-		assertEquals("MAIN/PROJECTA", ancestors.pop());
 		assertEquals("MAIN", ancestors.pop());
+		assertEquals("MAIN/PROJECTA", ancestors.pop());
 	}
 
 	@Test
@@ -615,11 +617,42 @@ class ReportServiceTest extends AbstractTest {
 		assertTrue(projectReport.getComponentChanges().isEmpty());
 	}
 
+	@Test
+	void testProcessingOrderWhenDeletingAfterCreating() throws ParseException {
+		// CodeSystem creates Relationship
+		activityRepository.save(activity("MAIN/SNOMEDCT-TEST", null, ActivityType.CONTENT_CHANGE, getCommitTimestampFrom("2022-01-31 09:04:00")).addConceptChange(new ConceptChange("100").addComponentChange(new ComponentChange("120", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))));
+
+		// Rebase Project onto CodeSystem
+		rebase("MAIN/SNOMEDCT-TEST", "MAIN/SNOMEDCT-TEST/project", "2022-01-31 09:05:00");
+
+		// Project deletes Relationship
+		activityRepository.save(activity("MAIN/SNOMEDCT-TEST/project", null, ActivityType.CONTENT_CHANGE, getCommitTimestampFrom("2022-01-31 09:06:00")).addConceptChange(new ConceptChange("100").addComponentChange(new ComponentChange("120", ChangeType.DELETE, ComponentType.RELATIONSHIP, "", true))));
+
+		// Rebase Task onto Project
+		rebase("MAIN/SNOMEDCT-TEST/project", "MAIN/SNOMEDCT-TEST/project/task", "2022-01-31 09:07:00");
+
+		// Assert Task report does not contain Relationship change
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-TEST/project/task", null, false, false, true).getComponentChanges();
+		Set<String> relationshipChanges = componentChanges.get(ComponentType.RELATIONSHIP);
+		assertNull(relationshipChanges);
+	}
 
 	private int testTime = 0;
 
 	private Activity activity(String branchPath, String sourceBranch, ActivityType contentChange) {
 		return new Activity("test", branchPath, sourceBranch, new Date(new Date().getTime() + testTime++), contentChange);
+	}
+
+	private Activity activity(String branchPath, String sourceBranch, ActivityType contentChange, Date commitTimestamp) {
+		return new Activity("test", branchPath, sourceBranch, commitTimestamp, contentChange);
+	}
+
+	private void rebase(String source, String target, String commitTimestamp) throws ParseException {
+		activityRepository.save(activity(target, source, ActivityType.REBASE, getCommitTimestampFrom(commitTimestamp)));
+	}
+
+	private Date getCommitTimestampFrom(String input) throws ParseException {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(input);
 	}
 
 	private String toString(Map<ComponentType, Set<String>> componentChanges) {

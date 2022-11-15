@@ -86,12 +86,11 @@ public class ReportService {
 		if (includeRebasedToThisBranch && !BranchUtil.isCodeSystemBranch(branch)) {
 			// Changes made on ancestor branches, starting with the parent branch and working up.
 			final Deque<String> ancestors = createAncestorDeque(branch);
-			String previousLevel = branch;
 			while (!ancestors.isEmpty()) {
 				// Select content on this level, promoted before last rebase
 				// Only need to set start date if code system branch using last version commit
 				final String ancestor = ancestors.pop();
-				Date previousLevelBaseDate = getBaseDateUsingBestGuess(previousLevel);
+				Date previousLevelBaseDate = getBaseDateFromDescendant(ancestors, branch);
 				Date startDate = getStartDate(ancestor, previousLevelBaseDate);
 				// Changes made on ancestor branches, rebased to this one
 				final BoolQueryBuilder onAncestorBranch =
@@ -109,13 +108,6 @@ public class ReportService {
 												.gt(startDate.getTime())
 												.lte(contentHeadTimestamp != null ? contentHeadTimestamp : previousLevelBaseDate.getTime())));
 				processCommits(onAncestorBranch, componentChanges, changesNotAtTaskLevel, componentToConceptIdMap);
-
-				previousLevel = ancestor;
-				if (BranchUtil.isCodeSystemBranch(ancestor)) {
-					// Stop at any code system level
-					// We don't expect to inherit unversioned content from other code systems.
-					break;
-				}
 			}
 		}
 	}
@@ -206,6 +198,46 @@ public class ReportService {
 		return EPOCH_DATE;
 	}
 
+	private Date getBaseDateFromDescendant(Deque<String> ancestors, String branch) {
+		String descendant = ancestors.peek();
+		if (descendant != null) {
+			return getBaseDateUsingBestGuess(descendant);
+		} else {
+			return getHeadDate(branch);
+		}
+	}
+
+	private Date getHeadDate(String branch) {
+		final SearchHit<Activity> firstCommitSearchHit = elasticsearchRestTemplate.searchOne(
+				new NativeSearchQueryBuilder()
+						.withQuery(
+								boolQuery()
+										.should(
+												boolQuery().must(termQuery(Activity.Fields.branch, branch))
+										)
+										.should(
+												boolQuery().must(termQuery(Activity.Fields.sourceBranch, branch))
+										)
+										.should(
+												boolQuery().must(termQuery(Activity.Fields.highestPromotedBranch, branch))
+										)
+						)
+						.withPageable(MOST_RECENT_COMMIT)
+						.build(),
+				Activity.class
+		);
+		if (firstCommitSearchHit != null) {
+			Activity activity = firstCommitSearchHit.getContent();
+			if (activity.getPromotionDate() == null) {
+				return activity.getCommitDate();
+			}
+
+			return activity.getPromotionDate();
+		} else {
+			return new Date();
+		}
+	}
+
 	private Date getBaseDateUsingBestGuess(String branch) {
 		final SearchHit<Activity> activitySearchHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder()
 			.withQuery(boolQuery()
@@ -253,16 +285,12 @@ public class ReportService {
 	Deque<String> createAncestorDeque(String branch) {
 		final Deque<String> ancestors = new ArrayDeque<>();
 
-		final List<String> split = List.of(branch.split("/"));
-		StringBuilder ancestor = new StringBuilder();
-		for (String part : split) {
-			if (ancestor.length() > 0) {
-				ancestor.append("/");
-			}
-			ancestor.append(part);
-			ancestors.push(ancestor.toString());
+		final List<String> nodes = BranchUtil.getNodes(branch);
+		for (String node : nodes) {
+			ancestors.add(node);
 		}
-		ancestors.pop();
+
+		ancestors.removeLast();
 
 		return ancestors;
 	}
