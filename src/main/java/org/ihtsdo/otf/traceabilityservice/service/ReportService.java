@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.ihtsdo.otf.traceabilityservice.service.BranchUtil.isCodeSystemBranch;
 
 @Service
 public class ReportService {
@@ -83,7 +84,7 @@ public class ReportService {
 	}
 
 	private void processChangesRebasedToBranch(String branch, Long contentHeadTimestamp, boolean includeRebasedToThisBranch, Map<ComponentType, Set<String>> componentChanges, List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptIdMap) {
-		if (includeRebasedToThisBranch && !BranchUtil.isCodeSystemBranch(branch)) {
+		if (includeRebasedToThisBranch && !isCodeSystemBranch(branch)) {
 			// Changes made on ancestor branches, starting with the parent branch and working up.
 			final Deque<String> ancestors = createAncestorDeque(branch);
 			while (!ancestors.isEmpty()) {
@@ -114,7 +115,7 @@ public class ReportService {
 
 	private Date getStartDate(String branch, Date previousLevelBaseDate) {
 		Date startDate;
-		if (BranchUtil.isCodeSystemBranch(branch)) {
+		if (isCodeSystemBranch(branch)) {
 			startDate = getLastVersionDateOrEpoch(branch, previousLevelBaseDate);
 		} else {
 			// Changes after last promotion date should be selected on current branch. Changes promoted before will be part of ancestor branch.
@@ -184,7 +185,7 @@ public class ReportService {
 
 	private Date getLastVersionDateOrEpoch(String branch, Date before) {
 		// If Code System branch; use the last version creation date, because versioning sets all the effectiveTimes so delta would be empty at that point.
-		if (BranchUtil.isCodeSystemBranch(branch)) {
+		if (isCodeSystemBranch(branch)) {
 			final BoolQueryBuilder query = boolQuery()
 					.must(termQuery(Activity.Fields.activityType, ActivityType.CREATE_CODE_SYSTEM_VERSION))
 					.must(termQuery(Activity.Fields.branch, branch))
@@ -284,14 +285,19 @@ public class ReportService {
 
 	Deque<String> createAncestorDeque(String branch) {
 		final Deque<String> ancestors = new ArrayDeque<>();
-
-		final List<String> nodes = BranchUtil.getNodes(branch);
-		for (String node : nodes) {
-			ancestors.add(node);
+		final List<String> split = List.of(branch.split("/"));
+		StringBuilder ancestor = new StringBuilder();
+		for (String part : split) {
+			if (ancestor.length() > 0) {
+				ancestor.append("/");
+			}
+			ancestor.append(part);
+			if (!ancestors.isEmpty() && isCodeSystemBranch(ancestor.toString())) {
+				ancestors.removeLast();
+			}
+			ancestors.add(ancestor.toString());
 		}
-
 		ancestors.removeLast();
-
 		return ancestors;
 	}
 }
