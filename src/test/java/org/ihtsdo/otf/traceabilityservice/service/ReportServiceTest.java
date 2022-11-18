@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitsIterator;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
+import java.text.ParseException;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -642,10 +643,39 @@ class ReportServiceTest extends AbstractTest {
 	}
 
 
+	@Test
+	void testRebaseChangesWhenDeletingAfterCreating() throws ParseException {
+		// CodeSystem creates Relationship
+		activityRepository.save(activity("MAIN/SNOMEDCT-TEST", null, ActivityType.CONTENT_CHANGE).addConceptChange(new ConceptChange("100").addComponentChange(new ComponentChange("120", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))));
+
+		// Rebase Project onto CodeSystem
+		activityRepository.save(activity("MAIN/SNOMEDCT-TEST/project", "MAIN/SNOMEDCT-TEST",  ActivityType.REBASE));
+
+		// Project deletes Relationship
+		activityRepository.save(activity("MAIN/SNOMEDCT-TEST/project", null, ActivityType.CONTENT_CHANGE).addConceptChange(new ConceptChange("100").addComponentChange(new ComponentChange("120", ChangeType.DELETE, ComponentType.RELATIONSHIP, "", true))));
+
+		// Rebase Task onto Project
+		activityRepository.save(activity("MAIN/SNOMEDCT-TEST/project/task", "MAIN/SNOMEDCT-TEST/project",  ActivityType.REBASE));
+
+		// Assert summary report on task does not contain relationship changes
+		// Rebased changes only
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-TEST/project/task", null,null, false, false, true).getComponentChanges();
+		assertTrue(componentChanges.isEmpty());
+
+		// All types
+		componentChanges = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-TEST/project/task", null,null, true, true, true).getComponentChanges();
+		assertTrue(componentChanges.isEmpty());
+	}
+
+
 	private int testTime = 0;
 
 	private Activity activity(String branchPath, String sourceBranch, ActivityType contentChange) {
 		return new Activity("test", branchPath, sourceBranch, new Date(new Date().getTime() + testTime++), contentChange);
+	}
+
+	private void rebase(String source, String target, String commitTimestamp) throws ParseException {
+		activityRepository.save(activity(target, source, ActivityType.REBASE));
 	}
 
 	private String toString(Map<ComponentType, Set<String>> componentChanges) {
