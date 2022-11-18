@@ -31,7 +31,7 @@ import org.testcontainers.junit.jupiter.Container;
 				ElasticsearchDataAutoConfiguration.class})
 public class TestConfig extends Config {
 
-	private static final String ELASTIC_SEARCH_SERVER_VERSION = "7.7.0";
+	private static final String ELASTIC_SEARCH_SERVER_VERSION = "7.10.0";
 
 	// Set to true to use local standalone Elasticsearch instance rather than Docker test container
 	static final boolean useLocalElasticsearch = false;
