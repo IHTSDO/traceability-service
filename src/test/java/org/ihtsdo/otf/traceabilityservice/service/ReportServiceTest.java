@@ -674,10 +674,6 @@ class ReportServiceTest extends AbstractTest {
 		return new Activity("test", branchPath, sourceBranch, new Date(new Date().getTime() + testTime++), contentChange);
 	}
 
-	private void rebase(String source, String target, String commitTimestamp) throws ParseException {
-		activityRepository.save(activity(target, source, ActivityType.REBASE));
-	}
-
 	private String toString(Map<ComponentType, Set<String>> componentChanges) {
 		final EnumMap<ComponentType, Object> sortedMap = new EnumMap<>(ComponentType.class);
 		for (Map.Entry<ComponentType, Set<String>> entry : componentChanges.entrySet()) {
