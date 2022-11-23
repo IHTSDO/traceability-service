@@ -663,8 +663,107 @@ class ReportServiceTest extends AbstractTest {
 		assertTrue(componentChanges.isEmpty());
 
 		// All types
-		componentChanges = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-TEST/project/task", null,null, true, true, true).getComponentChanges();
+		componentChanges = reportService.createChangeSummaryReport("MAIN/SNOMEDCT-TEST/project/task", null,null).getComponentChanges();
 		assertTrue(componentChanges.isEmpty());
+	}
+
+
+	@Test
+	void testReportOnTaskWithParentProjectHavingNewCommits() throws Exception {
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/project", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+
+		Thread.sleep(1000L);
+		// Create Task A and use current as the base time
+		final long taskABaseTime = System.currentTimeMillis();
+
+		// Create a new concept on task B and promote to project
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/project", "MAIN/project/taskB", ActivityType.PROMOTION),
+				activity("MAIN/project", "MAIN/project/taskB", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+		// Run report on task A. It shouldn't have concept change from task B
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTime,null).getComponentChanges();
+		assertFalse(componentChanges.isEmpty());
+		Set<String> conceptIds = componentChanges.get(ComponentType.CONCEPT);
+		assertEquals(1, conceptIds.size());
+		assertTrue(conceptIds.contains("100"));
+	}
+
+	@Test
+	void testReportOnTaskWithNewParentProjectPromotionToMain() throws Exception {
+		// Create a concept on task B
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/project/taskB", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+
+		// Promote taskB to project
+		promoteActivities("MAIN/project/taskB", "MAIN/project");
+		activityRepository.save(activity("MAIN/project", "MAIN/project/taskB", ActivityType.PROMOTION));
+
+		Thread.sleep(1000L);
+
+		// Create Task A and use current as the base time
+		final long taskABaseTime = System.currentTimeMillis();
+		Thread.sleep(1000L);
+		// Promote project to MAIN
+		promoteActivities("MAIN/project", "MAIN");
+		activityRepository.save(activity("MAIN", "MAIN/project", ActivityType.PROMOTION));
+
+		// Run report on task A. It should still have concept change from project
+		// but because the highest promoted branch is now MAIN and the promotionDate is later than taskA's base time
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTime,null).getComponentChanges();
+		assertTrue(componentChanges.isEmpty());
+
+		// Rebase task A will get the change promoted to MAIN
+		// Simulate rebase
+		final long taskABaseTimeAfterRebase = System.currentTimeMillis();
+		componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTimeAfterRebase,null).getComponentChanges();
+		assertFalse(componentChanges.isEmpty());
+		Set<String> conceptIds = componentChanges.get(ComponentType.CONCEPT);
+		assertEquals(1, conceptIds.size());
+		assertTrue(conceptIds.contains("100"));
+	}
+
+	@Test
+	void testReportOnTaskWithNewPromotionToMainFromOtherProject() throws Exception {
+
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/projectA", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+
+		Thread.sleep(1000L);
+		// Create Task A and use current as the base time
+		final long taskABaseTime = System.currentTimeMillis();
+
+		// Create a new concept on task B in project B and promote to MAIN
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN", "MAIN/projectB/taskB", ActivityType.PROMOTION),
+				activity("MAIN", "MAIN/projectB/taskB", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+
+		// Run report on task A. It shouldn't have concept change from project B
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", taskABaseTime,null).getComponentChanges();
+		assertFalse(componentChanges.isEmpty());
+		Set<String> conceptIds = componentChanges.get(ComponentType.CONCEPT);
+		assertEquals(1, conceptIds.size());
+		assertTrue(conceptIds.contains("100"));
 	}
 
 
