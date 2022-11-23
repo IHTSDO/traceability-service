@@ -43,10 +43,10 @@ public class ReportService {
 		List<Activity> changesNotAtTaskLevel = new ArrayList<>();
 		Map<String, String> componentToConceptIdMap = new HashMap<>();
 
-		Date startDate = getStartDate(branch, new Date());
-		LOGGER.info("select activities promoted/committed after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
+		Date startDate = getStartDate(branch, contentHeadTimestamp != null ? new Date(contentHeadTimestamp) : new Date());
+		LOGGER.info("selecting changes promoted/committed after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
 		if (contentHeadTimestamp != null) {
-			LOGGER.info("selecting activities with cut off time {} ({}) on branch {}", contentHeadTimestamp, new Date(contentHeadTimestamp), branch);
+			LOGGER.info("selecting changes with cut off time {} ({}) on branch {}", contentHeadTimestamp, new Date(contentHeadTimestamp), branch);
 		}
 		if (includePromotedToThisBranch && includeMadeOnThisBranch) {
 			// Changes made on a branch will have the highestPromotedBranch set to itself initially
@@ -76,9 +76,6 @@ public class ReportService {
 		}
 
 		if (includeRebasedToThisBranch) {
-			if (contentBaseTimeStamp != null) {
-				LOGGER.info("Processing rebased changes with base time {} ({}) on branch {}", contentBaseTimeStamp, new Date(contentBaseTimeStamp), branch);
-			}
 			processChangesRebasedToBranch(branch, contentBaseTimeStamp, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
 
@@ -115,22 +112,25 @@ public class ReportService {
 	private void processChangesRebasedToBranch(String branch, Long contentBaseTimeStamp, Map<String, ComponentChange> componentChangeMap,
 											   List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptIdMap) {
 		if (!BranchUtil.isCodeSystemBranch(branch)) {
+			if (contentBaseTimeStamp != null) {
+				LOGGER.info("Processing rebased changes with base time {} ({}) on branch {}", contentBaseTimeStamp, new Date(contentBaseTimeStamp), branch);
+			}
 			// Changes made on ancestor branches, starting with the parent branch and working up.
 			final Deque<String> ancestors = createAncestorDeque(branch);
 			String previousLevel = branch;
 			Date previousLevelBaseDate = null;
-			boolean firstLevel = true;
 			while (!ancestors.isEmpty()) {
 				// Select content on this level, promoted before last rebase
 				// Only need to set start date if code system branch using last version commit
 				final String ancestor = ancestors.pop();
-				if (firstLevel) {
+				if (previousLevelBaseDate == null) {
 					previousLevelBaseDate = contentBaseTimeStamp != null ? new Date(contentBaseTimeStamp) : getBaseDateUsingBestGuess(branch);
-					firstLevel = false;
 				} else {
 					previousLevelBaseDate = getBaseDate(previousLevel, previousLevelBaseDate);
 				}
+
 				Date startDate = getStartDate(ancestor, previousLevelBaseDate);
+				LOGGER.info("Selecting changes from {} ({}), to {} ({}) on branch {}", startDate, startDate.getTime(), previousLevelBaseDate, previousLevelBaseDate.getTime(), ancestor);
 				// Changes made on ancestor branches, rebased to this one
 				final BoolQueryBuilder onAncestorBranch =
 						boolQuery()
@@ -164,7 +164,7 @@ public class ReportService {
 			startDate = getLastVersionDateOrEpoch(branch, previousLevelBaseDate);
 		} else {
 			// Changes after last promotion date should be selected on current branch. Changes promoted before will be part of ancestor branch.
-			startDate = getLastPromotionDate(branch);
+			startDate = getLastPromotionDate(branch, previousLevelBaseDate);
 		}
 		return startDate;
 	}
@@ -285,11 +285,12 @@ public class ReportService {
 		}
 	}
 
-	private Date getLastPromotionDate(String branch) {
+	private Date getLastPromotionDate(String branch, Date baseDateTime) {
 		final SearchHit<Activity> activitySearchHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder()
 				.withQuery(boolQuery()
 						.must(termQuery(Activity.Fields.sourceBranch, branch))
 						.must(termQuery(Activity.Fields.activityType, ActivityType.PROMOTION))
+						.must(rangeQuery(Activity.Fields.commitDate).lte(baseDateTime.getTime()))
 				)
 				.withPageable(MOST_RECENT_COMMIT)
 				.build(), Activity.class);
