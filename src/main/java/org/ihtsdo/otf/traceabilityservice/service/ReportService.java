@@ -123,14 +123,14 @@ public class ReportService {
 				// Select content on this level, promoted before last rebase
 				// Only need to set start date if code system branch using last version commit
 				final String ancestor = ancestors.pop();
+				// previousLevelBaseDate is the head time for current ancestor
 				if (previousLevelBaseDate == null) {
 					previousLevelBaseDate = contentBaseTimeStamp != null ? new Date(contentBaseTimeStamp) : getBaseDateUsingBestGuess(branch);
 				} else {
 					previousLevelBaseDate = getBaseDate(previousLevel, previousLevelBaseDate);
 				}
-
 				Date startDate = getStartDate(ancestor, previousLevelBaseDate);
-				LOGGER.info("Selecting changes from {} ({}), to {} ({}) on branch {}", startDate, startDate.getTime(), previousLevelBaseDate, previousLevelBaseDate.getTime(), ancestor);
+				LOGGER.info("Selecting changes from {}({}), to {}({}) on branch {}", startDate, startDate.getTime(), previousLevelBaseDate, previousLevelBaseDate.getTime(), ancestor);
 				// Changes made on ancestor branches, rebased to this one
 				final BoolQueryBuilder onAncestorBranch =
 						boolQuery()
@@ -199,6 +199,16 @@ public class ReportService {
 		}
 	}
 
+
+	/**
+	 * Superseded changes apply only for a given branch. Any changes before this commit on this branch should be ignored
+	 * Changes from other branch should apply however if the superseded branch is at project level
+	 * and any changes on task before this commit should be ignored too.
+	 * @param supersededChangesByComponent superseded component id to paths map
+	 * @param componentId componentId
+	 * @param branch branch for component change
+	 * @return true if superseded
+	 */
 	private boolean superseded(Map<String, Set<String>> supersededChangesByComponent, String componentId, String branch) {
 		if (!supersededChangesByComponent.containsKey(componentId)) {
 			return false;
