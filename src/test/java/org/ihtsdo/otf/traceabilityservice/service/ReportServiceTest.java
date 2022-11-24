@@ -595,29 +595,6 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals("{}", toString(changeSummaryReport.getComponentChanges()));
 	}
 
-
-		private void promoteActivities(String task, String project) {
-		// Move activities on the source branch up to the parent
-		final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE, ActivityType.REBASE);
-
-		List<Activity> toSave = new ArrayList<>();
-		try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeSearchQueryBuilder()
-				.withQuery(boolQuery()
-						.must(termQuery(Activity.Fields.highestPromotedBranch, task))
-						.must(termsQuery(Activity.Fields.activityType, contentActivityTypes)))
-				.withPageable(PageRequest.of(0, 1_000)).build(), Activity.class)) {
-			stream.forEachRemaining(activitySearchHit -> {
-				final Activity activityToUpdate = activitySearchHit.getContent();
-				activityToUpdate.setHighestPromotedBranch(project);
-				activityToUpdate.setPromotionDate(new Date());
-				toSave.add(activityToUpdate);
-			});
-			if (!toSave.isEmpty()) {
-				toSave.forEach(activityRepository::save);
-			}
-		}
-	}
-
 	@Test
 	void testSummaryReportOnProjectWithConflictChanges() {
 		// Create a relationship on project during classification save
@@ -766,6 +743,48 @@ class ReportServiceTest extends AbstractTest {
 		assertTrue(conceptIds.contains("100"));
 	}
 
+	@Test
+	void testReportOnTaskWithNewProjectRebasingFromMain() throws Exception {
+
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/projectA", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+
+		Thread.sleep(1000L);
+		// Create Task A and use current as the base time
+		final long taskABaseTime = System.currentTimeMillis();
+
+		// Create a new concept on task B in project B and promote to MAIN
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN", "MAIN/projectB/taskB", ActivityType.PROMOTION),
+				activity("MAIN", "MAIN/projectB/taskB", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+
+		// Rebase project from MAIN but not task
+		activityRepository.save(activity("MAIN/project", "MAIN", ActivityType.REBASE));
+
+		// Run report on task A. It shouldn't have concept change for 200 promoted to MAIN
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", taskABaseTime,null).getComponentChanges();
+		assertFalse(componentChanges.isEmpty());
+		Set<String> conceptIds = componentChanges.get(ComponentType.CONCEPT);
+		assertEquals(1, conceptIds.size());
+		assertTrue(conceptIds.contains("100"));
+
+		// Rebase task it should have two concepts
+		activityRepository.save(activity("MAIN/project/taskA", "MAIN/project", ActivityType.REBASE));
+		Thread.sleep(1000L);
+		componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", System.currentTimeMillis(),null).getComponentChanges();
+		assertFalse(componentChanges.isEmpty());
+		conceptIds = componentChanges.get(ComponentType.CONCEPT);
+		assertEquals(2, conceptIds.size());
+		assertTrue(conceptIds.contains("200"));
+	}
 
 	private int testTime = 0;
 
@@ -781,4 +800,25 @@ class ReportServiceTest extends AbstractTest {
 		return sortedMap.toString();
 	}
 
+	private void promoteActivities(String task, String project) {
+		// Move activities on the source branch up to the parent
+		final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE, ActivityType.REBASE);
+
+		List<Activity> toSave = new ArrayList<>();
+		try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeSearchQueryBuilder()
+				.withQuery(boolQuery()
+						.must(termQuery(Activity.Fields.highestPromotedBranch, task))
+						.must(termsQuery(Activity.Fields.activityType, contentActivityTypes)))
+				.withPageable(PageRequest.of(0, 1_000)).build(), Activity.class)) {
+			stream.forEachRemaining(activitySearchHit -> {
+				final Activity activityToUpdate = activitySearchHit.getContent();
+				activityToUpdate.setHighestPromotedBranch(project);
+				activityToUpdate.setPromotionDate(new Date());
+				toSave.add(activityToUpdate);
+			});
+			if (!toSave.isEmpty()) {
+				toSave.forEach(activityRepository::save);
+			}
+		}
+	}
 }
