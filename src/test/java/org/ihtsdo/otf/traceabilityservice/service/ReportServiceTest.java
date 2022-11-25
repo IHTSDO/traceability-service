@@ -767,7 +767,7 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		// Rebase project from MAIN but not task
-		activityRepository.save(activity("MAIN/project", "MAIN", ActivityType.REBASE));
+		activityRepository.save(activity("MAIN/projectA", "MAIN", ActivityType.REBASE));
 
 		// Run report on task A. It shouldn't have concept change for 200 promoted to MAIN
 		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", taskABaseTime,null).getComponentChanges();
@@ -777,7 +777,7 @@ class ReportServiceTest extends AbstractTest {
 		assertTrue(conceptIds.contains("100"));
 
 		// Rebase task it should have two concepts
-		activityRepository.save(activity("MAIN/project/taskA", "MAIN/project", ActivityType.REBASE));
+		activityRepository.save(activity("MAIN/projectA/taskA", "MAIN/projectA", ActivityType.REBASE));
 		Thread.sleep(1000L);
 		componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", System.currentTimeMillis(),null).getComponentChanges();
 		assertFalse(componentChanges.isEmpty());
