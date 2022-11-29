@@ -228,7 +228,7 @@ public class ReportService {
 			final BoolQueryBuilder query = boolQuery()
 					.must(termQuery(Activity.Fields.activityType, ActivityType.CREATE_CODE_SYSTEM_VERSION))
 					.must(termQuery(Activity.Fields.branch, branch))
-					.must(rangeQuery(Activity.Fields.commitDate).lt(before.getTime()));
+					.must(rangeQuery(Activity.Fields.commitDate).lte(before.getTime()));
 			final SearchHit<Activity> activityHit = elasticsearchRestTemplate.searchOne(new NativeSearchQueryBuilder().withQuery(query).build()
 					.addSort(Sort.by(Activity.Fields.commitDate).descending()), Activity.class);
 			if (activityHit != null) {
