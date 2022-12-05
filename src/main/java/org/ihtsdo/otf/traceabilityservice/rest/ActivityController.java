@@ -11,6 +11,7 @@ import org.ihtsdo.otf.traceabilityservice.service.ActivityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ import java.util.*;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ActivityController {
+	@Value("${traceability.max.activities.page.size:500}")
+	private int maxActivities;
 	public static final int MAX_BULK_SIZE = 100;
 	@Autowired
 	private ActivityRepository activityRepository;
@@ -60,7 +63,11 @@ public class ActivityController {
 		if (brief || summaryOnly) {
 			page = setPageDefaults(page, 1000);
 		} else {
-			page = setPageDefaults(page, 100);
+			// To prevent fetching too many documents
+			if (page != null && page.getPageSize() > maxActivities) {
+				throw new IllegalArgumentException(String.format("Page size of %d exceeds maximum %d", page.getPageSize(), maxActivities));
+			}
+			page = setPageDefaults(page, maxActivities);
 		}
 
 		Date commitDateDate = getDate(commitDate);
@@ -114,7 +121,7 @@ public class ActivityController {
 		if (conceptIds.size() > MAX_BULK_SIZE) {
 			throw new IllegalArgumentException(String.format("%d concept ids exceed the maximum size of %d", conceptIds.size(), MAX_BULK_SIZE));
 		}
-		page = setPageDefaults(page, 100);
+		page = setPageDefaults(page, MAX_BULK_SIZE);
 		return activityService.findActivitiesBy(conceptIds, activityType, user, summary.booleanValue(), page);
 	}
 
