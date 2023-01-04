@@ -111,7 +111,7 @@ public class ReportService {
 
 	private void processChangesRebasedToBranch(String branch, Long contentBaseTimeStamp, Map<String, ComponentChange> componentChangeMap,
 											   List<Activity> changesNotAtTaskLevel, Map<String, String> componentToConceptIdMap) {
-		if (!BranchUtil.isCodeSystemBranch(branch)) {
+		if (!BranchUtils.isCodeSystemBranch(branch)) {
 			if (contentBaseTimeStamp != null) {
 				LOGGER.info("Processing rebased changes with base time {} ({}) on branch {}", contentBaseTimeStamp, new Date(contentBaseTimeStamp), branch);
 			}
@@ -149,7 +149,7 @@ public class ReportService {
 				processCommits(onAncestorBranch, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 
 				previousLevel = ancestor;
-				if (BranchUtil.isCodeSystemBranch(ancestor)) {
+				if (BranchUtils.isCodeSystemBranch(ancestor)) {
 					// Stop at any code system level
 					// We don't expect to inherit unversioned content from other code systems.
 					break;
@@ -160,7 +160,7 @@ public class ReportService {
 
 	private Date getStartDate(String branch, Date previousLevelBaseDate) {
 		Date startDate;
-		if (BranchUtil.isCodeSystemBranch(branch)) {
+		if (BranchUtils.isCodeSystemBranch(branch)) {
 			startDate = getLastVersionDateOrEpoch(branch, previousLevelBaseDate);
 		} else {
 			// Changes after last promotion date should be selected on current branch. Changes promoted before will be part of ancestor branch.
@@ -224,7 +224,7 @@ public class ReportService {
 
 	private Date getLastVersionDateOrEpoch(String branch, Date before) {
 		// If Code System branch; use the last version creation date, because versioning sets all the effectiveTimes so delta would be empty at that point.
-		if (BranchUtil.isCodeSystemBranch(branch)) {
+		if (BranchUtils.isCodeSystemBranch(branch)) {
 			final BoolQueryBuilder query = boolQuery()
 					.must(termQuery(Activity.Fields.activityType, ActivityType.CREATE_CODE_SYSTEM_VERSION))
 					.must(termQuery(Activity.Fields.branch, branch))

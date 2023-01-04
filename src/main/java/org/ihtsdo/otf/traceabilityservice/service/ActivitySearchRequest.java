@@ -29,6 +29,7 @@ public class ActivitySearchRequest {
     private boolean intOnly;
     private boolean brief;
     private boolean summaryOnly;
+    private boolean includeHigherPromotions;
 
     public String getOriginalBranch() {
         return originalBranch;
@@ -152,4 +153,12 @@ public class ActivitySearchRequest {
     public boolean isBrief() {
         return brief;
     }
+
+	public boolean isIncludeHigherPromotions() {
+		return includeHigherPromotions;
+	}
+
+	public void setIncludeHigherPromotions(boolean includeHigherPromotions) {
+		this.includeHigherPromotions = includeHigherPromotions;
+	}
 }

@@ -44,17 +44,17 @@ class ReportServiceTest extends AbstractTest {
 
 	@Test
 	void testIsCodeSystemBranch() {
-		assertTrue(BranchUtil.isCodeSystemBranch("MAIN"));
-		assertFalse(BranchUtil.isCodeSystemBranch("MAIN/PROJECT"));
-		assertFalse(BranchUtil.isCodeSystemBranch("MAIN/PROJECT/PROJECT-123"));
-		assertFalse(BranchUtil.isCodeSystemBranch("MAIN/2021-09-30"));
-		assertTrue(BranchUtil.isCodeSystemBranch("MAIN/SNOMEDCT-BE"));
-		assertFalse(BranchUtil.isCodeSystemBranch("MAIN/SNOMEDCT-BE/BE"));
-		assertFalse(BranchUtil.isCodeSystemBranch("MAIN/SNOMEDCT-BE/BE/BE-123"));
-		assertTrue(BranchUtil.isCodeSystemBranch("MAIN/SNOMEDCT-ES"));
-		assertTrue(BranchUtil.isCodeSystemBranch("MAIN/SNOMEDCT-ES/SNOMEDCT-AR"));
-		assertFalse(BranchUtil.isCodeSystemBranch("MAIN/SNOMEDCT-ES/SNOMEDCT-AR/AR"));
-		assertFalse(BranchUtil.isCodeSystemBranch("MAIN/SNOMEDCT-ES/SNOMEDCT-AR/AR/AR-123"));
+		assertTrue(BranchUtils.isCodeSystemBranch("MAIN"));
+		assertFalse(BranchUtils.isCodeSystemBranch("MAIN/PROJECT"));
+		assertFalse(BranchUtils.isCodeSystemBranch("MAIN/PROJECT/PROJECT-123"));
+		assertFalse(BranchUtils.isCodeSystemBranch("MAIN/2021-09-30"));
+		assertTrue(BranchUtils.isCodeSystemBranch("MAIN/SNOMEDCT-BE"));
+		assertFalse(BranchUtils.isCodeSystemBranch("MAIN/SNOMEDCT-BE/BE"));
+		assertFalse(BranchUtils.isCodeSystemBranch("MAIN/SNOMEDCT-BE/BE/BE-123"));
+		assertTrue(BranchUtils.isCodeSystemBranch("MAIN/SNOMEDCT-ES"));
+		assertTrue(BranchUtils.isCodeSystemBranch("MAIN/SNOMEDCT-ES/SNOMEDCT-AR"));
+		assertFalse(BranchUtils.isCodeSystemBranch("MAIN/SNOMEDCT-ES/SNOMEDCT-AR/AR"));
+		assertFalse(BranchUtils.isCodeSystemBranch("MAIN/SNOMEDCT-ES/SNOMEDCT-AR/AR/AR-123"));
 	}
 
 	@Test

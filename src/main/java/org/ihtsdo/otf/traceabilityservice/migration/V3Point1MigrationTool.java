@@ -5,7 +5,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
-import org.ihtsdo.otf.traceabilityservice.service.BranchUtil;
+import org.ihtsdo.otf.traceabilityservice.service.BranchUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +88,7 @@ public class V3Point1MigrationTool {
 					// Find date promoted to "highest promoted branch"
 					Date promotionDate = searchBackStartDate;
 					String highestPromotedBranch = activity.getBranch();
-					while (!BranchUtil.isCodeSystemBranch(highestPromotedBranch)) {
+					while (!BranchUtils.isCodeSystemBranch(highestPromotedBranch)) {
 						Date nextPromotionDate = getPromotionDate(highestPromotedBranch, promotionDate, branchPromotionDates);
 						if (nextPromotionDate == null) {
 							break;

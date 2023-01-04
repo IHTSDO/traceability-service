@@ -3,9 +3,6 @@ package org.ihtsdo.otf.traceabilityservice.service;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
-import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +19,10 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Component
 public class ActivityService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityService.class);
 
-	private final ActivityRepository activityRepository;
 	private final ElasticsearchOperations elasticsearchOperations;
 
-	public ActivityService(ActivityRepository activityRepository, ElasticsearchOperations elasticsearchOperations) {
-		this.activityRepository = activityRepository;
+	public ActivityService(ElasticsearchOperations elasticsearchOperations) {
 		this.elasticsearchOperations = elasticsearchOperations;
 	}
 
@@ -45,11 +39,18 @@ public class ActivityService {
 			query.must(termQuery(Activity.Fields.branch, request.getOriginalBranch()));
 		}
 		if (request.getOnBranch() != null && !request.getOnBranch().isEmpty()) {
-			query.must(boolQuery()// One of these conditions must be true:
-					// Either
-					.should(termQuery(Activity.Fields.branch, request.getOnBranch()))
-					// Or
-					.should(termQuery(Activity.Fields.highestPromotedBranch, request.getOnBranch())));
+			BoolQueryBuilder boolQuery = boolQuery();
+			// One of these conditions must be true.  Either
+			boolQuery.should(termQuery(Activity.Fields.branch, request.getOnBranch()))
+					 // Or
+					.should(termQuery(Activity.Fields.highestPromotedBranch, request.getOnBranch()));
+			//Are we also checking for activity that might have been promoted higher, elsewhere?
+			if (request.isIncludeHigherPromotions()) {
+				for (String higherBranch : BranchUtils.getAncestorBranches(request.getOnBranch())) {
+					boolQuery.should(termQuery(Activity.Fields.highestPromotedBranch, higherBranch));
+				}
+			}
+			query.must(boolQuery);
 		}
 		if (request.getSourceBranch() != null && !request.getSourceBranch().isEmpty()) {
 			query.must(termQuery(Activity.Fields.sourceBranch, request.getSourceBranch()));

@@ -47,6 +47,7 @@ public class ActivityController {
 	public Page<Activity> getActivities(
 			@RequestParam(required = false) @ApiParam("Find commits by the branch they were originally written to.") String originalBranch,
 			@RequestParam(required = false) @ApiParam("Find commits by the original branch or highest promoted branch.") String onBranch,
+			@RequestParam(required = false, defaultValue = "false") @ApiParam("Include commits that have been promoted further, that may have been rebased down to specified branch") Boolean includeHigherPromotions,
 			@RequestParam(required = false) @ApiParam("Find rebase or promotion commits using the source branch.") String sourceBranch,
 			@RequestParam(required = false) @ApiParam("Find commits originally made on any branch starting with this prefix.") String branchPrefix,
 			@RequestParam(required = false) ActivityType activityType,
@@ -77,6 +78,7 @@ public class ActivityController {
 		ActivitySearchRequest searchRequest = new ActivitySearchRequest();
 		searchRequest.setOriginalBranch(originalBranch);
 		searchRequest.setOnBranch(onBranch);
+		searchRequest.setIncludeHigherPromotions(includeHigherPromotions);
 		searchRequest.setSourceBranch(sourceBranch);
 		searchRequest.setBranchPrefix(branchPrefix);
 		searchRequest.setActivityType(activityType);
@@ -90,6 +92,7 @@ public class ActivityController {
 		searchRequest.setSummaryOnly(summaryOnly);
 		return activityService.getActivities(searchRequest, page);
 	}
+	
 	private Date getDate(String commitDate) {
 		if (commitDate != null && !commitDate.isEmpty()) {
 			if (commitDate.matches("\\d*")) {
