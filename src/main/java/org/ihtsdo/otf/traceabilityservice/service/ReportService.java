@@ -42,9 +42,7 @@ public class ReportService {
 		Map<String, ComponentChange> componentChangeMap = new HashMap<>();
 		List<Activity> changesNotAtTaskLevel = new ArrayList<>();
 		Map<String, String> componentToConceptIdMap = new HashMap<>();
-
 		Date startDate = getStartDate(branch, contentHeadTimestamp != null ? new Date(contentHeadTimestamp) : new Date());
-		LOGGER.info("selecting changes promoted/committed after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
 		if (contentHeadTimestamp != null) {
 			LOGGER.info("selecting changes with cut off time {} ({}) on branch {}", contentHeadTimestamp, new Date(contentHeadTimestamp), branch);
 		}
@@ -52,27 +50,35 @@ public class ReportService {
 			// Changes made on a branch will have the highestPromotedBranch set to itself initially
 			// Process changes promoted and made on project together to avoid false positive due to conflict changes
 			// e.g relationship created on project during classification save but deleted by a task promoted to project
+			LOGGER.info("selecting changes promoted/committed after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
 			final BoolQueryBuilder query = boolQuery()
 					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
 					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
 							: rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
 			processCommits(query, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 		} else if (includePromotedToThisBranch) {
-				// Changes made on child branches, promoted to this one only
-				final BoolQueryBuilder onDescendantBranches = boolQuery()
-						.mustNot(termQuery(Activity.Fields.branch, branch))
-						.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
-						.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
-								: rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
-				processCommits(onDescendantBranches, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
+			// Changes made on child branches, promoted to this one only
+			if (contentBaseTimeStamp != null && contentBaseTimeStamp > startDate.getTime()) {
+				startDate = new Date(contentBaseTimeStamp);
+			}
+			LOGGER.info("selecting changes promoted after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
+			final BoolQueryBuilder onDescendantBranches = boolQuery()
+					.mustNot(termQuery(Activity.Fields.branch, branch))
+					.must(termQuery(Activity.Fields.highestPromotedBranch, branch))
+					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
+							: rangeQuery(Activity.Fields.promotionDate).gt(startDate.getTime()));
+			processCommits(onDescendantBranches, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 		} else if (includeMadeOnThisBranch) {
-				// Changes made on this branch only
-				final BoolQueryBuilder onThisBranchQuery = boolQuery()
-						.must(termQuery(Activity.Fields.branch, branch))
-						.must(termQuery(Activity.Fields.highestPromotedBranch, branch))// This means not promoted yet
-						.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
-								: rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
-				processCommits(onThisBranchQuery, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
+			// Changes made on this branch only
+			if (contentBaseTimeStamp != null && contentBaseTimeStamp > startDate.getTime()) {
+				startDate = new Date(contentBaseTimeStamp);
+			}
+			LOGGER.info("selecting changes committed after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
+			final BoolQueryBuilder onThisBranchQuery = boolQuery()
+					.must(termQuery(Activity.Fields.branch, branch))
+					.must(contentHeadTimestamp != null ? rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()).lte(contentHeadTimestamp)
+							: rangeQuery(Activity.Fields.commitDate).gt(startDate.getTime()));
+			processCommits(onThisBranchQuery, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
 
 		if (includeRebasedToThisBranch) {
