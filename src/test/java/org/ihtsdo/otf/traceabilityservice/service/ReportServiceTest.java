@@ -12,7 +12,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitsIterator;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
-import java.text.ParseException;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -82,8 +81,6 @@ class ReportServiceTest extends AbstractTest {
 	@Test
 	void testSummaryReportWithTimeCutOff() throws Exception {
 		final long firstBaseHeadTime = System.currentTimeMillis();
-		Thread.sleep(1000);
-
 		activityRepository.saveAll(Lists.newArrayList(
 				activity("MAIN/A", "", ActivityType.CONTENT_CHANGE)
 						.addConceptChange(new ConceptChange("300")
@@ -96,7 +93,6 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		final long secondBaseHeadTime = System.currentTimeMillis();
-		Thread.sleep(1000);
 
 		activityRepository.saveAll(Lists.newArrayList(
 				activity("MAIN/A/A-1", "", ActivityType.CONTENT_CHANGE)
@@ -110,7 +106,6 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		final long firstTimeCutOff = System.currentTimeMillis();
-		Thread.sleep(1000);
 
 		activityRepository.saveAll(Lists.newArrayList(
 				activity("MAIN/A/A-1", "", ActivityType.CONTENT_CHANGE)
@@ -123,21 +118,20 @@ class ReportServiceTest extends AbstractTest {
 						)
 		));
 
-		Thread.sleep(1000);
 		final long secondTimeCutOff = System.currentTimeMillis();
 
-		ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", firstBaseHeadTime, firstTimeCutOff, false, false, true);
+		ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", firstBaseHeadTime-1, firstTimeCutOff, false, false, true);
 		assertTrue(changeSummaryReport.getComponentChanges().isEmpty());
 
-		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", firstBaseHeadTime, firstTimeCutOff);
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", firstBaseHeadTime-1, firstTimeCutOff);
 		assertEquals("{CONCEPT=[100], DESCRIPTION=[110], RELATIONSHIP=[120], REFERENCE_SET_MEMBER=[a1, a2]}",
 				toString(changeSummaryReport.getComponentChanges()));
 
-		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", secondBaseHeadTime, firstTimeCutOff);
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", secondBaseHeadTime-1, firstTimeCutOff);
 		assertEquals("{CONCEPT=[100, 300], DESCRIPTION=[110, 310], RELATIONSHIP=[120, 320], REFERENCE_SET_MEMBER=[a1, a2, c1, c2]}",
 				toString(changeSummaryReport.getComponentChanges()));
 
-		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", secondBaseHeadTime, secondTimeCutOff);
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A-1", secondBaseHeadTime-1, secondTimeCutOff);
 		assertEquals("{CONCEPT=[100, 200, 300], DESCRIPTION=[110, 210, 310], RELATIONSHIP=[120, 220, 320], REFERENCE_SET_MEMBER=[a1, a2, b1, b2, c1, c2]}",
 				toString(changeSummaryReport.getComponentChanges()));
 	}
@@ -505,7 +499,7 @@ class ReportServiceTest extends AbstractTest {
 		assertEquals(1, changeSummaryReport.getComponentChanges().size());
 		assertEquals("{DESCRIPTION=[110]}", toString(changeSummaryReport.getComponentChanges()));
 
-		// Run summary report on MAIN/A/A2 should have contain changes rebased from MAIN/A
+		// Run summary report on MAIN/A/A2 should have contained changes rebased from MAIN/A
 		changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A/A2");
 		assertEquals(1, changeSummaryReport.getComponentChanges().size());
 		assertEquals("{DESCRIPTION=[110]}", toString(changeSummaryReport.getComponentChanges()));
@@ -621,7 +615,7 @@ class ReportServiceTest extends AbstractTest {
 
 
 	@Test
-	void testRebaseChangesWhenDeletingAfterCreating() throws ParseException {
+	void testRebaseChangesWhenDeletingAfterCreating() {
 		// CodeSystem creates Relationship
 		activityRepository.save(activity("MAIN/SNOMEDCT-TEST", null, ActivityType.CONTENT_CHANGE).addConceptChange(new ConceptChange("100").addComponentChange(new ComponentChange("120", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))));
 
@@ -647,6 +641,8 @@ class ReportServiceTest extends AbstractTest {
 
 	@Test
 	void testReportOnTaskWithParentProjectHavingNewCommits() throws Exception {
+		// Create Task A and use current as the base time
+		final long taskABaseTime = System.currentTimeMillis();
 		activityRepository.saveAll(Lists.newArrayList(
 				activity("MAIN/project", "", ActivityType.CONTENT_CHANGE)
 						.addConceptChange(new ConceptChange("100")
@@ -654,18 +650,15 @@ class ReportServiceTest extends AbstractTest {
 						)
 		));
 
-		Thread.sleep(1000L);
-		// Create Task A and use current as the base time
-		final long taskABaseTime = System.currentTimeMillis();
-
 		// Create a new concept on task B and promote to project
 		activityRepository.saveAll(Lists.newArrayList(
-				activity("MAIN/project", "MAIN/project/taskB", ActivityType.PROMOTION),
 				activity("MAIN/project", "MAIN/project/taskB", ActivityType.CONTENT_CHANGE)
 						.addConceptChange(new ConceptChange("200")
 								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
 						)
 		));
+		promoteActivities("MAIN/project/taskB", "MAIN/project");
+
 		// Run report on task A. It shouldn't have concept change from task B
 		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTime,null).getComponentChanges();
 		assertFalse(componentChanges.isEmpty());
@@ -688,24 +681,21 @@ class ReportServiceTest extends AbstractTest {
 		promoteActivities("MAIN/project/taskB", "MAIN/project");
 		activityRepository.save(activity("MAIN/project", "MAIN/project/taskB", ActivityType.PROMOTION));
 
-		Thread.sleep(1000L);
-
 		// Create Task A and use current as the base time
 		final long taskABaseTime = System.currentTimeMillis();
-		Thread.sleep(1000L);
 		// Promote project to MAIN
 		promoteActivities("MAIN/project", "MAIN");
 		activityRepository.save(activity("MAIN", "MAIN/project", ActivityType.PROMOTION));
 
 		// Run report on task A. It should still have concept change from project
 		// but because the highest promoted branch is now MAIN and the promotionDate is later than taskA's base time
-		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTime,null).getComponentChanges();
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTime-1,null).getComponentChanges();
 		assertTrue(componentChanges.isEmpty());
 
 		// Rebase task A will get the change promoted to MAIN
 		// Simulate rebase
 		final long taskABaseTimeAfterRebase = System.currentTimeMillis();
-		componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTimeAfterRebase,null).getComponentChanges();
+		componentChanges = reportService.createChangeSummaryReport("MAIN/project/taskA", taskABaseTimeAfterRebase-1,null).getComponentChanges();
 		assertFalse(componentChanges.isEmpty());
 		Set<String> conceptIds = componentChanges.get(ComponentType.CONCEPT);
 		assertEquals(1, conceptIds.size());
@@ -722,7 +712,6 @@ class ReportServiceTest extends AbstractTest {
 						)
 		));
 
-		Thread.sleep(1000L);
 		// Create Task A and use current as the base time
 		final long taskABaseTime = System.currentTimeMillis();
 
@@ -736,7 +725,7 @@ class ReportServiceTest extends AbstractTest {
 		));
 
 		// Run report on task A. It shouldn't have concept change from project B
-		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", taskABaseTime,null).getComponentChanges();
+		Map<ComponentType, Set<String>> componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", taskABaseTime-1,null).getComponentChanges();
 		assertFalse(componentChanges.isEmpty());
 		Set<String> conceptIds = componentChanges.get(ComponentType.CONCEPT);
 		assertEquals(1, conceptIds.size());
@@ -744,7 +733,7 @@ class ReportServiceTest extends AbstractTest {
 	}
 
 	@Test
-	void testReportOnTaskWithNewProjectRebasingFromMain() throws Exception {
+	void testReportOnTaskWithNewProjectRebasingFromMain() {
 
 		activityRepository.saveAll(Lists.newArrayList(
 				activity("MAIN/projectA", "", ActivityType.CONTENT_CHANGE)
@@ -753,7 +742,6 @@ class ReportServiceTest extends AbstractTest {
 						)
 		));
 
-		Thread.sleep(1000L);
 		// Create Task A and use current as the base time
 		final long taskABaseTime = System.currentTimeMillis();
 
@@ -778,7 +766,6 @@ class ReportServiceTest extends AbstractTest {
 
 		// Rebase task it should have two concepts
 		activityRepository.save(activity("MAIN/projectA/taskA", "MAIN/projectA", ActivityType.REBASE));
-		Thread.sleep(1000L);
 		componentChanges = reportService.createChangeSummaryReport("MAIN/projectA/taskA", System.currentTimeMillis(),null).getComponentChanges();
 		assertFalse(componentChanges.isEmpty());
 		conceptIds = componentChanges.get(ComponentType.CONCEPT);
@@ -786,6 +773,236 @@ class ReportServiceTest extends AbstractTest {
 		assertTrue(conceptIds.contains("200"));
 	}
 
+
+	@Test
+	void testReportOnTaskWithConflictChangeInProjectAndMain() {
+		// Inactivate a relationship on task A during classification save
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/taskA", null, ActivityType.CLASSIFICATION_SAVE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("R1", ChangeType.INACTIVATE, ComponentType.RELATIONSHIP, "", true)))
+		));
+
+		// Promote task to project
+		promoteActivities("MAIN/A/TaskA", "MAIN/A");
+
+		// Promote project A to MAIN
+		promoteActivities("MAIN/A", "MAIN");
+
+		// Create task B on project A and restore published state for above relationship
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/TaskB", null, ActivityType.CLASSIFICATION_SAVE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("R1", ChangeType.UPDATE, ComponentType.RELATIONSHIP, "", false)))
+		));
+
+		// Promote taskB to project
+		promoteActivities("MAIN/A/TaskB", "MAIN/A");
+
+		// Create a new taskC on project A and run report
+		ChangeSummaryReport projectReport = reportService.createChangeSummaryReport("MAIN/A/TaskC");
+		assertTrue(projectReport.getComponentChanges().isEmpty());
+	}
+
+	@Test
+	void testIncludeMadeOnTaskOnly() {
+		final long taskABaseTime = System.currentTimeMillis();
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/TaskA", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+
+		// Without date range
+		ChangeSummaryReport taskReport = reportService.createChangeSummaryReport("MAIN/A/TaskA", null, null,
+				true, false, false);
+		assertNotNull(taskReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertTrue(taskReport.getComponentChanges().get(ComponentType.CONCEPT).contains("100"));
+
+		// With contentBaseTimeStamp only
+		// Empty results
+		taskReport = reportService.createChangeSummaryReport("MAIN/A/TaskA", taskABaseTime-10, null,
+				true, false, false);
+		assertNotNull(taskReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertTrue(taskReport.getComponentChanges().get(ComponentType.CONCEPT).contains("100"));
+
+		// having no results
+		taskReport = reportService.createChangeSummaryReport("MAIN/A/TaskA", System.currentTimeMillis(), null,
+				true, false, false);
+		assertTrue(taskReport.getComponentChanges().isEmpty());
+
+		// with contentHeadTimestamp only
+		taskReport = reportService.createChangeSummaryReport("MAIN/A/TaskA", null, System.currentTimeMillis(),
+				true, false, false);
+		assertNotNull(taskReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertTrue(taskReport.getComponentChanges().get(ComponentType.CONCEPT).contains("100"));
+
+		// having no results
+		taskReport = reportService.createChangeSummaryReport("MAIN/A/TaskA", null, taskABaseTime-1000,
+				true, false, false);
+		assertTrue(taskReport.getComponentChanges().isEmpty());
+
+		// with contentBaseTimeStamp and contentHeadTimestamp
+		taskReport = reportService.createChangeSummaryReport("MAIN/A/TaskA", taskABaseTime-10, System.currentTimeMillis(),
+				true, false, false);
+		assertNotNull(taskReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertTrue(taskReport.getComponentChanges().get(ComponentType.CONCEPT).contains("100"));
+	}
+
+	@Test
+	void testIncludeMadeOnCodeSystemBranchOnly() {
+		// Changes made directly on a Code System branch is rare and not recommended
+		// However it can happen for classification save
+		final long baseTime = System.currentTimeMillis();
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN", "", ActivityType.CLASSIFICATION_SAVE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("10001", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+
+		// Without date range
+		ChangeSummaryReport summaryReport = reportService.createChangeSummaryReport("MAIN", null, null,
+				true, false, false);
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP));
+		assertEquals(1, summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).size());
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).contains("10001"));
+
+		// With contentBaseTimeStamp
+		summaryReport = reportService.createChangeSummaryReport("MAIN", baseTime-10, null,
+				true, false, false);
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP));
+		assertEquals(1, summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).size());
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).contains("10001"));
+		// Empty results
+		summaryReport = reportService.createChangeSummaryReport("MAIN", System.currentTimeMillis(), null,
+				true, false, false);
+
+		// With contentHeadTimestamp
+		summaryReport = reportService.createChangeSummaryReport("MAIN", null, System.currentTimeMillis(),
+				true, false, false);
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP));
+		assertEquals(1, summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).size());
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).contains("10001"));
+		// Empty results
+		summaryReport = reportService.createChangeSummaryReport("MAIN", null, baseTime-100,
+				true, false, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+
+		// With contentBaseTimeStamp and contentHeadTimestamp
+		summaryReport = reportService.createChangeSummaryReport("MAIN", baseTime-10, System.currentTimeMillis(),
+				true, false, false);
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP));
+		assertEquals(1, summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).size());
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.RELATIONSHIP).contains("10001"));
+
+		// Versioning
+		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
+		// Empty results
+		summaryReport = reportService.createChangeSummaryReport("MAIN", null, System.currentTimeMillis(),
+				true, false, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+
+		summaryReport = reportService.createChangeSummaryReport("MAIN", baseTime, System.currentTimeMillis(),
+				true, false, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+	}
+	@Test
+	void testIncludePromotedToBranchOnly() {
+		final long taskABaseTime = System.currentTimeMillis();
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/TaskA", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("100", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+		promoteActivities("MAIN/A/TaskA", "MAIN/A");
+		final String projectA = "MAIN/A";
+
+		final long taskBBaseTime = System.currentTimeMillis();
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/TaskB", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("200")
+								.addComponentChange(new ComponentChange("200", ChangeType.CREATE, ComponentType.CONCEPT, "", true))
+						)
+		));
+		promoteActivities("MAIN/A/TaskB", "MAIN/A");
+		// Without date range
+		ChangeSummaryReport summaryReport = reportService.createChangeSummaryReport(projectA, null, null,
+				false, true, false);
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertEquals(2, summaryReport.getComponentChanges().get(ComponentType.CONCEPT).size());
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.CONCEPT).contains("100"));
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.CONCEPT).contains("200"));
+
+		// Use taskA as contentBaseTimestamp
+		summaryReport = reportService.createChangeSummaryReport(projectA, taskABaseTime-1, null,
+				false, true, false);
+		assertEquals(2, summaryReport.getComponentChanges().get(ComponentType.CONCEPT).size());
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.CONCEPT).contains("100"));
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.CONCEPT).contains("200"));
+
+		// Use taskB as contentBaseTimestamp
+		summaryReport = reportService.createChangeSummaryReport(projectA, taskBBaseTime-1, null,
+				false, true, false);
+		assertEquals(1, summaryReport.getComponentChanges().get(ComponentType.CONCEPT).size());
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertTrue(summaryReport.getComponentChanges().get(ComponentType.CONCEPT).contains("200"));
+
+		// Empty results for current time as base time
+		summaryReport = reportService.createChangeSummaryReport(projectA, System.currentTimeMillis(), null,
+				false, true, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+
+		// With current time as contentHeadTimestamp
+		summaryReport = reportService.createChangeSummaryReport(projectA, null, System.currentTimeMillis(),
+				false, true, false);
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertEquals(2, summaryReport.getComponentChanges().get(ComponentType.CONCEPT).size());
+		// Empty results with base time as contentHeadTime
+		summaryReport = reportService.createChangeSummaryReport(projectA, null, taskABaseTime,
+				false, true, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+
+		// With taskABaseTime as contentBaseTimestamp and current time as the contentHeadTimestamp
+		summaryReport = reportService.createChangeSummaryReport(projectA, taskABaseTime, System.currentTimeMillis(),
+				false, true, false);
+		assertNotNull(summaryReport.getComponentChanges().get(ComponentType.CONCEPT));
+		assertEquals(2, summaryReport.getComponentChanges().get(ComponentType.CONCEPT).size());
+		// Empty results with future time as base time
+		long now = System.currentTimeMillis();
+		summaryReport = reportService.createChangeSummaryReport(projectA, now, now+1000,
+				false, true, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+
+		// Promoting to MAIN
+		promoteActivities("MAIN/A", "MAIN");
+
+		// Running report on porject after promoting to MAIN
+		summaryReport = reportService.createChangeSummaryReport(projectA, taskABaseTime, System.currentTimeMillis(),
+				false, true, false);
+		// The report is empty because all changes have promoted to parent branch
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+
+		// Running report on MAIN with contentBaseTimestamp and contentHeadTimestamp
+		summaryReport = reportService.createChangeSummaryReport("MAIN", taskABaseTime, System.currentTimeMillis(),
+				false, true, false);
+		assertEquals(2, summaryReport.getComponentChanges().get(ComponentType.CONCEPT).size());
+		// Empty results with future time as base time
+		now = System.currentTimeMillis();
+		summaryReport = reportService.createChangeSummaryReport("MAIN", now, now+1000,
+				false, true, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+
+		// Versioning
+		activityRepository.save(activity("MAIN", null, ActivityType.CREATE_CODE_SYSTEM_VERSION));
+		// Empty results after versioning
+		summaryReport = reportService.createChangeSummaryReport("MAIN", taskABaseTime, System.currentTimeMillis(),
+				false, true, false);
+		assertTrue(summaryReport.getComponentChanges().isEmpty());
+	}
 	private int testTime = 0;
 
 	private Activity activity(String branchPath, String sourceBranch, ActivityType contentChange) {
