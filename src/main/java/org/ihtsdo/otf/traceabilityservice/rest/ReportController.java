@@ -7,6 +7,7 @@ import org.ihtsdo.otf.traceabilityservice.domain.DiffReport;
 import org.ihtsdo.otf.traceabilityservice.service.ArchiveDiffService;
 import org.ihtsdo.otf.traceabilityservice.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,8 @@ public class ReportController {
 	@Autowired
 	private ArchiveDiffService archiveDiffService;
 
-	@ApiOperation("Fetch change summary report on a branch since the last promotion (or versioning if a code system branch).")
+	@ApiOperation(value = "Fetch change summary report on a branch since the last promotion (or versioning if a code system branch).",
+			notes = "When contentBaseTimestamp is not specified, the last promotion date will be used if present. Otherwise it will use epoch date.")
 	@GetMapping("/change-summary")
 	public ChangeSummaryReport createChangeSummaryReport(
 			@ApiParam(required = true)
@@ -44,6 +46,9 @@ public class ReportController {
 			@ApiParam(defaultValue = "true")
 			@RequestParam(defaultValue = "true") boolean includeRebasedToThisBranch) {
 
+		if (contentBaseTimestamp != null && contentHeadTimestamp != null && contentBaseTimestamp > contentHeadTimestamp) {
+			throw new IllegalArgumentException(String.format("contentBaseTimestamp %d can't be later than contentHeadTimestamp %d", contentBaseTimestamp, contentHeadTimestamp));
+		}
 		return reportService.createChangeSummaryReport(branch, contentBaseTimestamp, contentHeadTimestamp, includeMadeOnThisBranch, includePromotedToThisBranch, includeRebasedToThisBranch);
 	}
 
