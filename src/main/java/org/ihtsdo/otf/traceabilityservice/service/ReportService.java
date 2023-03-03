@@ -136,7 +136,7 @@ public class ReportService {
 					previousLevelBaseDate = getBaseDate(previousLevel, previousLevelBaseDate);
 				}
 				Date startDate = getStartDate(ancestor, previousLevelBaseDate);
-				LOGGER.info("Selecting changes from {}({}), to {}({}) on branch {}", startDate, startDate.getTime(), previousLevelBaseDate, previousLevelBaseDate.getTime(), ancestor);
+				LOGGER.info("Selecting changes from {}({}) to {}({}) on branch {}", startDate, startDate.getTime(), previousLevelBaseDate, previousLevelBaseDate.getTime(), ancestor);
 				// Changes made on ancestor branches, rebased to this one
 				final BoolQueryBuilder onAncestorBranch =
 						boolQuery()
