@@ -590,6 +590,43 @@ class ReportServiceTest extends AbstractTest {
 	}
 
 	@Test
+	void testChangesPromotedToMainButSupersededOnAnotherProject() {
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/AB", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("110", ChangeType.CREATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+		promoteActivities("MAIN/AB", "MAIN");
+
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A/A1", "", ActivityType.CONTENT_CHANGE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("110", ChangeType.INACTIVATE, ComponentType.RELATIONSHIP, "", true))
+						)
+		));
+		promoteActivities("MAIN/A/A1", "MAIN/A");
+
+		// Make changes superseded in projecdt A during rebase
+		activityRepository.saveAll(Lists.newArrayList(
+				activity("MAIN/A", "MAIN", ActivityType.REBASE)
+						.addConceptChange(new ConceptChange("100")
+								.addComponentChange(new ComponentChange("110", ChangeType.INACTIVATE, ComponentType.RELATIONSHIP, "", true, true))
+						)
+		));
+
+		ChangeSummaryReport changeSummaryReport = reportService.createChangeSummaryReport("MAIN/A");
+		assertEquals(1, changeSummaryReport.getComponentChanges().size());
+		assertEquals("{RELATIONSHIP=[110]}", toString(changeSummaryReport.getComponentChanges()));
+
+		promoteActivities("MAIN/A", "MAIN");
+
+		// Run summary report on MAIN and should still contain change prooted from project A
+		changeSummaryReport = reportService.createChangeSummaryReport("MAIN");
+		assertEquals(1, changeSummaryReport.getComponentChanges().size());
+		assertEquals("{RELATIONSHIP=[110]}", toString(changeSummaryReport.getComponentChanges()));
+	}
+	@Test
 	void testSummaryReportOnProjectWithConflictChanges() {
 		// Create a relationship on project during classification save
 		activityRepository.saveAll(Lists.newArrayList(

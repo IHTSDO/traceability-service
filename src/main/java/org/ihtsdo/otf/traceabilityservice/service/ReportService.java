@@ -221,7 +221,8 @@ public class ReportService {
 		}
 		Set<String> branches = supersededChangesByComponent.getOrDefault(componentId, Collections.emptySet());
 		for (String branchPath : branches) {
-			if (branchPath.equals(branch) || branch.startsWith(branchPath)) {
+			// A change is superseded when the branch is the same or child branch of superseded branch path
+			if (branchPath.equals(branch) || BranchUtils.getAncestorBranches(branch).contains(branchPath)) {
 				return true;
 			}
 		}
