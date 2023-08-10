@@ -12,7 +12,7 @@ public class OTFSimpleElasticsearchPersistentEntity<T> extends SimpleElasticsear
 	OTFSimpleElasticsearchPersistentEntity(IndexConfig indexConfig, TypeInformation<T> typeInformation) {
 		super(typeInformation);
 		this.indexConfig = indexConfig;
-		this.indexNamePrefix = indexConfig.getIndexNamePrefix() != null ? indexConfig.getIndexNamePrefix() : "";
+		this.indexNamePrefix = indexConfig.indexNamePrefix() != null ? indexConfig.indexNamePrefix() : "";
 	}
 
 	@Override
@@ -22,11 +22,11 @@ public class OTFSimpleElasticsearchPersistentEntity<T> extends SimpleElasticsear
 
 	@Override
 	public short getShards() {
-		return indexConfig.getIndexShards();
+		return indexConfig.indexShards();
 	}
 
 	@Override
 	public short getReplicas() {
-		return indexConfig.getIndexReplicas();
+		return indexConfig.indexReplicas();
 	}
 }

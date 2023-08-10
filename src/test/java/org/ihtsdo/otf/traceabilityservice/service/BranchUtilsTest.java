@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class BranchUtilsTest extends AbstractTest {
 
 	@Test
-	void testGetAncestorBranches() throws IOException, InterruptedException {
+	void testGetAncestorBranches() {
 		String branchPath = "MAIN/foo/bar/car";
 		Set<String> ancestorBranches = BranchUtils.getAncestorBranches(branchPath);
 		

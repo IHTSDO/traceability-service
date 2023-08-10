@@ -7,7 +7,6 @@ import org.ihtsdo.otf.traceabilityservice.domain.DiffReport;
 import org.ihtsdo.otf.traceabilityservice.service.ArchiveDiffService;
 import org.ihtsdo.otf.traceabilityservice.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

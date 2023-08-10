@@ -6,8 +6,8 @@ import java.util.Set;
 public class PatchRequest {
 
 	private String branch;
-	private Set<String> componentsWithEffectiveTime;
-	private Set<String> componentsWithoutEffectiveTime;
+	private final Set<String> componentsWithEffectiveTime;
+	private final Set<String> componentsWithoutEffectiveTime;
 
 	public PatchRequest() {
 		componentsWithEffectiveTime = new HashSet<>();

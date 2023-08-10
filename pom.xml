@@ -14,7 +14,7 @@
 	</parent>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<execFinalName>${project.build.finalName}.jar</execFinalName>
 		<packageName>${project.artifactId}</packageName>
 		<elasticsearch.version>7.10.0</elasticsearch.version>
@@ -86,7 +86,7 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>testcontainers</artifactId>
-			<version>1.16.0</version>
+			<version>1.18.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

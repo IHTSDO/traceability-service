@@ -39,11 +39,10 @@ public class ActivityController {
 
 	@GetMapping(value = "/activities")
 	@ResponseBody
-	@ApiOperation(value = "Fetch activities.", notes = "Fetch authoring activities by 'originalBranch' (the branch the activity originated on), " +
-			"'onBranch' (the original branch or highest branch the activity has been promoted to). " +
-			"Filtering by activity type and sorting is also available.\n" +
-			"The 'brief' flag will return activities and concept changes but no component changes.\n" +
-			"Note that promotions are recorded against the branch receiving the content.")
+	@ApiOperation(value = "Fetch activities.", notes = """
+            Fetch authoring activities by 'originalBranch' (the branch the activity originated on), 'onBranch' (the original branch or highest branch the activity has been promoted to). Filtering by activity type and sorting is also available.
+            The 'brief' flag will return activities and concept changes but no component changes.
+            Note that promotions are recorded against the branch receiving the content.""")
 	public Page<Activity> getActivities(
 			@RequestParam(required = false) @ApiParam("Find commits by the branch they were originally written to.") String originalBranch,
 			@RequestParam(required = false) @ApiParam("Find commits by the original branch or highest promoted branch.") String onBranch,
@@ -125,7 +124,7 @@ public class ActivityController {
 			throw new IllegalArgumentException(String.format("%d concept ids exceed the maximum size of %d", conceptIds.size(), MAX_BULK_SIZE));
 		}
 		page = setPageDefaults(page, MAX_BULK_SIZE);
-		return activityService.findActivitiesBy(conceptIds, activityType, user, summary.booleanValue(), page);
+		return activityService.findActivitiesBy(conceptIds, activityType, user, summary, page);
 	}
 
 	@GetMapping(value="/activities/promotions")

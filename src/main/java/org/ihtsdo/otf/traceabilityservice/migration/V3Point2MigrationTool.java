@@ -30,7 +30,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
  * "highestPromotedBranch" : "MAIN/ICD1120/ICD1120-420",
  * "commitDate" : 1635518961063,
  * "activityType" : "REBASE"
- *
+ * <p>
  *
  * After fix:
  * "branch" : "MAIN/ICD1120/ICD1120-420",
@@ -50,8 +50,7 @@ public class V3Point2MigrationTool extends V3Point1MigrationTool {
 
 	@Value("${migration.save-batch-size}")
 	private int saveBatchSize;
-
-	private final boolean dryRun = false;
+	private final boolean dryRun = true;
 
 	@Override
 	public void start() {
@@ -93,7 +92,7 @@ public class V3Point2MigrationTool extends V3Point1MigrationTool {
 			List<Activity> activitiesToUpdate = new ArrayList<>();
 			for (Activity activity : rebaseActivities) {
 				// Skip update if the rebase activity has no content change and no promotions on that branch
-				if (activity.getConceptChanges().isEmpty() || !branchPromotionDates.keySet().contains(activity.getHighestPromotedBranch())) {
+				if (activity.getConceptChanges().isEmpty() || !branchPromotionDates.containsKey(activity.getHighestPromotedBranch())) {
 					if (dryRun) {
 						logger.info("Rebase skipped as no promotion made on branch yet {}", activity);
 					}

@@ -322,7 +322,7 @@ public class ReportService {
 		final List<String> split = List.of(branch.split("/"));
 		StringBuilder ancestor = new StringBuilder();
 		for (String part : split) {
-			if (ancestor.length() > 0) {
+			if (!ancestor.isEmpty()) {
 				ancestor.append("/");
 			}
 			ancestor.append(part);

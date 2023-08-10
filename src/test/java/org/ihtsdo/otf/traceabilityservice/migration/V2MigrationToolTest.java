@@ -47,25 +47,26 @@ class V2MigrationToolTest extends AbstractTest {
 		Map<String, Object> objectJsonMap = objectMapper.readValue(activityJson, new TypeReference<>() {});
 		objectJsonMap.remove("id");
 
-		assertEquals("{\n" +
-				"  \"username\" : \"mbraithwaite\",\n" +
-				"  \"branch\" : \"MAIN/CRSJAN22/CRSJAN22-404\",\n" +
-				"  \"branchDepth\" : 3,\n" +
-				"  \"highestPromotedBranch\" : \"MAIN/CRSJAN22/CRSJAN22-404\",\n" +
-				"  \"commitDate\" : \"2021-08-19T14:53:45.000+00:00\",\n" +
-				"  \"promotionDate\" : \"2021-08-19T14:53:45.000+00:00\",\n" +
-				"  \"activityType\" : \"CONTENT_CHANGE\",\n" +
-				"  \"conceptChanges\" : [ {\n" +
-				"    \"conceptId\" : \"30641000087103\",\n" +
-				"    \"componentChanges\" : [ {\n" +
-				"      \"componentId\" : \"4636190013\",\n" +
-				"      \"changeType\" : \"CREATE\",\n" +
-				"      \"componentType\" : \"DESCRIPTION\",\n" +
-				"      \"componentSubType\" : \"900000000000013009\",\n" +
-				"      \"effectiveTimeNull\" : true\n" +
-				"    } ]\n" +
-				"  } ]\n" +
-				"}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectJsonMap));
+		assertEquals("""
+                {
+                  "username" : "mbraithwaite",
+                  "branch" : "MAIN/CRSJAN22/CRSJAN22-404",
+                  "branchDepth" : 3,
+                  "highestPromotedBranch" : "MAIN/CRSJAN22/CRSJAN22-404",
+                  "commitDate" : "2021-08-19T14:53:45.000+00:00",
+                  "promotionDate" : "2021-08-19T14:53:45.000+00:00",
+                  "activityType" : "CONTENT_CHANGE",
+                  "conceptChanges" : [ {
+                    "conceptId" : "30641000087103",
+                    "componentChanges" : [ {
+                      "componentId" : "4636190013",
+                      "changeType" : "CREATE",
+                      "componentType" : "DESCRIPTION",
+                      "componentSubType" : "900000000000013009",
+                      "effectiveTimeNull" : true
+                    } ]
+                  } ]
+                }""", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectJsonMap));
 	}
 
 }

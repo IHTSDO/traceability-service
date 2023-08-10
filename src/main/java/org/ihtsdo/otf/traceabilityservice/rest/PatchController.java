@@ -19,9 +19,10 @@ public class PatchController {
 	private PatchService patchService;
 
 	@ApiOperation(value = "Patch component traceability history to workaround failing assertions.",
-			notes = "This should only be required for one authoring cycle after upgrading to version 3.x. \n\n" +
-					"When components are reported as missing from the traceability store add the ids to componentsWithoutEffectiveTime. \n\n" +
-					"When components are reported as missing from the RF2 delta add the ids to componentsWithEffectiveTime. ")
+			notes = """
+                    This should only be required for one authoring cycle after upgrading to version 3.x.\s
+                    When components are reported as missing from the traceability store add the ids to componentsWithoutEffectiveTime.\s
+                    When components are reported as missing from the RF2 delta add the ids to componentsWithEffectiveTime.\s""")
 	@PostMapping
 	public ChangeSummaryReport patchHistory(
 			@ApiParam(required = true)

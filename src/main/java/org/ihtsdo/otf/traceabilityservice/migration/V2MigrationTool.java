@@ -189,27 +189,21 @@ public class V2MigrationTool {
 		// STATED_RELATIONSHIP, INFERRED_RELATIONSHIP, FSN_DESCRIPTION, SYNONYM_DESCRIPTION
 		final String v2ComponentSubType = v2Change.getComponentSubType();
 		if (v2ComponentSubType != null) {
-			switch (v2ComponentSubType) {
-				case "STATED_RELATIONSHIP":
-					// 900000000000010007 | Stated relationship (core metadata concept) |
-					componentSubType = 900000000000010007L;
-					break;
-				case "INFERRED_RELATIONSHIP":
-					// 900000000000011006 | Inferred relationship (core metadata concept) |
-					componentSubType = 900000000000011006L;
-					break;
-				case "FSN_DESCRIPTION":
-					// 900000000000003001 | Fully specified name (core metadata concept) |
-					componentSubType = 900000000000003001L;
-					break;
-				case "SYNONYM_DESCRIPTION":
-					// 900000000000013009 | Synonym (core metadata concept) |
-					componentSubType = 900000000000013009L;
-					break;
-				default:
-					componentSubType = null;
-					break;
-			}
+            componentSubType = switch (v2ComponentSubType) {
+                case "STATED_RELATIONSHIP" ->
+                    // 900000000000010007 | Stated relationship (core metadata concept) |
+                        900000000000010007L;
+                case "INFERRED_RELATIONSHIP" ->
+                    // 900000000000011006 | Inferred relationship (core metadata concept) |
+                        900000000000011006L;
+                case "FSN_DESCRIPTION" ->
+                    // 900000000000003001 | Fully specified name (core metadata concept) |
+                        900000000000003001L;
+                case "SYNONYM_DESCRIPTION" ->
+                    // 900000000000013009 | Synonym (core metadata concept) |
+                        900000000000013009L;
+                default -> null;
+            };
 			// There was no sub-type for text definition in the old V2 code.
 		}
 

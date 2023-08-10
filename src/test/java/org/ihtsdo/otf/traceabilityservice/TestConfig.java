@@ -67,16 +67,17 @@ public class TestConfig extends Config {
 		}
 	}
 
-	static ElasticsearchContainer getElasticsearchContainerInstance() {
-		return elasticsearchContainer;
-	}
-
 	@Override
 	public RestHighLevelClient elasticsearchRestClient() {
-		String hostAddress = useLocalElasticsearch ? "localhost:9200" : elasticsearchContainer.getHttpHostAddress();
-		final String[] split = hostAddress.split(":");
-		final RestHighLevelClient restHighLevelClient = new RestHighLevelClient(RestClient.builder(new HttpHost(split[0], Integer.parseInt(split[1]))));
-		return restHighLevelClient;
+		String hostAddress;
+        if (useLocalElasticsearch) {
+            hostAddress = "localhost:9200";
+        } else {
+            assert elasticsearchContainer != null;
+            hostAddress = elasticsearchContainer.getHttpHostAddress();
+        }
+        final String[] split = hostAddress.split(":");
+        return new RestHighLevelClient(RestClient.builder(new HttpHost(split[0], Integer.parseInt(split[1]))));
 	}
 
 	@Bean
