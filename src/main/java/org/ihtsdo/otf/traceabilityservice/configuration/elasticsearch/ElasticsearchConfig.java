@@ -53,7 +53,7 @@ public class ElasticsearchConfig {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Bean
-	public RestHighLevelClient elasticsearchRestClient() {
+	public RestHighLevelClient elasticsearchRestfulClient() {
 		final String[] urls = elasticsearchProperties().getUrls();
 		for (String url : urls) {
 			logger.info("Elasticsearch host: {}", url);
@@ -114,7 +114,7 @@ public class ElasticsearchConfig {
 
 	@Bean
 	public ElasticsearchOperations elasticsearchTemplate() {
-		return new ElasticsearchRestTemplate(elasticsearchRestClient(), elasticsearchConverter());
+		return new ElasticsearchRestTemplate(elasticsearchRestfulClient(), elasticsearchConverter());
 	}
 
 	@Bean

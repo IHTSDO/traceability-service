@@ -68,7 +68,7 @@ public class TestConfig extends Config {
 	}
 
 	@Override
-	public RestHighLevelClient elasticsearchRestClient() {
+	public RestHighLevelClient elasticsearchRestfulClient() {
 		String hostAddress;
         if (useLocalElasticsearch) {
             hostAddress = "localhost:9200";
