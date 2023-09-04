@@ -1,8 +1,9 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
 import com.fasterxml.jackson.databind.util.StdDateFormat;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
@@ -23,6 +24,7 @@ import java.text.ParseException;
 import java.util.*;
 
 @RestController
+@Tag(name = "Activity")
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ActivityController {
 	@Value("${traceability.max.activities.page.size:500}")
@@ -39,25 +41,26 @@ public class ActivityController {
 
 	@GetMapping(value = "/activities")
 	@ResponseBody
-	@ApiOperation(value = "Fetch activities.", notes = """
+	@Operation(summary = "Fetch activities.",
+			description = """
             Fetch authoring activities by 'originalBranch' (the branch the activity originated on), 'onBranch' (the original branch or highest branch the activity has been promoted to). Filtering by activity type and sorting is also available.
             The 'brief' flag will return activities and concept changes but no component changes.
             Note that promotions are recorded against the branch receiving the content.""")
 	public Page<Activity> getActivities(
-			@RequestParam(required = false) @ApiParam("Find commits by the branch they were originally written to.") String originalBranch,
-			@RequestParam(required = false) @ApiParam("Find commits by the original branch or highest promoted branch.") String onBranch,
-			@RequestParam(required = false, defaultValue = "false") @ApiParam("Include commits that have been promoted further, that may have been rebased down to specified branch") Boolean includeHigherPromotions,
-			@RequestParam(required = false) @ApiParam("Find rebase or promotion commits using the source branch.") String sourceBranch,
-			@RequestParam(required = false) @ApiParam("Find commits originally made on any branch starting with this prefix.") String branchPrefix,
+			@RequestParam(required = false) @Parameter(name = "Find commits by the branch they were originally written to.") String originalBranch,
+			@RequestParam(required = false) @Parameter(name = "Find commits by the original branch or highest promoted branch.") String onBranch,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Include commits that have been promoted further, that may have been rebased down to specified branch") Boolean includeHigherPromotions,
+			@RequestParam(required = false) @Parameter(name = "Find rebase or promotion commits using the source branch.") String sourceBranch,
+			@RequestParam(required = false) @Parameter(name = "Find commits originally made on any branch starting with this prefix.") String branchPrefix,
 			@RequestParam(required = false) ActivityType activityType,
-			@RequestParam(required = false) @ApiParam("Find commits that changed a specific concept.") Long conceptId,
-			@RequestParam(required = false) @ApiParam("Find commits that changed a specific component.") String componentId,
-			@RequestParam(required = false) @ApiParam("Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
-			@RequestParam(required = false) @ApiParam("Find commits after specified date. The format returned by the API can be used or epoch milliseconds.") String commitFromDate,
-			@RequestParam(required = false) @ApiParam("Find commits before specified date. The format returned by the API can be used or epoch milliseconds.") String commitToDate,
-			@RequestParam(required = false, defaultValue = "false") @ApiParam("Ignore changes made on non-International CodeSystems") boolean intOnly,
-			@RequestParam(required = false, defaultValue = "false") @ApiParam("Brief response without the concept changes.") boolean brief,
-			@RequestParam(required = false, defaultValue = "false") @ApiParam("Briefest response without any concept details") boolean summaryOnly,
+			@RequestParam(required = false) @Parameter(name = "Find commits that changed a specific concept.") Long conceptId,
+			@RequestParam(required = false) @Parameter(name = "Find commits that changed a specific component.") String componentId,
+			@RequestParam(required = false) @Parameter(name = "Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
+			@RequestParam(required = false) @Parameter(name = "Find commits after specified date. The format returned by the API can be used or epoch milliseconds.") String commitFromDate,
+			@RequestParam(required = false) @Parameter(name = "Find commits before specified date. The format returned by the API can be used or epoch milliseconds.") String commitToDate,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Ignore changes made on non-International CodeSystems") boolean intOnly,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Brief response without the concept changes.") boolean brief,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Briefest response without any concept details") boolean summaryOnly,
 			Pageable page) {
 
 		if (brief || summaryOnly) {
@@ -112,7 +115,7 @@ public class ActivityController {
 
 	@PostMapping(value = "/activitiesBulk")
 	@ResponseBody
-	@ApiOperation(value = "Fetch a filtered set of brief activities in bulk.")
+	@Operation(summary = "Fetch a filtered set of brief activities in bulk.")
 	public Page<Activity> getActivitiesBulk(
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) String user,
@@ -140,7 +143,7 @@ public class ActivityController {
 	}
 
 	@PostMapping(value = "/activities/branches/last")
-	@ApiOperation(value = "Fetch the latest activity on multiple branches.")
+	@Operation(summary = "Fetch the latest activity on multiple branches.")
 	public List<Activity> getLastModifiedOnBranches (@RequestBody List<String> branches) {
 		List<Activity> activities = new ArrayList<>();
 		final PageRequest sortedPage = PageRequest.of(0, 1, COMMIT_DATE_SORT.descending());

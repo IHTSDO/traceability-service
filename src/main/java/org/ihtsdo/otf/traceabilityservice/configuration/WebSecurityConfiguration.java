@@ -18,11 +18,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new RequestHeaderAuthenticationDecorator(), FilterSecurityInterceptor.class);
 
 		http.authorizeRequests()
-				.antMatchers("/version",
-						"/swagger-ui.html",
-						"/swagger-resources/**",
-						"/v2/api-docs",
-						"/webjars/springfox-swagger-ui/**").permitAll()
+				.antMatchers(
+						"/version",
+						"/swagger-ui/**",
+						"/v3/api-docs/**").permitAll()
 				.anyRequest().authenticated()
 				.and().httpBasic();
 	}

@@ -1,7 +1,8 @@
 package org.ihtsdo.otf.traceabilityservice.rest;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.ihtsdo.otf.traceabilityservice.domain.ChangeSummaryReport;
 import org.ihtsdo.otf.traceabilityservice.domain.DiffReport;
 import org.ihtsdo.otf.traceabilityservice.service.ArchiveDiffService;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RestController("/report")
+@Tag(name = "Report", description = "Change summary report")
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ReportController {
 
@@ -25,24 +27,21 @@ public class ReportController {
 	@Autowired
 	private ArchiveDiffService archiveDiffService;
 
-	@ApiOperation(value = "Fetch change summary report on a branch since the last promotion (or versioning if a code system branch).",
-			notes = "When contentBaseTimestamp is not specified, the last promotion date will be used if present. Otherwise it will use epoch date.")
+	@Operation(summary = "Fetch change summary report on a branch since the last promotion (or versioning if a code system branch).",
+		 description = "When contentBaseTimestamp is not specified, the last promotion date will be used if present. Otherwise it will use epoch date.")
 	@GetMapping("/change-summary")
 	public ChangeSummaryReport createChangeSummaryReport(
-			@ApiParam(required = true)
+			@Parameter(required = true)
 			@RequestParam String branch,
 
 			@RequestParam(required = false) Long contentBaseTimestamp,
 
 			@RequestParam(required = false) Long contentHeadTimestamp,
 
-			@ApiParam(defaultValue = "true")
 			@RequestParam(defaultValue = "true") boolean includeMadeOnThisBranch,
 
-			@ApiParam(defaultValue = "true")
 			@RequestParam(defaultValue = "true") boolean includePromotedToThisBranch,
 
-			@ApiParam(defaultValue = "true")
 			@RequestParam(defaultValue = "true") boolean includeRebasedToThisBranch) {
 
 		if (contentBaseTimestamp != null && contentHeadTimestamp != null && contentBaseTimestamp > contentHeadTimestamp) {
@@ -51,14 +50,14 @@ public class ReportController {
 		return reportService.createChangeSummaryReport(branch, contentBaseTimestamp, contentHeadTimestamp, includeMadeOnThisBranch, includePromotedToThisBranch, includeRebasedToThisBranch);
 	}
 
-	@ApiOperation(value = "Branch change summary verses delta archive diff.",
-			notes = "Report component changes that are in traceability but not in the RF2 delta archive and vice versa.")
+	@Operation(summary = "Branch change summary verses delta archive diff.",
+			description = "Report component changes that are in traceability but not in the RF2 delta archive and vice versa.")
 	@PostMapping(value = "/change-summary-archive-diff", consumes = "multipart/form-data")
 	public DiffReport changeSummaryArchiveDiff(
-			@ApiParam(required = true)
+			@Parameter(required = true)
 			@RequestParam String branch,
 
-			@ApiParam(required = true)
+			@Parameter(required = true)
 			@RequestParam MultipartFile rf2DeltaArchive) {
 
 		final ChangeSummaryReport storeReport = reportService.createChangeSummaryReport(branch);
