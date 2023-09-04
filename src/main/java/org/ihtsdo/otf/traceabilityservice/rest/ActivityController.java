@@ -11,6 +11,7 @@ import org.ihtsdo.otf.traceabilityservice.service.ActivitySearchRequest;
 import org.ihtsdo.otf.traceabilityservice.service.ActivityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,7 @@ public class ActivityController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
 	@GetMapping(value = "/activities")
+	@PageableAsQueryParam
 	@ResponseBody
 	@Operation(summary = "Fetch activities.",
 			description = """
@@ -47,20 +49,20 @@ public class ActivityController {
             The 'brief' flag will return activities and concept changes but no component changes.
             Note that promotions are recorded against the branch receiving the content.""")
 	public Page<Activity> getActivities(
-			@RequestParam(required = false) @Parameter(name = "Find commits by the branch they were originally written to.") String originalBranch,
-			@RequestParam(required = false) @Parameter(name = "Find commits by the original branch or highest promoted branch.") String onBranch,
-			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Include commits that have been promoted further, that may have been rebased down to specified branch") Boolean includeHigherPromotions,
-			@RequestParam(required = false) @Parameter(name = "Find rebase or promotion commits using the source branch.") String sourceBranch,
-			@RequestParam(required = false) @Parameter(name = "Find commits originally made on any branch starting with this prefix.") String branchPrefix,
+			@RequestParam(required = false) @Parameter(description = "Find commits by the branch they were originally written to.") String originalBranch,
+			@RequestParam(required = false) @Parameter(description = "Find commits by the original branch or highest promoted branch.") String onBranch,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(description = "Include commits that have been promoted further, that may have been rebased down to specified branch") Boolean includeHigherPromotions,
+			@RequestParam(required = false) @Parameter(description = "Find rebase or promotion commits using the source branch.") String sourceBranch,
+			@RequestParam(required = false) @Parameter(description = "Find commits originally made on any branch starting with this prefix.") String branchPrefix,
 			@RequestParam(required = false) ActivityType activityType,
-			@RequestParam(required = false) @Parameter(name = "Find commits that changed a specific concept.") Long conceptId,
-			@RequestParam(required = false) @Parameter(name = "Find commits that changed a specific component.") String componentId,
-			@RequestParam(required = false) @Parameter(name = "Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
-			@RequestParam(required = false) @Parameter(name = "Find commits after specified date. The format returned by the API can be used or epoch milliseconds.") String commitFromDate,
-			@RequestParam(required = false) @Parameter(name = "Find commits before specified date. The format returned by the API can be used or epoch milliseconds.") String commitToDate,
-			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Ignore changes made on non-International CodeSystems") boolean intOnly,
-			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Brief response without the concept changes.") boolean brief,
-			@RequestParam(required = false, defaultValue = "false") @Parameter(name = "Briefest response without any concept details") boolean summaryOnly,
+			@RequestParam(required = false) @Parameter(description = "Find commits that changed a specific concept.") Long conceptId,
+			@RequestParam(required = false) @Parameter(description = "Find commits that changed a specific component.") String componentId,
+			@RequestParam(required = false) @Parameter(description = "Find commits by commit date. The format returned by the API can be used or epoch milliseconds.") String commitDate,
+			@RequestParam(required = false) @Parameter(description = "Find commits after specified date. The format returned by the API can be used or epoch milliseconds.") String commitFromDate,
+			@RequestParam(required = false) @Parameter(description = "Find commits before specified date. The format returned by the API can be used or epoch milliseconds.") String commitToDate,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(description = "Ignore changes made on non-International CodeSystems") boolean intOnly,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(description = "Brief response without the concept changes.") boolean brief,
+			@RequestParam(required = false, defaultValue = "false") @Parameter(description = "Briefest response without any concept details") boolean summaryOnly,
 			Pageable page) {
 
 		if (brief || summaryOnly) {
@@ -116,6 +118,7 @@ public class ActivityController {
 	@PostMapping(value = "/activitiesBulk")
 	@ResponseBody
 	@Operation(summary = "Fetch a filtered set of brief activities in bulk.")
+	@PageableAsQueryParam
 	public Page<Activity> getActivitiesBulk(
 			@RequestParam(required = false) ActivityType activityType,
 			@RequestParam(required = false) String user,
@@ -131,6 +134,7 @@ public class ActivityController {
 	}
 
 	@GetMapping(value="/activities/promotions")
+	@PageableAsQueryParam
 	public Page<Activity> getPromotions(@RequestParam String sourceBranch, Pageable page) {
 		// Promotion doesn't log component changes so the page size 1000 is fine.
 		page = setPageDefaults(page, 1000);
