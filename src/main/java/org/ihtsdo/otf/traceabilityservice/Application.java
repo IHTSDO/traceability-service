@@ -31,8 +31,26 @@ public class Application extends Config {
 		return GroupedOpenApi.builder()
 				.group("traceability-service")
 				.packagesToScan("org.ihtsdo.otf.traceabilityservice.rest")
-				// Don't show the error or root endpoints in swagger
-				.pathsToExclude("/error", "/")
+				// Don't show the migration, error or root endpoints in this group
+				.pathsToExclude("/migration/**", "/patch/**", "/error", "/")
+				.build();
+	}
+
+	@Bean
+	public GroupedOpenApi migrationApi() {
+		return GroupedOpenApi.builder()
+				.group("migration")
+				.packagesToScan("org.ihtsdo.otf.traceabilityservice.rest")
+				.pathsToMatch("/migration/**")
+				.build();
+	}
+
+	@Bean
+	public GroupedOpenApi patchApi() {
+		return GroupedOpenApi.builder()
+				.group("patch")
+				.packagesToScan("org.ihtsdo.otf.traceabilityservice.rest")
+				.pathsToMatch("/patch/**")
 				.build();
 	}
 

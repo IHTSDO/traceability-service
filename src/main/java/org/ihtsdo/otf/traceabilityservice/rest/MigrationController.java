@@ -9,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-@RestController("/migration")
+@RestController
 @Tag(name = "Migration", description = "Data Migration")
+@RequestMapping(path = "/migration")
 public class MigrationController {
 
 	@Autowired
@@ -73,7 +71,6 @@ public class MigrationController {
 		checkMigrationPassword(migrationPassword);
 		v3Point2MigrationTool.start();
 	}
-
 
 	private void checkMigrationPassword(String migrationPassword) {
 		if (!this.migrationPassword.equals(migrationPassword)) {
