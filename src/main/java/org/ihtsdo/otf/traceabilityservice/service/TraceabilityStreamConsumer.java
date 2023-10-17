@@ -37,7 +37,7 @@ public class TraceabilityStreamConsumer {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@JmsListener(destination = "${platform.name}." + Application.TRACEABILITY_QUEUE_SUFFIX)
+	@JmsListener(destination = "${platform.name}." + ApplicationProperties.TRACEABILITY_QUEUE_SUFFIX)
 	@Transactional
 	public void receiveMessage(String message) throws JsonProcessingException {
 		ActivityMessage activityMessage = objectMapper.readValue(message, ActivityMessage.class);
