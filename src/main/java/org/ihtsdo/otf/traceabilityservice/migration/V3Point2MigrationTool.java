@@ -1,7 +1,9 @@
 package org.ihtsdo.otf.traceabilityservice.migration;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import com.google.common.collect.Lists;
-import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.service.BranchUtils;
@@ -10,13 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool;
 
 /**
  * This is to apply data fixes caused by FRI-305.
@@ -140,20 +142,22 @@ public class V3Point2MigrationTool extends V3Point1MigrationTool {
 	}
 
 	private List<Activity> getRebaseActivitiesNotPromoted(String codeSystemPath, Date lastVersion) {
-		BoolQueryBuilder query = boolQuery()
-				.must(prefixQuery(Activity.Fields.branch, codeSystemPath))
-				.must(termQuery(Activity.Fields.activityType, ActivityType.REBASE))
-				.must(rangeQuery(Activity.Fields.commitDate).gt(lastVersion.getTime()))
-				.must(existsQuery(Activity.Fields.highestPromotedBranch))
-				.must(existsQuery("conceptChanges"))
-				.mustNot(existsQuery(Activity.Fields.promotionDate));
+		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+		QueryHelper.withFrom(rangeQueryBuilder, lastVersion.getTime());
+		BoolQuery.Builder query = bool()
+				.must(QueryHelper.prefixQuery(Activity.Fields.branch, codeSystemPath))
+				.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.REBASE.name()))
+				.must(QueryHelper.toQuery(rangeQueryBuilder))
+				.must(QueryHelper.existsQuery(Activity.Fields.highestPromotedBranch))
+				.must(QueryHelper.existsQuery("conceptChanges"))
+				.mustNot(QueryHelper.existsQuery(Activity.Fields.promotionDate));
 
 		// Exclude extensions when checking on MAIN for International
 		if (codeSystemPath.equals("MAIN")) {
-			query.mustNot(wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
+			query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
 		}
 
-		SearchHits<Activity> searchHits = elasticsearchOperations.search(new NativeSearchQueryBuilder().withQuery(query).withPageable(PageRequest.of(0, 10_000)).build(), Activity.class);
+		SearchHits<Activity> searchHits = elasticsearchOperations.search(new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query)).withPageable(PageRequest.of(0, 10_000)).build(), Activity.class);
 		if (searchHits.getTotalHits() > 10_000) {
 			logger.warn("Found over 10K rebase activities(total {}) with content changes on {} since last versioning", searchHits.getTotalHits(), codeSystemPath);
 		}

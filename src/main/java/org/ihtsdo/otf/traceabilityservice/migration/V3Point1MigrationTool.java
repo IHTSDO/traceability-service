@@ -1,7 +1,9 @@
 package org.ihtsdo.otf.traceabilityservice.migration;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import com.google.common.collect.Sets;
-import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.Activity;
 import org.ihtsdo.otf.traceabilityservice.domain.ActivityType;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
@@ -12,15 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool;
 
 @Service
 public class V3Point1MigrationTool {
@@ -70,17 +72,17 @@ public class V3Point1MigrationTool {
 
 				// Find content changes made since the last version was created.
 				// For each lookup when the content was promoted and set the 'promotionDate' field.
-				final BoolQueryBuilder query = boolQuery()
-						.must(termsQuery(Activity.Fields.activityType, CONTENT_CHANGE_OR_CLASSIFICATION))
-						.must(prefixQuery(Activity.Fields.branch, branch))
-						.must(rangeQuery(Activity.Fields.commitDate).gt(searchBackStartDate.getTime()).lte(searchBackStartDate.getTime() + day));
+				final BoolQuery.Builder query = bool()
+						.must(QueryHelper.termsQuery(Activity.Fields.activityType, CONTENT_CHANGE_OR_CLASSIFICATION))
+						.must(QueryHelper.prefixQuery(Activity.Fields.branch, branch))
+						.must(QueryHelper.rangeQuery(Activity.Fields.commitDate,searchBackStartDate.getTime(),searchBackStartDate.getTime() + day));
 				// Grab one day of commits at a time to keep pages below 10K max size.
 
 				if (branch.equals("MAIN")) {
-					query.mustNot(wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
+					query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
 				}
 
-				SearchHits<Activity> activities = elasticsearchOperations.search(new NativeSearchQueryBuilder().withQuery(query).withPageable(PageRequest.of(0, 10_000)).build(),
+				SearchHits<Activity> activities = elasticsearchOperations.search(new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query)).withPageable(PageRequest.of(0, 10_000)).build(),
 						Activity.class);
 				for (SearchHit<Activity> hit : activities) {
 					final Activity activity = hit.getContent();
@@ -126,18 +128,20 @@ public class V3Point1MigrationTool {
 	}
 
 	Map<String, List<Date>> getBranchPromotionDates(String branch, Date searchBackStartDate) {
-		final BoolQueryBuilder query = boolQuery()
-				.must(prefixQuery(Activity.Fields.sourceBranch, branch))
-				.must(termQuery(Activity.Fields.activityType, ActivityType.PROMOTION))
-				.must(rangeQuery(Activity.Fields.commitDate).gt(searchBackStartDate.getTime()));
+		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+		QueryHelper.withFrom(rangeQueryBuilder, searchBackStartDate.getTime());
+		final BoolQuery.Builder query = bool()
+				.must(QueryHelper.prefixQuery(Activity.Fields.sourceBranch, branch))
+				.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.PROMOTION.name()))
+				.must(QueryHelper.toQuery(rangeQueryBuilder));
 
 		if (branch.equals("MAIN")) {
-			query.mustNot(wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
+			query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
 		}
 
 		Map<String, List<Date>> branchPromotionDates = new HashMap<>();
-		final SearchHits<Activity> hits = elasticsearchOperations.search(new NativeSearchQueryBuilder()
-				.withQuery(query)
+		final SearchHits<Activity> hits = elasticsearchOperations.search(new NativeQueryBuilder()
+				.withQuery(QueryHelper.toQuery(query))
 				.withPageable(PageRequest.of(0, 10_000, Sort.by(Activity.Fields.commitDate)))
 				.build(), Activity.class);
 		hits.forEach(hit -> {
