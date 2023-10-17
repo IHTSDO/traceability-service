@@ -21,6 +21,9 @@ public class ApplicationProperties {
     @Value("${elasticsearch.password}")
     private String elasticsearchPassword;
 
+    @Value("${elasticsearch.api-key}")
+    private String elasticsearchApiKey;
+
     @Value("${traceability.aws.request-signing.enabled}")
     private String awsRequestSigning;
 
@@ -60,6 +63,14 @@ public class ApplicationProperties {
 
     public void setElasticsearchPassword(String elasticsearchPassword) {
         this.elasticsearchPassword = elasticsearchPassword;
+    }
+
+    public String getElasticsearchApiKey() {
+        return elasticsearchApiKey;
+    }
+
+    public void setElasticsearchApiKey(String elasticsearchApiKey) {
+        this.elasticsearchApiKey = elasticsearchApiKey;
     }
 
     public String getAwsRequestSigning() {
