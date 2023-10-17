@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.*;
 
-@Document(indexName = "activity")
+@Document(indexName = "#{@indexNameProvider.getIndexNameWithPrefix('activity')}")
 public class Activity {
 
 	public static class Fields {

@@ -3,16 +3,17 @@ package org.ihtsdo.otf.traceabilityservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import org.ihtsdo.otf.traceabilityservice.Application;
+import org.ihtsdo.otf.traceabilityservice.configuration.ApplicationProperties;
+import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitsIterator;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool;
 
 @Component
 public class TraceabilityStreamConsumer {
@@ -72,11 +73,9 @@ public class TraceabilityStreamConsumer {
 
 			List<Activity> toSave = new ArrayList<>();
 
-			try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeSearchQueryBuilder()
-					.withQuery(boolQuery()
-							.must(termQuery(Activity.Fields.highestPromotedBranch, mergeSourceBranch))
-							.must(termsQuery(Activity.Fields.activityType, contentActivityTypes))
-					)
+			try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeQueryBuilder().withQuery(QueryHelper.toQuery(bool()
+							.must(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, mergeSourceBranch))
+							.must(QueryHelper.termsQuery(Activity.Fields.activityType, contentActivityTypes))))
 					.withPageable(PageRequest.of(0, 1_000))
 					.build(), Activity.class)) {
 				stream.forEachRemaining(activitySearchHit -> {

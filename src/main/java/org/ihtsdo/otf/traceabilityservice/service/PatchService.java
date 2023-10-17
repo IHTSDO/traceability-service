@@ -1,20 +1,18 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
+import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Service
 public class PatchService {
@@ -30,8 +28,8 @@ public class PatchService {
 
 	public ChangeSummaryReport patchHistory(String branch, Set<String> componentsWithEffectiveTime, Set<String> componentsWithoutEffectiveTime) {
 
-		final SearchHit<Activity> latestCommit = elasticsearchOperations.searchOne(new NativeSearchQueryBuilder()
-				.withQuery(termQuery(Activity.Fields.branch, branch)).withSort(SortBuilders.fieldSort(Activity.Fields.commitDate).order(SortOrder.DESC)).build(), Activity.class);
+		final SearchHit<Activity> latestCommit = elasticsearchOperations.searchOne(new NativeQueryBuilder()
+				.withQuery(QueryHelper.termQuery(Activity.Fields.branch, branch)).withSort(Sort.by(Activity.Fields.commitDate).descending()).build(), Activity.class);
 
 		Date patchCommitDate = latestCommit != null ? latestCommit.getContent().getCommitDate() : new Date();
 

@@ -1,11 +1,14 @@
 package org.ihtsdo.otf.traceabilityservice.service;
 
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.RangeQueryBuilder;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
+import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool;
 
 @Component
 public class ActivityService {
@@ -33,61 +36,62 @@ public class ActivityService {
 	 */
 	public Page<Activity> getActivities(ActivitySearchRequest request, Pageable page) {
 
-		final BoolQueryBuilder query = boolQuery();
+		final BoolQuery.Builder query = bool();
 
 		if (request.getOriginalBranch() != null && !request.getOriginalBranch().isEmpty()) {
-			query.must(termQuery(Activity.Fields.branch, request.getOriginalBranch()));
+			query.must(QueryHelper.termQuery(Activity.Fields.branch, request.getOriginalBranch()));
 		}
 		if (request.getOnBranch() != null && !request.getOnBranch().isEmpty()) {
-			BoolQueryBuilder boolQuery = boolQuery();
+			BoolQuery.Builder boolQuery = bool();
 			// One of these conditions must be true.  Either
-			boolQuery.should(termQuery(Activity.Fields.branch, request.getOnBranch()))
+			boolQuery.should(QueryHelper.termQuery(Activity.Fields.branch, request.getOnBranch()))
 					 // Or
-					.should(termQuery(Activity.Fields.highestPromotedBranch, request.getOnBranch()));
+					.should(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, request.getOnBranch()));
 			//Are we also checking for activity that might have been promoted higher, elsewhere?
 			if (request.isIncludeHigherPromotions()) {
 				for (String higherBranch : BranchUtils.getAncestorBranches(request.getOnBranch())) {
-					boolQuery.should(termQuery(Activity.Fields.highestPromotedBranch, higherBranch));
+					boolQuery.should(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, higherBranch));
 				}
 			}
-			query.must(boolQuery);
+			query.must(List.of(new Query(boolQuery.build())));
 		}
 		if (request.getSourceBranch() != null && !request.getSourceBranch().isEmpty()) {
-			query.must(termQuery(Activity.Fields.sourceBranch, request.getSourceBranch()));
+			query.must(QueryHelper.termQuery(Activity.Fields.sourceBranch, request.getSourceBranch()));
 		}
 		if (request.getBranchPrefix() != null && !request.getBranchPrefix().isEmpty()) {
-			query.must(prefixQuery(Activity.Fields.branch, request.getBranchPrefix()));
+			query.must(QueryHelper.prefixQuery(Activity.Fields.branch, request.getBranchPrefix()));
 		}
 		if (request.getActivityType() != null) {
-			query.must(termQuery(Activity.Fields.activityType, request.getActivityType()));
+			query.must(QueryHelper.termQuery(Activity.Fields.activityType, request.getActivityType().name()));
 		}
 		if (request.getConceptId() != null) {
-			query.must(termQuery(Activity.Fields.conceptChangesConceptId, request.getConceptId()));
+			query.must(QueryHelper.termQuery(Activity.Fields.conceptChangesConceptId, request.getConceptId()));
 		}
 		if (request.getComponentId() != null) {
-			query.must(termQuery(Activity.Fields.componentChangesComponentId, request.getComponentId()));
+			query.must(QueryHelper.termQuery(Activity.Fields.componentChangesComponentId, request.getComponentId()));
 		}
 		if (request.getCommitDate() != null) {
-			query.must(termQuery(Activity.Fields.commitDate, request.getCommitDate().getTime()));
+			query.must(QueryHelper.termQuery(Activity.Fields.commitDate, request.getCommitDate().getTime()));
 		}
-		
+
 		if (request.getFromDate() != null || request.getToDate() != null) {
-			RangeQueryBuilder rangeQuery = rangeQuery(Activity.Fields.commitDate);
+			RangeQuery.Builder rangeQuery = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
 			if (request.getFromDate() != null) {
-				rangeQuery.from(request.getFromDate().getTime());
+				QueryHelper.withFrom(rangeQuery, request.getFromDate().getTime());
 			}
-			
+
 			if (request.getToDate() != null) {
-				rangeQuery.to(request.getToDate().getTime());
+				QueryHelper.withTo(rangeQuery, request.getToDate().getTime());
 			}
-			query.must(rangeQuery);
+
+			query.must(QueryHelper.toQuery(rangeQuery));
 		}
 		
 		if (request.isIntOnly()) {
-			query.mustNot(regexpQuery(Activity.Fields.branch, ".*SNOMEDCT-.*"));
+			query.mustNot(QueryHelper.regexQuery(Activity.Fields.branch, ".*SNOMEDCT-.*"));
 		}
 
-		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder().withQuery(query);
+		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
 		if (request.isSummaryOnly()) {
 			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChanges}));
 		} else if (request.isBrief()) {
@@ -112,17 +116,18 @@ public class ActivityService {
 	 * @return Matched activities
 	 */
 	public Page<Activity> findActivitiesBy(List<Long> conceptIds, ActivityType activityType, String user, boolean summaryOnly, Pageable page) {
-		final BoolQueryBuilder query = boolQuery();
+		final BoolQuery.Builder query = bool();
+
 		if (conceptIds != null && !conceptIds.isEmpty()) {
-			query.must(termsQuery(Activity.Fields.conceptChangesConceptId, conceptIds));
+			query.must(QueryHelper.termsQuery(Activity.Fields.conceptChangesConceptId, conceptIds));
 		}
 		if (activityType != null) {
-			query.must(termQuery(Activity.Fields.activityType, activityType));
+			query.must(QueryHelper.termQuery(Activity.Fields.activityType, activityType.name()));
 		}
 		if (user != null && !user.isEmpty()) {
-			query.must(termQuery(Activity.Fields.username, user));
+			query.must(QueryHelper.termQuery(Activity.Fields.username, user));
 		}
-		NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder().withQuery(query);
+		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
 		if (summaryOnly) {
 			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChangesComponentChanges}));
 		}

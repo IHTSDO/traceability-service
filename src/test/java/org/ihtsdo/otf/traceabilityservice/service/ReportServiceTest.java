@@ -2,19 +2,20 @@ package org.ihtsdo.otf.traceabilityservice.service;
 
 import com.google.common.collect.Lists;
 import org.ihtsdo.otf.traceabilityservice.AbstractTest;
+import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.ihtsdo.otf.traceabilityservice.repository.ActivityRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitsIterator;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import java.util.*;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReportServiceTest extends AbstractTest {
@@ -1059,10 +1060,10 @@ class ReportServiceTest extends AbstractTest {
 		final List<ActivityType> contentActivityTypes = Lists.newArrayList(ActivityType.CLASSIFICATION_SAVE, ActivityType.CONTENT_CHANGE, ActivityType.REBASE);
 
 		List<Activity> toSave = new ArrayList<>();
-		try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeSearchQueryBuilder()
-				.withQuery(boolQuery()
-						.must(termQuery(Activity.Fields.highestPromotedBranch, task))
-						.must(termsQuery(Activity.Fields.activityType, contentActivityTypes)))
+		try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeQueryBuilder()
+				.withQuery(QueryHelper.toQuery(bool()
+						.must(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, task))
+						.must(QueryHelper.termsQuery(Activity.Fields.activityType, contentActivityTypes))))
 				.withPageable(PageRequest.of(0, 1_000)).build(), Activity.class)) {
 			stream.forEachRemaining(activitySearchHit -> {
 				final Activity activityToUpdate = activitySearchHit.getContent();
