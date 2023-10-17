@@ -82,6 +82,6 @@ public class TestConfig extends Config {
 
 	@Bean
 	public String destinationName(@Value("${platform.name}") String platformName) {
-		return platformName + "." + Application.TRACEABILITY_QUEUE_SUFFIX;
+		return platformName + "." + ApplicationProperties.TRACEABILITY_QUEUE_SUFFIX;
 	}
 }

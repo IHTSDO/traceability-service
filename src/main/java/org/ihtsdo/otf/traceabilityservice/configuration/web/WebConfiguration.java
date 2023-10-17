@@ -1,4 +1,4 @@
-package org.ihtsdo.otf.traceabilityservice.configuration;
+package org.ihtsdo.otf.traceabilityservice.configuration.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
