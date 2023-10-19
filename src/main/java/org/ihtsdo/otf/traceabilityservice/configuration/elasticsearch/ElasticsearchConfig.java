@@ -1,14 +1,12 @@
 package org.ihtsdo.otf.traceabilityservice.configuration.elasticsearch;
 
-import com.amazonaws.auth.AWS4Signer;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.regions.DefaultAwsRegionProviderChain;
+import io.github.acm19.aws.interceptor.http.AwsRequestSigningApacheInterceptor;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.ihtsdo.otf.traceabilityservice.configuration.ApplicationProperties;
-import org.ihtsdo.otf.traceabilityservice.configuration.aws.AWSRequestSigningApacheInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
@@ -16,6 +14,9 @@ import org.springframework.data.elasticsearch.client.elc.ElasticsearchClients;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.support.HttpHeaders;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.signer.Aws4Signer;
+import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 							}
 
 							if (applicationProperties.isAwsRequestSigning()) {
-								clientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.addInterceptorLast(awsInterceptor("es")));
+								clientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.addInterceptorLast(awsInterceptor()));
 							}
 
 							return clientBuilder;
@@ -67,14 +68,13 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 				.build();
 	}
 
-	private AWSRequestSigningApacheInterceptor awsInterceptor(String serviceName) {
-		AWS4Signer signer = new AWS4Signer();
-		DefaultAwsRegionProviderChain regionProviderChain = new DefaultAwsRegionProviderChain();
-		DefaultAWSCredentialsProviderChain credentialsProvider = new DefaultAWSCredentialsProviderChain();
-		signer.setServiceName(serviceName);
-		signer.setRegionName(regionProviderChain.getRegion());
-
-		return new AWSRequestSigningApacheInterceptor(serviceName, signer, credentialsProvider);
+	private HttpRequestInterceptor awsInterceptor() {
+		return new AwsRequestSigningApacheInterceptor(
+				"es",
+				Aws4Signer.create(),
+				DefaultCredentialsProvider.create(),
+				DefaultAwsRegionProviderChain.builder().build().getRegion()
+		);
 	}
 
 	@Bean
