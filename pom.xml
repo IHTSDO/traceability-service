@@ -98,6 +98,10 @@
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.github.acm19</groupId>
+			<artifactId>aws-request-signing-apache-interceptor</artifactId>
+		</dependency>
 
 		<!-- API Documentation -->
 		<dependency>
