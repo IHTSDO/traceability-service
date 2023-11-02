@@ -7,7 +7,7 @@ import org.testcontainers.containers.GenericContainer;
  */
 public class TestActiveMQContainer extends GenericContainer<TestActiveMQContainer> {
     public TestActiveMQContainer() {
-        super("rmohr/activemq:5.10.0");
+        super("symptoma/activemq:latest");
         this.addFixedExposedPort(61616, 61616);
     }
 }
