@@ -81,7 +81,7 @@ public class V2MigrationTool {
 				}
 			}
 		} catch (RestClientResponseException e) {
-			logger.error("Call to v2 traceability API was not successful, status code:{}, message:{}", e.getRawStatusCode(), e.getResponseBodyAsString());
+			logger.error("Call to v2 traceability API was not successful, status code:{}, message:{}", e.getStatusCode().value(), e.getResponseBodyAsString());
 		}
 		if (stop) {
 			logger.info("Migration process stopped via API.");
