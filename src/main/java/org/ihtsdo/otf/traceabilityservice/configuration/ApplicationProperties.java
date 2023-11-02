@@ -27,10 +27,10 @@ public class ApplicationProperties {
     @Value("${traceability.aws.request-signing.enabled}")
     private String awsRequestSigning;
 
-    @Value("{elasticsearch.index.prefix}")
+    @Value("${elasticsearch.index.prefix}")
     private String indexPrefix;
 
-    @Value("{elasticsearch.index.app.prefix}")
+    @Value("${elasticsearch.index.app.prefix}")
     private String indexApplicationPrefix;
 
     public String[] getElasticsearchUrls() {
