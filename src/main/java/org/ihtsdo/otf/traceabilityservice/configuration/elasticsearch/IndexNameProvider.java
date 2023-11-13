@@ -27,7 +27,6 @@ public class IndexNameProvider {
         if (prefix.isEmpty()) {
             return indexName;
         }
-
-        return prefix;
+        return prefix + indexName;
     }
 }
