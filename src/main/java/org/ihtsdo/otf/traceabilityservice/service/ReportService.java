@@ -192,7 +192,7 @@ public class ReportService {
 		NativeQuery query = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(selection))
 				// Use 1000 instead of 10_000 because each activity doc containing all changes which can be very large
 				// Sort by descending order to discard superseded changes
-				.withPageable(PageRequest.of(0, 1_000, Sort.by(Sort.Direction.DESC, Activity.Fields.promotionDate, Activity.Fields.commitDate)))
+				.withPageable(PageRequest.of(0, 1_000, Sort.by(Sort.Direction.DESC, Activity.Fields.commitDate)))
 				.build();
 		final Map<String, Set<String>> supersededChangeComponentToPaths = new HashMap<>();
 		try (SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(query, Activity.class)) {
