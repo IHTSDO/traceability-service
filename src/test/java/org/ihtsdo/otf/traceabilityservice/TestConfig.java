@@ -2,7 +2,6 @@ package org.ihtsdo.otf.traceabilityservice;
 
 import org.ihtsdo.otf.traceabilityservice.configuration.ApplicationProperties;
 import org.ihtsdo.otf.traceabilityservice.configuration.Config;
-import org.ihtsdo.otf.traceabilityservice.configuration.TestActiveMQContainer;
 import org.ihtsdo.otf.traceabilityservice.configuration.TestElasticsearchContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.testcontainers.DockerClientFactory;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 @PropertySource("classpath:/application.properties")
@@ -24,7 +22,6 @@ public class TestConfig extends Config {
 	private static final boolean useLocalElasticsearch = false;
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestConfig.class);
 	private static final ElasticsearchContainer elasticsearchContainer;
-	private static final GenericContainer<TestActiveMQContainer> activemqContainer;
 
 	static {
 		if (useLocalElasticsearch) {
@@ -39,9 +36,6 @@ public class TestConfig extends Config {
 			}
 			elasticsearchContainer = new TestElasticsearchContainer();
 			elasticsearchContainer.start();
-
-			activemqContainer = new TestActiveMQContainer();
-			activemqContainer.start();
 		}
 	}
 
