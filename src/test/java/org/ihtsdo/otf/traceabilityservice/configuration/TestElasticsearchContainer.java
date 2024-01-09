@@ -7,7 +7,7 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
  */
 public class TestElasticsearchContainer extends ElasticsearchContainer {
     public TestElasticsearchContainer() {
-        super("docker.elastic.co/elasticsearch/elasticsearch:8.10.2");
+        super("docker.elastic.co/elasticsearch/elasticsearch:8.11.1");
         this.addFixedExposedPort(9200, 9200);
         this.addEnv("cluster.name", "integration-test-cluster");
         this.addEnv("xpack.security.enabled", "false");
