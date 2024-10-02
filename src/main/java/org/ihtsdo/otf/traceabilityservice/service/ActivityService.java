@@ -3,6 +3,8 @@ package org.ihtsdo.otf.traceabilityservice.service;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
+import co.elastic.clients.json.JsonData;
+import com.google.common.base.Splitter;
 import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
 import org.springframework.data.domain.Page;
@@ -37,7 +39,26 @@ public class ActivityService {
 	public Page<Activity> getActivities(ActivitySearchRequest request, Pageable page) {
 
 		final BoolQuery.Builder query = bool();
+		doBranchFiltering(query, request);
+		doContentFiltering(query, request);
 
+		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
+		if (request.isSummaryOnly()) {
+			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChanges}));
+		} else if (request.isBrief()) {
+			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChangesComponentChanges}));
+		}
+
+		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
+
+		Page<Activity> results = new PageImpl<>(search.stream().map(SearchHit::getContent).toList(), page, search.getTotalHits());
+		if (!request.isBrief() && !request.isSummaryOnly()) {
+			filterResultsBy(request.getConceptId(), request.getComponentId(), results);
+		}
+		return results;
+	}
+
+	private void doBranchFiltering(BoolQuery.Builder query, ActivitySearchRequest request) {
 		if (request.getOriginalBranch() != null && !request.getOriginalBranch().isEmpty()) {
 			query.must(QueryHelper.termQuery(Activity.Fields.branch, request.getOriginalBranch()));
 		}
@@ -45,7 +66,7 @@ public class ActivityService {
 			BoolQuery.Builder boolQuery = bool();
 			// One of these conditions must be true.  Either
 			boolQuery.should(QueryHelper.termQuery(Activity.Fields.branch, request.getOnBranch()))
-					 // Or
+					// Or
 					.should(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, request.getOnBranch()));
 			//Are we also checking for activity that might have been promoted higher, elsewhere?
 			if (request.isIncludeHigherPromotions()) {
@@ -61,6 +82,9 @@ public class ActivityService {
 		if (request.getBranchPrefix() != null && !request.getBranchPrefix().isEmpty()) {
 			query.must(QueryHelper.prefixQuery(Activity.Fields.branch, request.getBranchPrefix()));
 		}
+	}
+
+	private void doContentFiltering(BoolQuery.Builder query, ActivitySearchRequest request) {
 		if (request.getActivityType() != null) {
 			query.must(QueryHelper.termQuery(Activity.Fields.activityType, request.getActivityType().name()));
 		}
@@ -86,26 +110,12 @@ public class ActivityService {
 
 			query.must(QueryHelper.toQuery(rangeQuery));
 		}
-		
+
 		if (request.isIntOnly()) {
 			query.mustNot(QueryHelper.regexQuery(Activity.Fields.branch, ".*SNOMEDCT-.*"));
 		}
-
-		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
-		if (request.isSummaryOnly()) {
-			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChanges}));
-		} else if (request.isBrief()) {
-			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChangesComponentChanges}));
-		}
-
-		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
-
-		Page<Activity> results = new PageImpl<>(search.stream().map(SearchHit::getContent).collect(Collectors.toList()), page, search.getTotalHits());
-		if (!request.isBrief() && !request.isSummaryOnly()) {
-			filterResultsBy(request.getConceptId(), request.getComponentId(), results);
-		}
-		return results;
 	}
+
 
 	/**
 	 * @param conceptIds A list of concept ids to search
@@ -133,7 +143,7 @@ public class ActivityService {
 		}
 		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
 
-		Page<Activity> results = new PageImpl<>(search.stream().map(SearchHit::getContent).collect(Collectors.toList()), page, search.getTotalHits());
+		Page<Activity> results = new PageImpl<>(search.stream().map(SearchHit::getContent).toList(), page, search.getTotalHits());
 
 		// Filter out concept ids not relevant
 		for (Activity activity : results.getContent()) {
@@ -145,6 +155,42 @@ public class ActivityService {
 			}
 		}
 		return results;
+	}
+
+	public Page<Activity> findActivitiesBy(String componentSubType, String usersStr, String branchesStr, Date since, Pageable page) {
+		final BoolQuery.Builder query = bool();
+
+		query.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.CONTENT_CHANGE.name()));
+
+		if (componentSubType != null && !componentSubType.isEmpty()) {
+			query.must(QueryHelper.termQuery(Activity.Fields.componentChangesComponentSubType, componentSubType));
+		}
+
+		if (usersStr != null && !usersStr.isEmpty()) {
+			List<String> users = Splitter.on(",").trimResults().splitToList(usersStr);
+			query.must(QueryHelper.termsQuery(Activity.Fields.username, users));
+		}
+
+		if (branchesStr != null && !branchesStr.isEmpty()) {
+			List<String> branches = Splitter.on(",").trimResults().splitToList(branchesStr);
+			BoolQuery.Builder branchesQuery = bool();
+			for (String branch : branches) {
+				branchesQuery.should(QueryHelper.prefixQuery(Activity.Fields.sourceBranch, branch));
+			}
+			query.must(Query.of(q -> q.bool(branchesQuery.build())));
+		}
+
+		if (since != null) {
+			query.must(Query.of(q -> q.range(QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE).gte(JsonData.of(since.getTime())).build())));
+		}
+
+		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
+
+		queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.conceptChangesComponentChanges}));
+
+		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
+
+		return new PageImpl<>(search.stream().map(SearchHit::getContent).toList(), page, search.getTotalHits());
 	}
 
 	private void filterResultsBy(Long conceptId, String componentId, Page<Activity> activities) {

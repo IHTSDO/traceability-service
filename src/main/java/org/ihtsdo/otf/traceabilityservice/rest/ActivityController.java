@@ -42,7 +42,6 @@ public class ActivityController {
 
 	@GetMapping(value = "/activities")
 	@PageableAsQueryParam
-	@ResponseBody
 	@Operation(summary = "Fetch activities.",
 			description = """
             Fetch authoring activities by 'originalBranch' (the branch the activity originated on), 'onBranch' (the original branch or highest branch the activity has been promoted to). Filtering by activity type and sorting is also available.
@@ -116,7 +115,6 @@ public class ActivityController {
 	}
 
 	@PostMapping(value = "/activitiesBulk")
-	@ResponseBody
 	@Operation(summary = "Fetch a filtered set of brief activities in bulk.")
 	@PageableAsQueryParam
 	public Page<Activity> getActivitiesBulk(
@@ -131,6 +129,21 @@ public class ActivityController {
 		}
 		page = setPageDefaults(page, MAX_BULK_SIZE);
 		return activityService.findActivitiesBy(conceptIds, activityType, user, summary, page);
+	}
+
+	@PostMapping(value = "/activitiesForUsersOnBranches")
+	@Operation(summary = "Fetch a filtered set of authoring activities (ie activity type = ContentChange) for users on specific branches")
+	@PageableAsQueryParam
+	public Page<Activity> getActivitiesForUsersOnBranches(
+			@RequestParam(required = false) @Parameter(description = "Set this to 733073007 to identify changes to Axioms") String componentSubType,
+			@RequestParam(required = false) @Parameter(description = "A single, or comma separated list of user") String users,
+			@RequestParam(required = false) @Parameter(description = "A single, or comma separated list of branch prefixes to check") String branches,
+			@RequestParam(required = false) @Parameter(description = "Changes made on or after this date") Date since,
+
+			Pageable page) {
+		LOGGER.info("Finding updates to {} components by {} on {} branches (prefixed) since {}", componentSubType, users, branches, since);
+		page = setPageDefaults(page, MAX_BULK_SIZE);
+		return activityService.findActivitiesBy(componentSubType, users, branches, since, page);
 	}
 
 	@GetMapping(value="/activities/promotions")

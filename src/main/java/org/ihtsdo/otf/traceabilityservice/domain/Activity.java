@@ -24,6 +24,7 @@ public class Activity {
 
 		public static final String conceptChangesComponentChanges = "conceptChanges.componentChanges";
 		public static final String componentChangesComponentId = "conceptChanges.componentChanges.componentId";
+		public static final String componentChangesComponentSubType = "conceptChanges.componentChanges.componentSubType";
 		public static final String componentChangesSuperseded = "conceptChanges.componentChanges.superseded";
 	}
 
