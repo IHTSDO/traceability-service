@@ -12,20 +12,19 @@ public class Activity {
 
 	public static class Fields {
 		private Fields() {}
-		public static final String username = "username";
-		public static final String branch = "branch";
-		public static final String sourceBranch = "sourceBranch";
-		public static final String highestPromotedBranch = "highestPromotedBranch";
-		public static final String commitDate = "commitDate";
-		public static final String promotionDate = "promotionDate";
-		public static final String activityType = "activityType";
-		public static final String conceptChanges = "conceptChanges";
-		public static final String conceptChangesConceptId = "conceptChanges.conceptId";
+		public static final String USERNAME = "username";
+		public static final String BRANCH = "branch";
+		public static final String SOURCE_BRANCH = "sourceBranch";
+		public static final String HIGHEST_PROMOTED_BRANCH = "highestPromotedBranch";
+		public static final String COMMIT_DATE = "commitDate";
+		public static final String PROMOTION_DATE = "promotionDate";
+		public static final String ACTIVITY_TYPE = "activityType";
+		public static final String CONCEPT_CHANGES = "conceptChanges";
+		public static final String CONCEPT_CHANGES_CONCEPT_ID = "conceptChanges.conceptId";
 
-		public static final String conceptChangesComponentChanges = "conceptChanges.componentChanges";
-		public static final String componentChangesComponentId = "conceptChanges.componentChanges.componentId";
-		public static final String componentChangesComponentSubType = "conceptChanges.componentChanges.componentSubType";
-		public static final String componentChangesSuperseded = "conceptChanges.componentChanges.superseded";
+		public static final String CONCEPT_CHANGES_COMPONENT_CHANGES = "conceptChanges.componentChanges";
+		public static final String COMPONENT_CHANGES_COMPONENT_ID = "conceptChanges.componentChanges.componentId";
+		public static final String COMPONENT_CHANGES_COMPONENT_SUB_TYPE = "conceptChanges.componentChanges.componentSubType";
 	}
 
 	@Id

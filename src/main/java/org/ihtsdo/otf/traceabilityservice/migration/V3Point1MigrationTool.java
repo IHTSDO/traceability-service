@@ -73,13 +73,13 @@ public class V3Point1MigrationTool {
 				// Find content changes made since the last version was created.
 				// For each lookup when the content was promoted and set the 'promotionDate' field.
 				final BoolQuery.Builder query = bool()
-						.must(QueryHelper.termsQuery(Activity.Fields.activityType, CONTENT_CHANGE_OR_CLASSIFICATION))
-						.must(QueryHelper.prefixQuery(Activity.Fields.branch, branch))
-						.must(QueryHelper.rangeQuery(Activity.Fields.commitDate,searchBackStartDate.getTime(),searchBackStartDate.getTime() + day));
+						.must(QueryHelper.termsQuery(Activity.Fields.ACTIVITY_TYPE, CONTENT_CHANGE_OR_CLASSIFICATION))
+						.must(QueryHelper.prefixQuery(Activity.Fields.BRANCH, branch))
+						.must(QueryHelper.rangeQuery(Activity.Fields.COMMIT_DATE,searchBackStartDate.getTime(),searchBackStartDate.getTime() + day));
 				// Grab one day of commits at a time to keep pages below 10K max size.
 
 				if (branch.equals("MAIN")) {
-					query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
+					query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.BRANCH, "*SNOMEDCT-*"));
 				}
 
 				SearchHits<Activity> activities = elasticsearchOperations.search(new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query)).withPageable(PageRequest.of(0, 10_000)).build(),
@@ -128,21 +128,21 @@ public class V3Point1MigrationTool {
 	}
 
 	Map<String, List<Date>> getBranchPromotionDates(String branch, Date searchBackStartDate) {
-		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE);
 		QueryHelper.withFrom(rangeQueryBuilder, searchBackStartDate.getTime());
 		final BoolQuery.Builder query = bool()
-				.must(QueryHelper.prefixQuery(Activity.Fields.sourceBranch, branch))
-				.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.PROMOTION.name()))
+				.must(QueryHelper.prefixQuery(Activity.Fields.SOURCE_BRANCH, branch))
+				.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.PROMOTION.name()))
 				.must(QueryHelper.toQuery(rangeQueryBuilder));
 
 		if (branch.equals("MAIN")) {
-			query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
+			query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.BRANCH, "*SNOMEDCT-*"));
 		}
 
 		Map<String, List<Date>> branchPromotionDates = new HashMap<>();
 		final SearchHits<Activity> hits = elasticsearchOperations.search(new NativeQueryBuilder()
 				.withQuery(QueryHelper.toQuery(query))
-				.withPageable(PageRequest.of(0, 10_000, Sort.by(Activity.Fields.commitDate)))
+				.withPageable(PageRequest.of(0, 10_000, Sort.by(Activity.Fields.COMMIT_DATE)))
 				.build(), Activity.class);
 		hits.forEach(hit -> {
 			final Activity promotion = hit.getContent();

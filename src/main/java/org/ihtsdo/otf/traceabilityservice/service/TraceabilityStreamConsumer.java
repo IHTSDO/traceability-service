@@ -74,8 +74,8 @@ public class TraceabilityStreamConsumer {
 			List<Activity> toSave = new ArrayList<>();
 
 			try (final SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(new NativeQueryBuilder().withQuery(QueryHelper.toQuery(bool()
-							.must(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, mergeSourceBranch))
-							.must(QueryHelper.termsQuery(Activity.Fields.activityType, contentActivityTypes))))
+							.must(QueryHelper.termQuery(Activity.Fields.HIGHEST_PROMOTED_BRANCH, mergeSourceBranch))
+							.must(QueryHelper.termsQuery(Activity.Fields.ACTIVITY_TYPE, contentActivityTypes))))
 					.withPageable(PageRequest.of(0, 1_000))
 					.build(), Activity.class)) {
 				stream.forEachRemaining(activitySearchHit -> {

@@ -29,7 +29,7 @@ public class PatchService {
 	public ChangeSummaryReport patchHistory(String branch, Set<String> componentsWithEffectiveTime, Set<String> componentsWithoutEffectiveTime) {
 
 		final SearchHit<Activity> latestCommit = elasticsearchOperations.searchOne(new NativeQueryBuilder()
-				.withQuery(QueryHelper.termQuery(Activity.Fields.branch, branch)).withSort(Sort.by(Activity.Fields.commitDate).descending()).build(), Activity.class);
+				.withQuery(QueryHelper.termQuery(Activity.Fields.BRANCH, branch)).withSort(Sort.by(Activity.Fields.COMMIT_DATE).descending()).build(), Activity.class);
 
 		Date patchCommitDate = latestCommit != null ? latestCommit.getContent().getCommitDate() : new Date();
 

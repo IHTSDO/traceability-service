@@ -22,7 +22,7 @@ import static co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bo
 @Service
 public class ReportService {
 
-	public static final PageRequest MOST_RECENT_COMMIT = PageRequest.of(0, 1, Sort.by(Activity.Fields.commitDate).descending());
+	public static final PageRequest MOST_RECENT_COMMIT = PageRequest.of(0, 1, Sort.by(Activity.Fields.COMMIT_DATE).descending());
 
 	private static final Date EPOCH_DATE = new Date(0);
 
@@ -53,14 +53,14 @@ public class ReportService {
 			// e.g relationship created on project during classification save but deleted by a task promoted to project
 			LOGGER.info("selecting changes promoted/committed after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
 
-			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.promotionDate);
+			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.PROMOTION_DATE);
 			QueryHelper.withFrom(rangeQueryBuilder, startDate.getTime());
 			if (contentHeadTimestamp != null) {
 				QueryHelper.withTo(rangeQueryBuilder, contentHeadTimestamp);
 			}
 
 			final BoolQuery.Builder query = bool()
-					.must(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, branch))
+					.must(QueryHelper.termQuery(Activity.Fields.HIGHEST_PROMOTED_BRANCH, branch))
 					.must(QueryHelper.toQuery(rangeQueryBuilder));
 			processCommits(query, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 		} else if (includePromotedToThisBranch) {
@@ -69,15 +69,15 @@ public class ReportService {
 				startDate = new Date(contentBaseTimeStamp);
 			}
 
-			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.promotionDate);
+			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.PROMOTION_DATE);
 			QueryHelper.withFrom(rangeQueryBuilder, startDate.getTime());
 			if (contentHeadTimestamp != null) {
 				QueryHelper.withTo(rangeQueryBuilder, contentHeadTimestamp);
 			}
 			LOGGER.info("selecting changes promoted after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
 			final BoolQuery.Builder onDescendantBranches = bool()
-					.mustNot(QueryHelper.termQuery(Activity.Fields.branch, branch))
-					.must(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, branch))
+					.mustNot(QueryHelper.termQuery(Activity.Fields.BRANCH, branch))
+					.must(QueryHelper.termQuery(Activity.Fields.HIGHEST_PROMOTED_BRANCH, branch))
 					.must(QueryHelper.toQuery(rangeQueryBuilder));
 			processCommits(onDescendantBranches, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 		} else if (includeMadeOnThisBranch) {
@@ -86,13 +86,13 @@ public class ReportService {
 				startDate = new Date(contentBaseTimeStamp);
 			}
 			LOGGER.info("selecting changes committed after {} ({}) on branch {}", startDate.getTime(), startDate, branch);
-			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE);
 			QueryHelper.withFrom(rangeQueryBuilder, startDate.getTime());
 			if (contentHeadTimestamp != null) {
 				QueryHelper.withTo(rangeQueryBuilder, contentHeadTimestamp);
 			}
 			final BoolQuery.Builder onThisBranchQuery = bool()
-					.must(QueryHelper.termQuery(Activity.Fields.branch, branch))
+					.must(QueryHelper.termQuery(Activity.Fields.BRANCH, branch))
 					.must(QueryHelper.toQuery(rangeQueryBuilder));
 			processCommits(onThisBranchQuery, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 		}
@@ -158,12 +158,12 @@ public class ReportService {
 						bool()
 								// Changes made on ancestor
 								.should(QueryHelper.toQuery(bool()
-										.must(QueryHelper.termQuery(Activity.Fields.branch, ancestor))
-										.must(QueryHelper.rangeQuery(Activity.Fields.commitDate, startDate.getTime(), previousLevelBaseDate.getTime()))))
+										.must(QueryHelper.termQuery(Activity.Fields.BRANCH, ancestor))
+										.must(QueryHelper.rangeQuery(Activity.Fields.COMMIT_DATE, startDate.getTime(), previousLevelBaseDate.getTime()))))
 								// Changes promoted to ancestor
 								.should(QueryHelper.toQuery(bool()
-										.must(QueryHelper.termQuery(Activity.Fields.highestPromotedBranch, ancestor))
-										.must(QueryHelper.rangeQuery(Activity.Fields.promotionDate, startDate.getTime(), previousLevelBaseDate.getTime()))));
+										.must(QueryHelper.termQuery(Activity.Fields.HIGHEST_PROMOTED_BRANCH, ancestor))
+										.must(QueryHelper.rangeQuery(Activity.Fields.PROMOTION_DATE, startDate.getTime(), previousLevelBaseDate.getTime()))));
 				processCommits(onAncestorBranch, componentChangeMap, changesNotAtTaskLevel, componentToConceptIdMap);
 
 				previousLevel = ancestor;
@@ -192,7 +192,7 @@ public class ReportService {
 		NativeQuery query = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(selection))
 				// Use 1000 instead of 10_000 because each activity doc containing all changes which can be very large
 				// Sort by descending order to discard superseded changes
-				.withPageable(PageRequest.of(0, 1_000, Sort.by(Sort.Direction.DESC, Activity.Fields.commitDate)))
+				.withPageable(PageRequest.of(0, 1_000, Sort.by(Sort.Direction.DESC, Activity.Fields.COMMIT_DATE)))
 				.build();
 		final Map<String, Set<String>> supersededChangeComponentToPaths = new HashMap<>();
 		try (SearchHitsIterator<Activity> stream = elasticsearchOperations.searchForStream(query, Activity.class)) {
@@ -244,14 +244,14 @@ public class ReportService {
 	private Date getLastVersionDateOrEpoch(String branch, Date before) {
 		// If Code System branch; use the last version creation date, because versioning sets all the effectiveTimes so delta would be empty at that point.
 		if (BranchUtils.isCodeSystemBranch(branch)) {
-			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+			RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE);
 			QueryHelper.withTo(rangeQueryBuilder, before.getTime());
 			BoolQuery.Builder query = bool()
-					.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.CREATE_CODE_SYSTEM_VERSION.name()))
-					.must(QueryHelper.termQuery(Activity.Fields.branch, branch))
+					.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.CREATE_CODE_SYSTEM_VERSION.name()))
+					.must(QueryHelper.termQuery(Activity.Fields.BRANCH, branch))
 					.must(QueryHelper.toQuery(rangeQueryBuilder));
 			final SearchHit<Activity> activityHit = elasticsearchOperations.searchOne(new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query))
-					.withSort(Sort.by(Activity.Fields.commitDate).descending())
+					.withSort(Sort.by(Activity.Fields.COMMIT_DATE).descending())
 					.build(), Activity.class);
 			if (activityHit != null) {
 				return activityHit.getContent().getCommitDate();
@@ -264,11 +264,11 @@ public class ReportService {
 		final SearchHit<Activity> activitySearchHit = elasticsearchOperations.searchOne(new NativeQueryBuilder()
 				.withQuery(QueryHelper.toQuery(bool()
 						.should(QueryHelper.toQuery(bool()
-								.must(QueryHelper.termQuery(Activity.Fields.branch, branch))
-								.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.REBASE.name()))))
+								.must(QueryHelper.termQuery(Activity.Fields.BRANCH, branch))
+								.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.REBASE.name()))))
 						.should(QueryHelper.toQuery(bool()
-								.must(QueryHelper.termQuery(Activity.Fields.sourceBranch, branch))
-								.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.PROMOTION.name()))))))
+								.must(QueryHelper.termQuery(Activity.Fields.SOURCE_BRANCH, branch))
+								.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.PROMOTION.name()))))))
 				.withPageable(MOST_RECENT_COMMIT)
 				.build(), Activity.class);
 
@@ -277,7 +277,7 @@ public class ReportService {
 		} else {
 			// Select first commit on the branch
 			final SearchHit<Activity> firstCommitSearchHit = elasticsearchOperations.searchOne(new NativeQueryBuilder()
-					.withQuery(QueryHelper.termQuery(Activity.Fields.branch, branch))
+					.withQuery(QueryHelper.termQuery(Activity.Fields.BRANCH, branch))
 					.withPageable(MOST_RECENT_COMMIT)
 					.build(), Activity.class);
 			if (firstCommitSearchHit != null) {
@@ -293,16 +293,16 @@ public class ReportService {
 			throw new IllegalArgumentException("previousLevelBaseDate can't be null");
 		}
 
-		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE);
 		QueryHelper.withTo(rangeQueryBuilder, previousLevelBaseDate.getTime());
 		final SearchHit<Activity> activitySearchHit = elasticsearchOperations.searchOne(new NativeQueryBuilder()
 				.withQuery(QueryHelper.toQuery(bool()
 						.should(QueryHelper.toQuery(bool()
-								.must(QueryHelper.termQuery(Activity.Fields.branch, branch))
-								.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.REBASE.name()))))
+								.must(QueryHelper.termQuery(Activity.Fields.BRANCH, branch))
+								.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.REBASE.name()))))
 						.should(QueryHelper.toQuery(bool()
-								.must(QueryHelper.termQuery(Activity.Fields.sourceBranch, branch))
-								.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.PROMOTION.name()))))
+								.must(QueryHelper.termQuery(Activity.Fields.SOURCE_BRANCH, branch))
+								.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.PROMOTION.name()))))
 						.must(QueryHelper.toQuery(rangeQueryBuilder)))
 				)
 				.withPageable(MOST_RECENT_COMMIT)
@@ -316,12 +316,12 @@ public class ReportService {
 	}
 
 	private Date getLastPromotionDate(String branch, Date baseDateTime) {
-		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE);
 		QueryHelper.withTo(rangeQueryBuilder, baseDateTime.getTime());
 		final SearchHit<Activity> activitySearchHit = elasticsearchOperations.searchOne(new NativeQueryBuilder()
 				.withQuery(QueryHelper.toQuery(bool()
-						.must(QueryHelper.termQuery(Activity.Fields.sourceBranch, branch))
-						.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.PROMOTION.name()))
+						.must(QueryHelper.termQuery(Activity.Fields.SOURCE_BRANCH, branch))
+						.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.PROMOTION.name()))
 						.must(QueryHelper.toQuery(rangeQueryBuilder))))
 				.withPageable(MOST_RECENT_COMMIT)
 				.build(), Activity.class);

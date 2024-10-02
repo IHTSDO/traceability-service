@@ -142,19 +142,19 @@ public class V3Point2MigrationTool extends V3Point1MigrationTool {
 	}
 
 	private List<Activity> getRebaseActivitiesNotPromoted(String codeSystemPath, Date lastVersion) {
-		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.commitDate);
+		RangeQuery.Builder rangeQueryBuilder = QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE);
 		QueryHelper.withFrom(rangeQueryBuilder, lastVersion.getTime());
 		BoolQuery.Builder query = bool()
-				.must(QueryHelper.prefixQuery(Activity.Fields.branch, codeSystemPath))
-				.must(QueryHelper.termQuery(Activity.Fields.activityType, ActivityType.REBASE.name()))
+				.must(QueryHelper.prefixQuery(Activity.Fields.BRANCH, codeSystemPath))
+				.must(QueryHelper.termQuery(Activity.Fields.ACTIVITY_TYPE, ActivityType.REBASE.name()))
 				.must(QueryHelper.toQuery(rangeQueryBuilder))
-				.must(QueryHelper.existsQuery(Activity.Fields.highestPromotedBranch))
+				.must(QueryHelper.existsQuery(Activity.Fields.HIGHEST_PROMOTED_BRANCH))
 				.must(QueryHelper.existsQuery("conceptChanges"))
-				.mustNot(QueryHelper.existsQuery(Activity.Fields.promotionDate));
+				.mustNot(QueryHelper.existsQuery(Activity.Fields.PROMOTION_DATE));
 
 		// Exclude extensions when checking on MAIN for International
 		if (codeSystemPath.equals("MAIN")) {
-			query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.branch, "*SNOMEDCT-*"));
+			query.mustNot(QueryHelper.wildcardQuery(Activity.Fields.BRANCH, "*SNOMEDCT-*"));
 		}
 
 		SearchHits<Activity> searchHits = elasticsearchOperations.search(new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query)).withPageable(PageRequest.of(0, 10_000)).build(), Activity.class);

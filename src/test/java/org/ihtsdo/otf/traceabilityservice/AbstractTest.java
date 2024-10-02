@@ -60,7 +60,7 @@ public abstract class AbstractTest {
 
 		final List<Activity> activities = new ArrayList<>();
 		AtomicInteger found = new AtomicInteger(0);
-		activityRepository.findAll(PageRequest.of(0, 100, Sort.by(Activity.Fields.commitDate)))
+		activityRepository.findAll(PageRequest.of(0, 100, Sort.by(Activity.Fields.COMMIT_DATE)))
 				.forEach(activity -> {
 					if (found.getAndIncrement() >= startingActivityCount) {
 						activities.add(activity);
