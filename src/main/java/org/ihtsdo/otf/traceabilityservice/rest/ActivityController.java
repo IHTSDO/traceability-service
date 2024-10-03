@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -131,14 +132,17 @@ public class ActivityController {
 		return activityService.findActivitiesBy(conceptIds, activityType, user, summary, page);
 	}
 
-	@PostMapping(value = "/activitiesForUsersOnBranches")
+	@GetMapping(value = "/activitiesForUsersOnBranches")
 	@Operation(summary = "Fetch a filtered set of authoring activities (ie activity type = ContentChange) for users on specific branches")
 	@PageableAsQueryParam
 	public Page<Activity> getActivitiesForUsersOnBranches(
-			@RequestParam(required = false) @Parameter(description = "Set this to 733073007 to identify changes to Axioms") String componentSubType,
-			@RequestParam(required = false) @Parameter(description = "A single, or comma separated list of user") String users,
-			@RequestParam(required = false) @Parameter(description = "A single, or comma separated list of branch prefixes to check") String branches,
-			@RequestParam(required = false) @Parameter(description = "Changes made on or after this date") Date since,
+			@RequestParam(required = false) @Parameter(description = "Set this to 733073007 to identify changes to axioms ie modeling changes") String componentSubType,
+			@RequestParam(required = false) @Parameter(description = "A single, or comma separated list of users") String users,
+			@RequestParam(required = false) @Parameter(description = "A single, or comma separated list of branch prefixes to check eg MAIN/SNOMEDCT-CSR/NEBCSR") String branches,
+			@RequestParam(required = false)
+			@Parameter(description = "Changes made on or after this date (YYYY-MM-DD)")
+			@DateTimeFormat(pattern = "yyyy-MM-dd")
+			Date since,
 
 			Pageable page) {
 		LOGGER.info("Finding updates to {} components by {} on {} branches (prefixed) since {}", componentSubType, users, branches, since);

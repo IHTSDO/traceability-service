@@ -175,7 +175,7 @@ public class ActivityService {
 			List<String> branches = Splitter.on(",").trimResults().splitToList(branchesStr);
 			BoolQuery.Builder branchesQuery = bool();
 			for (String branch : branches) {
-				branchesQuery.should(QueryHelper.prefixQuery(Activity.Fields.SOURCE_BRANCH, branch));
+				branchesQuery.should(QueryHelper.prefixQuery(Activity.Fields.BRANCH, branch));
 			}
 			query.must(Query.of(q -> q.bool(branchesQuery.build())));
 		}
@@ -186,9 +186,22 @@ public class ActivityService {
 
 		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
 
-		queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.CONCEPT_CHANGES_COMPONENT_CHANGES}));
-
 		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
+
+		//Now remove any component change that isn't the subtype we're looking for
+		search.stream().map(SearchHit::getContent).forEach(activity -> {
+			Set<ConceptChange> conceptChanges = new HashSet<>();
+			for (ConceptChange conceptChange : activity.getConceptChanges()) {
+				Set<ComponentChange> componentChanges = conceptChange.getComponentChanges().stream()
+						.filter(componentChange -> componentSubType.equals(componentChange.getComponentSubType()))
+						.collect(Collectors.toSet());
+				if (!componentChanges.isEmpty()) {
+					conceptChange.setComponentChanges(componentChanges);
+					conceptChanges.add(conceptChange);
+				}
+			}
+			activity.setConceptChanges(conceptChanges);
+		});
 
 		return new PageImpl<>(search.stream().map(SearchHit::getContent).toList(), page, search.getTotalHits());
 	}
