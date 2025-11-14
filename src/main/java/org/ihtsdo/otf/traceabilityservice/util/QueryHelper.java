@@ -5,12 +5,25 @@ import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.json.JsonData;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
  * Wrapping Elastic's builders.
  */
 public class QueryHelper {
+
+    /**
+     * Storage for RangeQuery field and values, keyed by builder instance
+     */
+    private static class RangeQueryState {
+        String field;
+        JsonData fromValue;
+        JsonData toValue;
+    }
+
+    private static final Map<RangeQuery.Builder, RangeQueryState> rangeQueryStates = new ConcurrentHashMap<>();
     /*
      * BoolQuery
      * */
@@ -95,34 +108,60 @@ public class QueryHelper {
      * RangeQuery
      * */
     public static RangeQuery.Builder rangeQueryBuilder() {
-        return new RangeQuery.Builder();
+        RangeQuery.Builder builder = new RangeQuery.Builder();
+        rangeQueryStates.put(builder, new RangeQueryState());
+        return builder;
     }
 
     public static RangeQuery.Builder rangeQueryBuilder(String field) {
-        return new RangeQuery.Builder().field(field);
+        RangeQuery.Builder builder = new RangeQuery.Builder();
+        RangeQueryState state = new RangeQueryState();
+        state.field = field;
+        rangeQueryStates.put(builder, state);
+        return builder;
     }
 
     public static void withField(RangeQuery.Builder rangeQueryBuilder, String field) {
-        rangeQueryBuilder.field(field);
+        RangeQueryState state = rangeQueryStates.computeIfAbsent(rangeQueryBuilder, k -> new RangeQueryState());
+        state.field = field;
     }
 
     public static void withFrom(RangeQuery.Builder rangeQueryBuilder, String value) {
-        rangeQueryBuilder.from(value);
+        RangeQueryState state = rangeQueryStates.computeIfAbsent(rangeQueryBuilder, k -> new RangeQueryState());
+        state.fromValue = JsonData.of(value);
     }
 
     public static void withFrom(RangeQuery.Builder rangeQueryBuilder, long value) {
-        rangeQueryBuilder.from(String.valueOf(value));
+        RangeQueryState state = rangeQueryStates.computeIfAbsent(rangeQueryBuilder, k -> new RangeQueryState());
+        state.fromValue = JsonData.of(value);
     }
 
     public static void withTo(RangeQuery.Builder rangeQueryBuilder, String value) {
-        rangeQueryBuilder.to(value);
+        RangeQueryState state = rangeQueryStates.computeIfAbsent(rangeQueryBuilder, k -> new RangeQueryState());
+        state.toValue = JsonData.of(value);
     }
 
     public static void withTo(RangeQuery.Builder rangeQueryBuilder, long value) {
-        rangeQueryBuilder.to(String.valueOf(value));
+        RangeQueryState state = rangeQueryStates.computeIfAbsent(rangeQueryBuilder, k -> new RangeQueryState());
+        state.toValue = JsonData.of(value);
     }
 
     public static Query toQuery(RangeQuery.Builder rangeQueryBuilder) {
+        RangeQueryState state = rangeQueryStates.remove(rangeQueryBuilder);
+        if (state != null && state.field != null) {
+            co.elastic.clients.elasticsearch._types.query_dsl.UntypedRangeQuery.Builder untypedBuilder = 
+                new co.elastic.clients.elasticsearch._types.query_dsl.UntypedRangeQuery.Builder()
+                    .field(state.field);
+            if (state.fromValue != null) {
+                untypedBuilder.gte(state.fromValue);
+            }
+            if (state.toValue != null) {
+                untypedBuilder.lte(state.toValue);
+            }
+            RangeQuery.Builder builder = new RangeQuery.Builder();
+            builder.untyped(untypedBuilder.build());
+            return builder.build()._toQuery();
+        }
         return rangeQueryBuilder.build()._toQuery();
     }
 

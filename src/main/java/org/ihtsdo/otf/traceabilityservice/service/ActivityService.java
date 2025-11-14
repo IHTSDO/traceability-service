@@ -3,7 +3,6 @@ package org.ihtsdo.otf.traceabilityservice.service;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-import co.elastic.clients.json.JsonData;
 import com.google.common.base.Splitter;
 import org.ihtsdo.otf.traceabilityservice.util.QueryHelper;
 import org.ihtsdo.otf.traceabilityservice.domain.*;
@@ -44,9 +43,9 @@ public class ActivityService {
 
 		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
 		if (request.isSummaryOnly()) {
-			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.CONCEPT_CHANGES}));
+			queryBuilder.withSourceFilter(new FetchSourceFilter(true, null, new String[]{Activity.Fields.CONCEPT_CHANGES}));
 		} else if (request.isBrief()) {
-			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.CONCEPT_CHANGES_COMPONENT_CHANGES}));
+			queryBuilder.withSourceFilter(new FetchSourceFilter(true, null, new String[]{Activity.Fields.CONCEPT_CHANGES_COMPONENT_CHANGES}));
 		}
 
 		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
@@ -139,7 +138,7 @@ public class ActivityService {
 		}
 		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
 		if (summaryOnly) {
-			queryBuilder.withSourceFilter(new FetchSourceFilter(null, new String[]{Activity.Fields.CONCEPT_CHANGES_COMPONENT_CHANGES}));
+			queryBuilder.withSourceFilter(new FetchSourceFilter(true, null, new String[]{Activity.Fields.CONCEPT_CHANGES_COMPONENT_CHANGES}));
 		}
 		final SearchHits<Activity> search = elasticsearchOperations.search(queryBuilder.withPageable(page).build(), Activity.class);
 
@@ -181,7 +180,9 @@ public class ActivityService {
 		}
 
 		if (since != null) {
-			query.must(Query.of(q -> q.range(QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE).gte(JsonData.of(since.getTime())).build())));
+			RangeQuery.Builder rangeQuery = QueryHelper.rangeQueryBuilder(Activity.Fields.COMMIT_DATE);
+			QueryHelper.withFrom(rangeQuery, since.getTime());
+			query.must(QueryHelper.toQuery(rangeQuery));
 		}
 
 		NativeQueryBuilder queryBuilder = new NativeQueryBuilder().withQuery(QueryHelper.toQuery(query));
