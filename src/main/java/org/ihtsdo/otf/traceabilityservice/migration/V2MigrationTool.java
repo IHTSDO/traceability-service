@@ -13,7 +13,6 @@ import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
@@ -42,7 +41,8 @@ public class V2MigrationTool {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public V2MigrationTool() {
-		objectMapper = Jackson2ObjectMapperBuilder.json().featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).build();
+		objectMapper = new ObjectMapper()
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
 	@Async
@@ -53,7 +53,7 @@ public class V2MigrationTool {
 			requestedEndPage = Integer.MAX_VALUE;
 		}
 
-		final RestTemplate restTemplate = new RestTemplateBuilder().rootUri(v2Url).build();
+		final RestTemplate restTemplate = new RestTemplateBuilder().baseUri(v2Url).build();
 		Integer adjustedEndPage = null;
 		try {
 			boolean keepLoading = true;

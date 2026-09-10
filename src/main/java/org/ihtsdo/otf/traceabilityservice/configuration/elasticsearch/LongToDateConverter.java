@@ -1,8 +1,9 @@
 package org.ihtsdo.otf.traceabilityservice.configuration.elasticsearch;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
-import org.springframework.lang.NonNull;
+
 import java.util.Date;
 
 @ReadingConverter

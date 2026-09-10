@@ -14,7 +14,7 @@ public abstract class Config {
     @Bean
 	public ObjectMapper objectMapper() {
 		final ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
 		final StdDateFormat df = new StdDateFormat();
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));
 		objectMapper.setDateFormat(df);

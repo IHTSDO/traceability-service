@@ -18,7 +18,7 @@ import org.springframework.security.web.firewall.HttpFirewall;
 @EnableWebSecurity
 public class WebSecurityConfiguration {
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) {
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorize) ->
                 authorize.requestMatchers(new String[]{
