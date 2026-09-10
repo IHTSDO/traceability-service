@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchClients;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchLegacyRestClientConfiguration;
+import org.springframework.data.elasticsearch.client.elc.rest_client.RestClients;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.support.HttpHeaders;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -23,7 +23,7 @@ import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
 import java.util.Arrays;
 
 @Configuration
-public class ElasticsearchConfig extends ElasticsearchConfiguration {
+public class ElasticsearchConfig extends ElasticsearchLegacyRestClientConfiguration {
 	private final ApplicationProperties applicationProperties;
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -63,8 +63,8 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 		return false;
 	}
 
-	private ElasticsearchClients.ElasticsearchRestClientConfigurationCallback configureHttpClient() {
-		return ElasticsearchClients.ElasticsearchRestClientConfigurationCallback.from(clientBuilder -> {
+	private RestClients.ElasticsearchRestClientConfigurationCallback configureHttpClient() {
+		return RestClients.ElasticsearchRestClientConfigurationCallback.from(clientBuilder -> {
 			clientBuilder.setRequestConfigCallback(builder -> {
 				builder.setConnectionRequestTimeout(0);//Disable lease handling for the connection pool! See https://github.com/elastic/elasticsearch/issues/24069
 				return builder;

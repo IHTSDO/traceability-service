@@ -3,7 +3,8 @@ package org.ihtsdo.otf.traceabilityservice.configuration.jms;
 import jakarta.jms.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
+import org.springframework.boot.jms.ConnectionFactoryUnwrapper;
+import org.springframework.boot.jms.autoconfigure.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
@@ -16,7 +17,7 @@ public class JmsConfiguration {
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setErrorHandler(t -> LOGGER.error("Failed to consume message.", t));
-        configurer.configure(factory, connectionFactory);
+        configurer.configure(factory, ConnectionFactoryUnwrapper.unwrapCaching(connectionFactory));
         return factory;
     }
 }
