@@ -1,7 +1,6 @@
 package org.ihtsdo.otf.traceabilityservice;
 
 import org.ihtsdo.otf.traceabilityservice.configuration.ApplicationProperties;
-import org.ihtsdo.otf.traceabilityservice.configuration.Config;
 import org.ihtsdo.otf.traceabilityservice.configuration.TestElasticsearchContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
 @PropertySource("classpath:/application-test.properties")
 @TestConfiguration
 @SpringBootApplication
-public class TestConfig extends Config {
+public class TestConfig {
 	// Set to true to use local standalone Elasticsearch instance rather than Docker test container
 	private static final boolean useLocalElasticsearch = false;
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestConfig.class);

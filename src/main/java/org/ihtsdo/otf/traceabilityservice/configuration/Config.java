@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.TimeZone;
 
 @Configuration
-public abstract class Config {
-    @Bean
+public class Config {
+	@Bean
 	public ObjectMapper objectMapper() {
 		final ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
